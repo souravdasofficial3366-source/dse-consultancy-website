@@ -4,6 +4,7 @@ import path from "node:path";
 export type LeadInput = {
   owner_name: string;
   phone_number: string;
+  email_address: string;
   shop_type: string;
   city_town: string;
   privacy_consent: boolean;
@@ -19,6 +20,7 @@ export type LeadResult = {
 };
 
 const phoneRegex = /^[6-9][0-9]{9}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const requestTimeoutMs = 8_000;
 
 export class LeadValidationError extends Error {
@@ -62,6 +64,7 @@ export function cleanLead(input: unknown): LeadInput {
   const lead: LeadInput = {
     owner_name: requiredText(value.owner_name, "name", 2, 80),
     phone_number: String(value.phone_number || "").replace(/\D/g, ""),
+    email_address: requiredText(value.email_address, "email address", 5, 254).toLowerCase(),
     shop_type: requiredText(value.shop_type, "business type", 2, 80),
     city_town: requiredText(value.city_town, "city or town", 2, 80),
     privacy_consent: value.privacy_consent === true,
@@ -70,6 +73,10 @@ export function cleanLead(input: unknown): LeadInput {
 
   if (!phoneRegex.test(lead.phone_number)) {
     throw new LeadValidationError("Please enter a valid 10 digit mobile number.");
+  }
+
+  if (!emailRegex.test(lead.email_address)) {
+    throw new LeadValidationError("Please enter a valid email address.");
   }
 
   if (!lead.privacy_consent) {
@@ -167,6 +174,7 @@ export async function sendLeadEmail(lead: LeadInput): Promise<boolean> {
         "",
         `Owner: ${lead.owner_name}`,
         `Phone: ${lead.phone_number}`,
+        `Email: ${lead.email_address}`,
         `Business: ${lead.shop_type}`,
         `City/Town: ${lead.city_town}`,
         `Source: ${lead.source_path || "/"}`,
@@ -194,7 +202,7 @@ export async function sendLeadSms(lead: LeadInput): Promise<boolean> {
         : {})
     },
     body: JSON.stringify({
-      message: `New DSE lead: ${lead.owner_name}, ${lead.phone_number}, ${lead.shop_type}, ${lead.city_town}`,
+      message: `New DSE lead: ${lead.owner_name}, ${lead.phone_number}, ${lead.email_address}, ${lead.shop_type}, ${lead.city_town}`,
       lead
     }),
     signal: AbortSignal.timeout(requestTimeoutMs)

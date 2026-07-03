@@ -16,6 +16,7 @@ The script creates an `Enquiries` tab automatically with these columns:
 - Received At
 - Owner Name
 - Phone Number
+- Email Address
 - Business Type
 - City/Town
 - Source Page

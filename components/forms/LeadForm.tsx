@@ -39,6 +39,7 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
     const payload = {
       owner_name: formData.get("owner_name"),
       phone_number: formData.get("phone_number"),
+      email_address: formData.get("email_address"),
       shop_type: formData.get("shop_type"),
       city_town: formData.get("city_town"),
       privacy_consent: formData.get("privacy_consent") === "on",
@@ -100,6 +101,17 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
             placeholder="10 digit number"
             required
             type="tel"
+          />
+        </label>
+        <label className="field-full">
+          Email address
+          <input
+            autoComplete="email"
+            maxLength={254}
+            name="email_address"
+            placeholder="you@example.com"
+            required
+            type="email"
           />
         </label>
         <label className="field-full">

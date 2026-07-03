@@ -3,6 +3,7 @@ const HEADERS = [
   "Received At",
   "Owner Name",
   "Phone Number",
+  "Email Address",
   "Business Type",
   "City/Town",
   "Source Page",
@@ -25,6 +26,7 @@ function doPost(event) {
     if (
       !lead.owner_name ||
       !lead.phone_number ||
+      !lead.email_address ||
       !lead.shop_type ||
       !lead.city_town ||
       lead.privacy_consent !== true
@@ -51,6 +53,7 @@ function doPost(event) {
       new Date(),
       safeCell(lead.owner_name),
       safeCell(lead.phone_number),
+      safeCell(lead.email_address),
       safeCell(lead.shop_type),
       safeCell(lead.city_town),
       safeCell(lead.source_path || "/"),

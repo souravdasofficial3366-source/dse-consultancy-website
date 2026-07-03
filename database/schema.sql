@@ -4,6 +4,7 @@ create table if not exists public.leads (
   id uuid primary key default gen_random_uuid(),
   owner_name text not null,
   phone_number text not null check (phone_number ~ '^[6-9][0-9]{9}$'),
+  email_address text not null,
   shop_type text not null,
   city_town text not null,
   privacy_consent boolean not null default true,
@@ -11,6 +12,8 @@ create table if not exists public.leads (
   source_path text,
   created_at timestamptz not null default now()
 );
+
+alter table public.leads add column if not exists email_address text;
 
 create index if not exists leads_created_at_idx on public.leads (created_at desc);
 create index if not exists leads_city_town_idx on public.leads (city_town);
