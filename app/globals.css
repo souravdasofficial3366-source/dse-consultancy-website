@@ -183,6 +183,32 @@ select {
   font-size: 1.08rem;
 }
 
+.landing-page .hero-content {
+  text-align: center;
+}
+
+.landing-page .hero-content .eyebrow,
+.landing-page .section-head.center .eyebrow {
+  margin-inline: auto;
+}
+
+.landing-page .hero-content h1,
+.landing-page .hero-content .hero-copy,
+.landing-page .section-head.center .section-copy,
+.landing-page .advantage-copy > .section-copy {
+  margin-inline: auto;
+}
+
+.landing-page .hero-content .trust-list {
+  justify-content: center;
+}
+
+.landing-page .lead-card h2,
+.landing-page .advantage-copy > h2,
+.landing-page .advantage-copy > .section-copy {
+  text-align: center;
+}
+
 .trust-list {
   display: flex;
   flex-wrap: wrap;
@@ -400,6 +426,10 @@ select {
 .section-head.center {
   display: block;
   text-align: center;
+}
+
+.landing-page .section-head.center > .outline-button {
+  margin-top: 22px;
 }
 
 .section h2 {

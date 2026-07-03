@@ -78,11 +78,11 @@ const prices = [
 
 export default function HomePage() {
   return (
-    <main>
+    <main className="landing-page">
       <LocalBusinessJsonLd />
       <section className="hero">
         <div className="container hero-grid">
-          <div>
+          <div className="hero-content">
             <span className="eyebrow">
               <span className="pulse-dot" />
               Trusted by local Indian businesses
@@ -162,7 +162,7 @@ export default function HomePage() {
 
       <section className="section" id="industries">
         <div className="container">
-          <div className="section-head">
+          <div className="section-head center">
             <div>
               <h2>Websites for everyday businesses</h2>
               <p className="section-copy">
@@ -192,7 +192,7 @@ export default function HomePage() {
 
       <section className="section dark">
         <div className="container advantage-grid">
-          <div>
+          <div className="advantage-copy">
             <h2>
               Made to bring <span className="accent">local calls</span>
             </h2>
