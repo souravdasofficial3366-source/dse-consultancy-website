@@ -2,8 +2,8 @@ export const siteConfig = {
   name: "DSE Consultancy",
   basePrice: "₹3,999",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-  phone: process.env.NEXT_PUBLIC_DSE_PHONE || "+91 62913 06377",
-  whatsapp: process.env.NEXT_PUBLIC_DSE_WHATSAPP || "916291306377",
+  phone: process.env.NEXT_PUBLIC_DSE_PHONE || "+91 62904 11428",
+  whatsapp: process.env.NEXT_PUBLIC_DSE_WHATSAPP || "916290411428",
   email: process.env.NEXT_PUBLIC_DSE_EMAIL || "hello@dseconsultancy.in",
   socialLinks: [
     { label: "LinkedIn", shortLabel: "in", url: process.env.NEXT_PUBLIC_LINKEDIN_URL },
