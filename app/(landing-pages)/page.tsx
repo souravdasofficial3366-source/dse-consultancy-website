@@ -97,11 +97,11 @@ export default function HomePage() {
             <ul className="trust-list" aria-label="What is included">
               <li>
                 <span className="material-symbols-outlined">verified</span>
-                Clear price before work starts
+                Zero HIDDEN COST.
               </li>
               <li>
                 <span className="material-symbols-outlined">verified</span>
-                Phone calls and WhatsApp from new customers
+                Free Domain, Hosting, SSL, and Website SEO
               </li>
               <li>
                 <span className="material-symbols-outlined">verified</span>
@@ -119,9 +119,9 @@ export default function HomePage() {
       <section className="section white" id="why-us">
         <div className="container">
           <div className="section-head center">
-            <h2>What is included</h2>
+            <h2>What&apos;s Included</h2>
             <p className="section-copy">
-              We keep the package simple, so small business owners know what they are getting.
+              Don&apos;t get trapped by &quot;Cheap&quot; ₹999 templates with hidden costs.
             </p>
           </div>
           <div className="comparison">
@@ -135,23 +135,23 @@ export default function HomePage() {
               </thead>
               <tbody>
                 <tr>
-                  <td>Website setup</td>
+                  <td>Advanced website setup</td>
                   <td>Included in the package</td>
                   <td>Often added later</td>
                 </tr>
                 <tr>
-                  <td>Mobile speed</td>
-                  <td>Fast pages for phone users</td>
-                  <td>Can be slow or heavy</td>
-                </tr>
-                <tr>
-                  <td>Google help</td>
-                  <td>1 year included for free</td>
+                  <td>Free website SEO for one year</td>
+                  <td>Included at no extra cost</td>
                   <td>Usually not included</td>
                 </tr>
                 <tr>
-                  <td>Website text</td>
-                  <td>We help write simple content</td>
+                  <td>Google My Business setup and management</td>
+                  <td>Included in the package</td>
+                  <td>Usually charged separately</td>
+                </tr>
+                <tr>
+                  <td>Website content</td>
+                  <td>Professional content included</td>
                   <td>You may be asked to write everything</td>
                 </tr>
               </tbody>
