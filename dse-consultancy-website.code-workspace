@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "name": "DSE Consultancy Landing Pages",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.formatOnSave": true
+  }
+}
