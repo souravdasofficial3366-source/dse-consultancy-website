@@ -14,15 +14,16 @@ type FormState = {
 };
 
 const businessOptions = [
-  "Grocery shop",
+  "Pre-schooling",
   "Salon",
   "Clinic",
-  "Clothing store",
-  "Mobile repair shop",
+  "E-commerce store",
+  "Transport and logistics",
   "Restaurant",
   "Pharmacy",
-  "Tuition centre",
+  "Education (LMS/School/College/Tuition Centre)",
   "Hardware shop",
+  "Real estate business",
   "Other local business"
 ];
 

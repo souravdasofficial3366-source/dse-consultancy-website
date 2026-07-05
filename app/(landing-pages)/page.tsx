@@ -33,46 +33,68 @@ const faqs = [
 
 const prices = [
   {
-    name: "Starter",
-    kicker: "For small shops",
+    name: "Essential",
+    kicker: "For Startups",
     price: "₹3,999",
-    note: "Starting price",
     featured: false,
+    popularLabel: "",
     items: [
-      "Simple business website",
-      "Mobile-friendly pages",
-      "Call and WhatsApp buttons",
-      "Google Business Profile help",
-      "1 year free Google ranking help"
+      "4–5 Static Pages",
+      "Free Domain + Hosting (1st Year)",
+      "Lead Form Integration",
+      "Google My Business Registration",
+      "24/7 Chat Support",
+      "Free Website Maintenance for 3 Months"
     ]
   },
   {
-    name: "Growth",
-    kicker: "For growing businesses",
+    name: "Dynamic",
+    kicker: "For Growth",
     price: "₹6,999",
-    note: "Starting price",
     featured: true,
+    popularLabel: "Most Popular",
     items: [
-      "Everything in Starter",
-      "More pages for your services",
-      "Photo gallery and offers",
-      "Customer enquiry form",
-      "Easy guidance after launch"
+      "Everything in Essential +",
+      "Admin Dashboard",
+      "Unlimited Blog Updates",
+      "Live Chat Support Integration",
+      "24/7 Chat Support",
+      "Free Website Maintenance for 6 Months"
     ]
   },
   {
-    name: "Store",
-    kicker: "For product sellers",
+    name: "Advanced",
+    kicker: "For Commercial",
     price: "₹8,999",
-    note: "Starting price",
     featured: false,
+    popularLabel: "",
     items: [
-      "Everything in Growth",
-      "Product listing pages",
-      "Order or enquiry flow",
-      "Payment guidance if needed",
-      "More support for setup"
+      "Everything in Dynamic +",
+      "E-Commerce / Storefront",
+      "Payment & Logistics Integration",
+      "Inventory Management",
+      "24/7 Chat Support",
+      "Free Website Maintenance for 1 Year",
+      "Up to 25 Product Uploads Free"
     ]
+  }
+];
+
+const performanceStats = [
+  {
+    score: 98,
+    title: "First-Page Google Ready",
+    text: "98% of the websites we build are optimized to rank on the first page of Google."
+  },
+  {
+    score: 99,
+    title: "User-Friendly Layout",
+    text: "99% of our layouts follow modern UI/UX standards, making websites easier to use."
+  },
+  {
+    score: 80,
+    title: "Quality Lead Generation",
+    text: "80% of the leads we generate are qualified and ready for sales follow-up."
   }
 ];
 
@@ -88,7 +110,8 @@ export default function HomePage() {
               Trusted by local Indian businesses
             </span>
             <h1>
-              Get a business website from <span className="accent">{siteConfig.basePrice}</span>
+              Get Your Professional Website Starting from{" "}
+              <span className="accent">{siteConfig.basePrice}</span>
             </h1>
             <p className="hero-copy">
               We make a fast website for your shop, clinic, store, or local business and help
@@ -110,7 +133,7 @@ export default function HomePage() {
             </ul>
           </div>
           <div className="lead-card" id="lead-form">
-            <h2>Get your business website</h2>
+            <h2>Get Your Business Website</h2>
             <LeadForm sourcePath="/" />
           </div>
         </div>
@@ -128,31 +151,31 @@ export default function HomePage() {
             <table>
               <thead>
                 <tr>
-                  <th>Need</th>
-                  <th>DSE Consultancy</th>
-                  <th>Many cheap offers</th>
+                  <th>Complimentary Add-ons</th>
+                  <th>DSE Consultancy Services</th>
+                  <th>Others</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Advanced website setup</td>
+                  <td>Basic Website SEO</td>
                   <td>Included in the package</td>
-                  <td>Often added later</td>
+                  <td>Not included.</td>
                 </tr>
                 <tr>
-                  <td>Free website SEO for one year</td>
-                  <td>Included at no extra cost</td>
-                  <td>Usually not included</td>
+                  <td>Google My Business Setup and Manage</td>
+                  <td>Included at no extra cost.</td>
+                  <td>Usually not included.</td>
                 </tr>
                 <tr>
-                  <td>Google My Business setup and management</td>
+                  <td>Social Media Page Creation</td>
                   <td>Included in the package</td>
-                  <td>Usually charged separately</td>
+                  <td>Usually charged separately.</td>
                 </tr>
                 <tr>
-                  <td>Website content</td>
-                  <td>Professional content included</td>
-                  <td>You may be asked to write everything</td>
+                  <td>Professional Website Content</td>
+                  <td>Included in the package</td>
+                  <td>Usually not included.</td>
                 </tr>
               </tbody>
             </table>
@@ -164,7 +187,7 @@ export default function HomePage() {
         <div className="container">
           <div className="section-head center">
             <div>
-              <h2>Websites for everyday businesses</h2>
+              <h2>Websites for Everyday Businesses</h2>
               <p className="section-copy">
                 We create simple pages for the way local customers search and call.
               </p>
@@ -190,45 +213,53 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section dark">
+      <section className="section dark" id="results">
         <div className="container advantage-grid">
           <div className="advantage-copy">
             <h2>
-              Made to bring <span className="accent">local calls</span>
+              Turn <span className="accent">Local Searches</span> Into Real{" "}
+              <span className="accent">Business Leads</span>
             </h2>
             <p className="section-copy">
               A website should not only look good. It should help people find your business, trust
               you, and call you.
             </p>
             <div className="score-list">
-              <div className="score-item">
-                <span className="score-ring">98%</span>
-                <div>
-                  <h3>Mobile-ready pages</h3>
-                  <p>Pages open quickly for customers searching from phones.</p>
+              {performanceStats.map((stat, index) => (
+                <div className="score-item" key={stat.title}>
+                  <span aria-label={`${stat.score} percent`} className="score-ring">
+                    <svg aria-hidden="true" viewBox="0 0 100 100">
+                      <circle className="score-track" cx="50" cy="50" r="43" />
+                      <circle
+                        className="score-progress"
+                        cx="50"
+                        cy="50"
+                        pathLength="100"
+                        r="43"
+                        style={{
+                          animationDelay: `${index * 180}ms`,
+                          strokeDashoffset: 100 - stat.score
+                        }}
+                      />
+                    </svg>
+                    <strong>{stat.score}%</strong>
+                  </span>
+                  <div>
+                    <h3>{stat.title}</h3>
+                    <p>{stat.text}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="score-item">
-                <span className="score-ring">91%</span>
-                <div>
-                  <h3>Easy contact flow</h3>
-                  <p>Customers can call, WhatsApp, or send an enquiry without confusion.</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
           <div className="proof-panel">
-            <div
-              className="proof-image"
-              style={{
-                backgroundImage:
-                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAoSOrRnNQcXHYZYYb--ceQ7SMmIDtrKPlsbUosk9kFrClMKG7h6sltVZGrzZlCJWKGnfiDQYMv-wEHq8YEI78rOajpPzTW_3nn6YrOK9i6cE49nn54SDsfgB0hDh_AnVRpXDDMgywopG5DvJ8vWuNOIRGUNpwV1Il7R7AcTfVlUeDjENctYHf5-kwz16ynAf6DeLUKoQHUjripUzhsrVbrWVKMfDYxj0HauQxS2YVh9Y8NW4b7go0I9PzznvYh98D27wlu7U_t2wg")'
-              }}
-            >
-              <p className="proof-quote">
-                A clear website helps customers understand what you sell and contact you faster.
-              </p>
+            <div className="video-placeholder" role="img" aria-label="Website walkthrough video placeholder">
+              <span aria-hidden="true" className="material-symbols-outlined">play_circle</span>
+              <strong>Website Walkthrough Video</strong>
             </div>
+            <p className="proof-quote">
+              A Clear Website Helps Customers Understand What You Sell and Contact You Faster.
+            </p>
           </div>
         </div>
       </section>
@@ -236,19 +267,21 @@ export default function HomePage() {
       <section className="section white" id="pricing">
         <div className="container">
           <div className="section-head center">
-            <h2>Pocket friendly pricing</h2>
-            <p className="section-copy">Start small. Add more pages only when your business needs them.</p>
+            <h2>Pocket-Friendly Pricing</h2>
+            <p className="section-copy">Professional Digital Assets at Your Fingertips</p>
           </div>
           <div className="pricing-grid">
             {prices.map((plan) => (
               <article className={`price-card ${plan.featured ? "featured" : ""}`} key={plan.name}>
-                <span className="price-kicker">{plan.kicker}</span>
-                <h3>{plan.name}</h3>
+                {plan.popularLabel ? <span className="popular-badge">{plan.popularLabel}</span> : null}
+                <h3 className="price-kicker">
+                  {plan.kicker} <span>Starting Price</span>
+                </h3>
                 <div className="price">
                   {plan.price}
                   <small> + GST</small>
                 </div>
-                <p>{plan.note}</p>
+                <p className="price-warning">** Pricing may vary as per your requirement</p>
                 <ul className="check-list">
                   {plan.items.map((item) => (
                     <li key={item}>
@@ -269,18 +302,18 @@ export default function HomePage() {
       <section className="section soft">
         <div className="container service-grid">
           <article className="service-card">
-            <span className="material-symbols-outlined service-icon">edit_note</span>
-            <h3>We help with website text</h3>
+            <span className="material-symbols-outlined service-icon">article</span>
+            <h3>We Help You with Website Content</h3>
             <p>You do not need to write everything. We help explain your services in simple words.</p>
           </article>
           <article className="service-card">
-            <span className="material-symbols-outlined service-icon">dashboard_customize</span>
-            <h3>No technical work for you</h3>
+            <span className="material-symbols-outlined service-icon">code_off</span>
+            <h3>No Technical Work for You</h3>
             <p>Share your details and photos. We handle the website work and guide you clearly.</p>
           </article>
           <article className="service-card">
-            <span className="material-symbols-outlined service-icon">search_check</span>
-            <h3>Help customers find you</h3>
+            <span className="material-symbols-outlined service-icon">travel_explore</span>
+            <h3>Help Customers Find You</h3>
             <p>Your pages are written so local customers can understand, trust, and call you.</p>
           </article>
         </div>
@@ -290,7 +323,7 @@ export default function HomePage() {
         <div className="container">
           <div className="section-head center">
             <span className="eyebrow">Questions</span>
-            <h2>Clear answers before you start</h2>
+            <h2>Clear Answers Before You Start</h2>
             <p className="section-copy">
               No confusing words. No pressure. We explain the package in everyday language.
             </p>
@@ -299,7 +332,7 @@ export default function HomePage() {
             <FaqList items={faqs} />
             <aside className="help-card">
               <span className="material-symbols-outlined">support_agent</span>
-              <h3>Still have questions?</h3>
+              <h3>Still Have Questions?</h3>
               <p>Book a short call and tell us about your business.</p>
               <a className="help-link" href={`tel:${siteConfig.phone}`}>
                 <span className="material-symbols-outlined">call</span>
@@ -324,17 +357,17 @@ export default function HomePage() {
           <div className="mini-grid" style={{ marginTop: 36 }}>
             <article className="mini-card">
               <span className="material-symbols-outlined">payments</span>
-              <h3>Clear billing</h3>
+              <h3>Clear Billing</h3>
               <p>We tell you the package price and any extra work before payment.</p>
             </article>
             <article className="mini-card">
               <span className="material-symbols-outlined">settings_suggest</span>
-              <h3>Guided support</h3>
+              <h3>Guided Support</h3>
               <p>We guide you after launch so you know what was done.</p>
             </article>
             <article className="mini-card">
               <span className="material-symbols-outlined">verified_user</span>
-              <h3>Consent first</h3>
+              <h3>Consent First</h3>
               <p>We store form details only after the visitor agrees to be contacted.</p>
             </article>
           </div>

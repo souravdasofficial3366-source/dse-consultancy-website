@@ -197,29 +197,37 @@ select {
 }
 
 .landing-page .hero-content {
-  text-align: center;
+  text-align: left;
 }
 
-.landing-page .hero-content .eyebrow,
 .landing-page .section-head.center .eyebrow {
   margin-inline: auto;
 }
 
-.landing-page .hero-content h1,
-.landing-page .hero-content .hero-copy,
-.landing-page .section-head.center .section-copy,
-.landing-page .advantage-copy > .section-copy {
+.landing-page .section-head.center .section-copy {
   margin-inline: auto;
 }
 
 .landing-page .hero-content .trust-list {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
-.landing-page .lead-card h2,
+.landing-page .lead-card h2 {
+  text-align: center;
+}
+
 .landing-page .advantage-copy > h2,
 .landing-page .advantage-copy > .section-copy {
-  text-align: center;
+  margin-inline: 0;
+  text-align: left;
+}
+
+.landing-page .advantage-copy > .section-copy {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.landing-page .advantage-copy > h2 {
+  font-size: clamp(2rem, 3.2vw, 2.8rem);
 }
 
 .trust-list {
@@ -415,6 +423,11 @@ select {
   padding: 86px 0;
 }
 
+.section[id],
+.lead-card[id] {
+  scroll-margin-top: 92px;
+}
+
 .section.white {
   background: #fff;
 }
@@ -505,6 +518,13 @@ select {
   border-radius: 12px;
   background: var(--surface-dark);
   color: #fff;
+  box-shadow: 0 12px 30px rgba(11, 19, 43, 0.08);
+  transition: transform 260ms ease, box-shadow 260ms ease;
+}
+
+.industry-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 42px rgba(11, 19, 43, 0.18);
 }
 
 .industry-card:nth-child(1),
@@ -567,51 +587,122 @@ select {
 
 .score-list {
   display: grid;
-  gap: 22px;
+  gap: 0;
   margin-top: 28px;
 }
 
 .score-item {
   display: grid;
-  grid-template-columns: 80px 1fr;
+  grid-template-columns: 112px 1fr;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
+  padding: 12px 0 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.score-item:last-child {
+  border-bottom: 0;
 }
 
 .score-ring {
+  position: relative;
   display: grid;
+  width: 104px;
+  height: 104px;
   place-items: center;
-  width: 72px;
-  height: 72px;
-  border-radius: 999px;
-  border: 8px solid rgba(255, 255, 255, 0.12);
-  border-top-color: var(--brand-electric);
   color: #fff;
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.score-ring:hover {
+  filter: drop-shadow(0 0 14px rgba(0, 102, 255, 0.55));
+  transform: scale(1.06);
+}
+
+.score-ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.score-ring circle {
+  fill: none;
+  stroke-width: 9;
+}
+
+.score-track {
+  stroke: rgba(255, 255, 255, 0.14);
+}
+
+.score-progress {
+  stroke: var(--brand-electric);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  animation: score-fill 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.score-ring strong {
+  position: relative;
+  z-index: 1;
+  font-size: 1.35rem;
   font-weight: 900;
 }
 
+.score-item h3 {
+  margin: 0 0 4px;
+}
+
+.score-item p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+@keyframes score-fill {
+  from {
+    stroke-dashoffset: 100;
+  }
+}
+
 .proof-panel {
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
   padding: 26px;
 }
 
-.proof-image {
-  display: flex;
-  min-height: 300px;
-  overflow: hidden;
-  border-radius: 12px;
-  background-position: center;
-  background-size: cover;
+.video-placeholder {
+  display: grid;
+  min-height: 310px;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  border-radius: 12px 12px 0 0;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.68), transparent 18%),
+    linear-gradient(145deg, #38bdf8, #dff8ff 56%, #7dd3fc);
+  color: var(--surface-dark);
+  text-align: center;
+}
+
+.video-placeholder .material-symbols-outlined {
+  color: var(--brand-electric);
+  font-size: 4.5rem;
+  filter: drop-shadow(0 10px 20px rgba(0, 80, 203, 0.25));
+  transition: transform 220ms ease;
+}
+
+.video-placeholder:hover .material-symbols-outlined {
+  transform: scale(1.12);
 }
 
 .proof-quote {
-  align-self: end;
-  width: 100%;
   margin: 0;
   padding: 26px;
-  background: rgba(11, 19, 43, 0.76);
+  border-radius: 0 0 12px 12px;
+  background: #06305f;
   color: #fff;
   font-weight: 800;
 }
@@ -634,9 +725,11 @@ select {
 }
 
 .price-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  padding: 28px;
+  min-height: 650px;
+  padding: 38px 28px 28px;
   transition: box-shadow 200ms ease, transform 200ms ease, border-color 200ms ease;
 }
 
@@ -647,10 +740,33 @@ select {
 }
 
 .price-kicker {
+  margin: 0;
   color: var(--text-muted);
-  font-size: 0.76rem;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.9rem;
   font-weight: 900;
   text-transform: uppercase;
+}
+
+.price-kicker span {
+  text-transform: none;
+}
+
+.popular-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  min-width: 172px;
+  border-radius: 999px;
+  background: var(--brand-electric);
+  color: #fff;
+  padding: 7px 18px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
 }
 
 .price {
@@ -663,6 +779,22 @@ select {
 .price small {
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+.price-warning {
+  min-height: 48px;
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.price-card:nth-child(n + 2) .check-list li:first-child {
+  font-weight: 800;
+}
+
+.price-card .check-list .material-symbols-outlined {
+  color: var(--brand-electric);
 }
 
 .check-list {
@@ -692,6 +824,17 @@ select {
   padding: 28px;
 }
 
+.service-card {
+  box-shadow: 0 10px 28px rgba(11, 19, 43, 0.06);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.service-card:hover {
+  border-color: rgba(0, 102, 255, 0.42);
+  box-shadow: 0 20px 44px rgba(0, 80, 203, 0.14);
+  transform: translateY(-8px);
+}
+
 .service-icon,
 .mini-card .material-symbols-outlined {
   display: inline-grid;
@@ -703,6 +846,16 @@ select {
   background: var(--surface-soft);
   color: var(--brand-electric);
   font-size: 2rem;
+}
+
+.service-card .service-icon {
+  transition: background 220ms ease, color 220ms ease, transform 220ms ease;
+}
+
+.service-card:hover .service-icon {
+  background: var(--brand-electric);
+  color: #fff;
+  transform: rotate(-7deg) scale(1.08);
 }
 
 .faq-grid {
@@ -800,14 +953,14 @@ select {
 }
 
 .site-footer {
-  padding: 72px 0 30px;
+  padding: 72px 0 90px;
   background: var(--surface-dark);
   color: #fff;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr repeat(2, 1fr) 1.4fr;
+  grid-template-columns: 1.8fr 1fr 1.25fr;
   gap: 38px;
 }
 
@@ -844,20 +997,28 @@ select {
   font-size: 0.83rem;
 }
 
-.socials {
+.footer-contact-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  margin-top: 20px;
 }
 
-.socials a {
+.footer-contact-actions a {
   display: inline-grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
   font-weight: 900;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.footer-contact-actions a:hover {
+  background: var(--brand-electric);
+  transform: translateY(-3px);
 }
 
 .whatsapp-fab {
@@ -975,6 +1136,10 @@ select {
   .price-card.featured {
     transform: none;
   }
+
+  .price-card {
+    min-height: auto;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1020,6 +1185,16 @@ select {
     min-width: 720px;
   }
 
+  .score-item {
+    grid-template-columns: 92px 1fr;
+    gap: 16px;
+  }
+
+  .score-ring {
+    width: 84px;
+    height: 84px;
+  }
+
   .section-head {
     display: block;
   }
@@ -1035,5 +1210,20 @@ select {
   .whatsapp-fab {
     right: 16px;
     bottom: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-progress {
+    animation: none;
+  }
+
+  .industry-card,
+  .industry-image,
+  .service-card,
+  .service-icon,
+  .score-ring,
+  .video-placeholder .material-symbols-outlined {
+    transition: none;
   }
 }
