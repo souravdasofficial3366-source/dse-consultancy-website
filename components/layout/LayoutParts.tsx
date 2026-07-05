@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   hasConfiguredPhone,
@@ -12,8 +13,15 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="container nav-row">
-        <Link className="brand" href="/">
-          DSE Consultancy
+        <Link aria-label="DSE Consultancy home" className="brand brand-logo" href="/">
+          <Image
+            alt="DSE Consultancy Services"
+            className="primary-logo"
+            height={420}
+            priority
+            src="/branding/dse-consultancy-logo.png"
+            width={2100}
+          />
         </Link>
         <nav aria-label="Main navigation" className="nav-links">
           <Link href="/about-us">About</Link>
@@ -51,7 +59,7 @@ export function Header() {
               rel="noreferrer"
               target="_blank"
             >
-              <span className="material-symbols-outlined">chat</span>
+              <Image alt="" height={21} src="/icons/whatsapp-green.svg" width={21} />
             </a>
           ) : null}
         </div>
@@ -61,6 +69,7 @@ export function Header() {
 }
 
 export function Footer() {
+  const phoneIsReady = hasConfiguredPhone();
   const whatsappIsReady = hasConfiguredWhatsApp();
 
   return (
@@ -68,54 +77,60 @@ export function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div>
-            <div className="brand">DSE Consultancy</div>
+            <Link aria-label="DSE Consultancy home" className="brand brand-logo footer-logo" href="/">
+              <Image
+                alt="DSE Consultancy Services"
+                className="primary-logo"
+                height={420}
+                src="/branding/dse-consultancy-logo.png"
+                width={2100}
+              />
+            </Link>
             <p>
               We help small Indian shops, clinics, stores, and local service owners get a fast website
               and get found on Google.
             </p>
-            {siteConfig.socialLinks.length || whatsappIsReady ? (
-              <div className="socials" aria-label="Social links">
-                {siteConfig.socialLinks.map((link) => (
-                  <a
-                    aria-label={link.label}
-                    href={link.url}
-                    key={link.label}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    {link.shortLabel}
-                  </a>
-                ))}
-                {whatsappIsReady ? (
-                  <a
-                    aria-label="WhatsApp"
-                    href={`https://wa.me/${siteConfig.whatsapp}`}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    wa
-                  </a>
-                ) : null}
-              </div>
-            ) : null}
+            <div className="footer-contact-actions" aria-label="Contact DSE Consultancy">
+              {whatsappIsReady ? (
+                <a
+                  aria-label="Message DSE Consultancy on WhatsApp"
+                  href={`https://wa.me/${siteConfig.whatsapp}`}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <Image alt="" height={22} src="/icons/whatsapp.svg" width={22} />
+                </a>
+              ) : null}
+              {phoneIsReady ? (
+                <a aria-label={`Call DSE Consultancy at ${siteConfig.phone}`} href={`tel:${siteConfig.phone}`}>
+                  <span aria-hidden="true" className="material-symbols-outlined">call</span>
+                </a>
+              ) : null}
+              <a aria-label={`Email DSE Consultancy at ${siteConfig.email}`} href={`mailto:${siteConfig.email}`}>
+                <span aria-hidden="true" className="material-symbols-outlined">mail</span>
+              </a>
+              {siteConfig.socialLinks.map((link) => (
+                <a
+                  aria-label={link.label}
+                  href={link.url}
+                  key={link.label}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {link.shortLabel}
+                </a>
+              ))}
+            </div>
           </div>
           <div>
-            <h3>Services</h3>
+            <h3>Who We Help</h3>
             <nav className="footer-links">
-              <Link href="/website-design-for-shops-in-kolkata">Shop websites</Link>
-              <Link href="/services">Services</Link>
-              <Link href="/get-my-business-on-google-kolkata">Google help</Link>
-              <Link href="/make-website-for-my-clinic-in-kolkata">Clinic websites</Link>
-            </nav>
-          </div>
-          <div>
-            <h3>Helpful Links</h3>
-            <nav className="footer-links">
-              <Link href="/about-us">About us</Link>
-              <Link href="/contact-us">Contact us</Link>
-              <Link href="/case-studies">Case studies</Link>
-              <a href="/#pricing">Pricing</a>
-              <a href="/sitemap.xml">Sitemap</a>
+              <a href="/#industries">Pre-Schooling</a>
+              <a href="/#industries">Doctors &amp; Clinics</a>
+              <a href="/#industries">Education</a>
+              <a href="/#industries">Transport &amp; Logistics</a>
+              <a href="/#industries">Real Estate Businesses</a>
+              <a href="/#industries">E-Commerce Stores</a>
             </nav>
           </div>
           <div>
@@ -147,7 +162,7 @@ export function WhatsAppFab() {
       rel="noreferrer"
       target="_blank"
     >
-      <span className="material-symbols-outlined">chat</span>
+      <Image alt="" height={22} src="/icons/whatsapp.svg" width={22} />
       <span>Chat now</span>
     </a>
   );
