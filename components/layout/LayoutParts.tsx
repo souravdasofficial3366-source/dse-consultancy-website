@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   hasConfiguredPhone,
@@ -12,8 +13,15 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="container nav-row">
-        <Link className="brand" href="/">
-          DSE Consultancy
+        <Link aria-label="DSE Consultancy home" className="brand brand-logo" href="/">
+          <Image
+            alt="DSE Consultancy Services"
+            className="primary-logo"
+            height={420}
+            priority
+            src="/branding/dse-consultancy-logo.png"
+            width={2100}
+          />
         </Link>
         <nav aria-label="Main navigation" className="nav-links">
           <Link href="/about-us">About</Link>
@@ -68,7 +76,15 @@ export function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div>
-            <div className="brand">DSE Consultancy</div>
+            <Link aria-label="DSE Consultancy home" className="brand brand-logo footer-logo" href="/">
+              <Image
+                alt="DSE Consultancy Services"
+                className="primary-logo"
+                height={420}
+                src="/branding/dse-consultancy-logo.png"
+                width={2100}
+              />
+            </Link>
             <p>
               We help small Indian shops, clinics, stores, and local service owners get a fast website
               and get found on Google.

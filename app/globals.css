@@ -82,10 +82,23 @@ select {
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
   color: var(--brand-primary);
   font-family: "Plus Jakarta Sans", Inter, sans-serif;
   font-size: 1.05rem;
   font-weight: 800;
+}
+
+.brand-logo {
+  line-height: 0;
+}
+
+.primary-logo {
+  display: block;
+  width: clamp(190px, 18vw, 230px);
+  height: auto;
 }
 
 .nav-links {
@@ -803,6 +816,19 @@ select {
   color: rgba(255, 255, 255, 0.72);
 }
 
+.footer-logo {
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px 12px;
+}
+
+.footer-logo .primary-logo {
+  width: min(240px, 100%);
+}
+
 .footer-links {
   display: grid;
   gap: 8px;
@@ -958,6 +984,15 @@ select {
 
   .nav-row {
     min-height: 70px;
+    gap: 10px;
+  }
+
+  .site-header .primary-logo {
+    width: 145px;
+  }
+
+  .nav-actions {
+    gap: 8px;
   }
 
   .nav-actions .phone-label {
