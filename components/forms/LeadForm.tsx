@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { RecaptchaField } from "@/components/forms/RecaptchaField";
-
-declare global {
-  interface Window {
-    grecaptcha?: {
-      reset: () => void;
-    };
-  }
-}
+import { TurnstileField } from "@/components/forms/TurnstileField";
 
 type LeadFormProps = {
   sourcePath?: string;
@@ -61,7 +53,7 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
       pricing_package: formData.get("pricing_package"),
       city_town: formData.get("city_town"),
       privacy_consent: formData.get("privacy_consent") === "on",
-      recaptcha_token: formData.get("g-recaptcha-response"),
+      turnstile_token: formData.get("turnstile_token"),
       source_path: sourcePath,
       website: formData.get("website")
     };
@@ -79,7 +71,7 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
       }
 
       form.reset();
-      window.grecaptcha?.reset();
+      window.turnstile?.reset();
       setState({
         status: "success",
         message: "Thank you. Our team will call you soon."
@@ -177,7 +169,7 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
         <input name="privacy_consent" required type="checkbox" />
         <span>I agree that DSE Consultancy can store my details and contact me about my website.</span>
       </label>
-      <RecaptchaField />
+      <TurnstileField />
       <button className="primary-button" disabled={state.status === "loading"} type="submit">
         {state.status === "loading" ? "Please wait..." : "Book your website from ₹3,999"}
       </button>

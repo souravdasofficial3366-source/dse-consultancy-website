@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { handleLead, LeadValidationError } from "@/lib/leads";
-import { isRecaptchaRequired, verifyRecaptcha } from "@/lib/recaptcha";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export async function POST(request: Request) {
   try {
@@ -20,16 +20,24 @@ export async function POST(request: Request) {
     }
 
     const payload = await request.json();
-    const recaptchaIsValid = await verifyRecaptcha(
+    const turnstileResult = await verifyTurnstile(
       payload && typeof payload === "object"
-        ? (payload as Record<string, unknown>).recaptcha_token
+        ? (payload as Record<string, unknown>).turnstile_token
         : undefined
     );
 
-    if (isRecaptchaRequired() && !recaptchaIsValid) {
+    if (!turnstileResult.ok) {
+      const unavailable =
+        turnstileResult.reason === "not_configured" ||
+        turnstileResult.reason === "service_unavailable";
       return NextResponse.json(
-        { ok: false, message: "Please complete the reCAPTCHA check and try again." },
-        { status: 400 }
+        {
+          ok: false,
+          message: unavailable
+            ? "Security verification is temporarily unavailable. Please try again shortly."
+            : "Please complete the security check and try again."
+        },
+        { status: unavailable ? 503 : 400 }
       );
     }
 

@@ -78,12 +78,13 @@ Google Sheets is used first when both Google Sheets values are configured. Other
 uses Supabase when both Supabase values are configured. If neither is configured, the site still
 runs, but leads are not permanently stored in production.
 
-Protect the public form with Google reCAPTCHA v2 by following
-[`docs/RECAPTCHA_SETUP.md`](docs/RECAPTCHA_SETUP.md), then set:
+Protect the public form with Cloudflare Turnstile by following
+[`docs/TURNSTILE_SETUP.md`](docs/TURNSTILE_SETUP.md), then set:
 
 ```bash
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY=
-RECAPTCHA_SECRET_KEY=
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
+TURNSTILE_ALLOWED_HOSTNAMES=dse-consultancy-website.vercel.app
 ```
 
 ## Before Production
@@ -91,7 +92,7 @@ RECAPTCHA_SECRET_KEY=
 1. Set `NEXT_PUBLIC_SITE_URL` to the final `https://` domain.
 2. Confirm the real phone and WhatsApp numbers.
 3. Connect Google Sheets or Supabase for enquiry storage.
-4. Add the reCAPTCHA site key and secret key.
+4. Add the Turnstile site key, secret key, and allowed hostnames.
 5. Add the Resend values if email alerts are required.
 6. Replace the temporary business address text and add any real social profile URLs.
 

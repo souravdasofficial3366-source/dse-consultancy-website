@@ -337,9 +337,11 @@ select {
   margin-top: 3px;
 }
 
-.recaptcha-wrap {
+.turnstile-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   max-width: 100%;
-  overflow: hidden;
 }
 
 .primary-button,
@@ -1318,8 +1320,7 @@ select {
     padding: 22px;
   }
 
-  .recaptcha-wrap {
-    display: flex;
+  .turnstile-wrap {
     justify-content: center;
   }
 
@@ -1359,20 +1360,23 @@ select {
   }
 
   .mobile-call-fab {
-    right: 16px;
-    bottom: 78px;
+    right: auto;
+    bottom: 16px;
+    left: 16px;
   }
 }
 
 @media (max-width: 360px) {
-  .recaptcha-wrap {
-    justify-content: flex-start;
-    height: 70px;
+  .whatsapp-fab,
+  .mobile-call-fab {
+    justify-content: center;
+    width: 50px;
+    padding: 0;
   }
 
-  .recaptcha-wrap .g-recaptcha {
-    transform: scale(0.88);
-    transform-origin: left top;
+  .whatsapp-fab > span,
+  .mobile-call-fab > span:last-child {
+    display: none;
   }
 }
 
