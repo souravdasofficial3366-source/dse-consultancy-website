@@ -22,6 +22,14 @@ export function hasConfiguredWhatsApp() {
   return !siteConfig.whatsapp.includes("X");
 }
 
+export const landingNavigation = [
+  { label: "What’s Included", href: "/#why-us" },
+  { label: "Who We Help", href: "/#industries" },
+  { label: "Results", href: "/#results" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "FAQs", href: "/#faq" }
+] as const;
+
 export const businessTypes = [
   "pre-schooling",
   "salon",

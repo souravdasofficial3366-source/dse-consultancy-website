@@ -18,6 +18,7 @@ The script creates an `Enquiries` tab automatically with these columns:
 - Phone Number
 - Email Address
 - Business Type
+- Selected Package
 - City/Town
 - Source Page
 - Consent
@@ -52,3 +53,14 @@ that a new row appears in the `Enquiries` tab.
 
 If both Google Sheets and Supabase are configured, Google Sheets is used as the
 primary enquiry store.
+
+## What DSE Consultancy needs from the Google account owner
+
+- A Google Sheet created in the account that should own the enquiries.
+- The Apps Script web app URL ending in `/exec`.
+- Confirmation that the script was deployed with **Execute as: Me** and
+  **Who has access: Anyone**.
+- The same private `WEBHOOK_SECRET` added to Apps Script and Vercel. Do not paste
+  this secret into chat; enter it directly in the two settings screens.
+
+No Google account password or personal login details are needed.

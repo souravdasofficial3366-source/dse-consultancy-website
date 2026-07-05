@@ -87,9 +87,9 @@ const performanceStats = [
     text: "98% of the websites we build are optimized to rank on the first page of Google."
   },
   {
-    score: 99,
+    score: 95,
     title: "User-Friendly Layout",
-    text: "99% of our layouts follow modern UI/UX standards, making websites easier to use."
+    text: "95% of our layouts follow modern UI/UX standards, making websites easier to use."
   },
   {
     score: 80,
@@ -102,7 +102,7 @@ export default function HomePage() {
   return (
     <main className="landing-page">
       <LocalBusinessJsonLd />
-      <section className="hero">
+      <section className="hero" id="top">
         <div className="container hero-grid">
           <div className="hero-content">
             <span className="eyebrow">
@@ -159,23 +159,63 @@ export default function HomePage() {
               <tbody>
                 <tr>
                   <td>Basic Website SEO</td>
-                  <td>Included in the package</td>
-                  <td>Not included.</td>
+                  <td>
+                    <span className="comparison-status included">
+                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
+                      Included in the package
+                    </span>
+                  </td>
+                  <td>
+                    <span className="comparison-status excluded">
+                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
+                      Not included.
+                    </span>
+                  </td>
                 </tr>
                 <tr>
                   <td>Google My Business Setup and Manage</td>
-                  <td>Included at no extra cost.</td>
-                  <td>Usually not included.</td>
+                  <td>
+                    <span className="comparison-status included">
+                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
+                      Included at no extra cost.
+                    </span>
+                  </td>
+                  <td>
+                    <span className="comparison-status excluded">
+                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
+                      Usually not included.
+                    </span>
+                  </td>
                 </tr>
                 <tr>
                   <td>Social Media Page Creation</td>
-                  <td>Included in the package</td>
-                  <td>Usually charged separately.</td>
+                  <td>
+                    <span className="comparison-status included">
+                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
+                      Included in the package
+                    </span>
+                  </td>
+                  <td>
+                    <span className="comparison-status excluded">
+                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
+                      Usually charged separately.
+                    </span>
+                  </td>
                 </tr>
                 <tr>
                   <td>Professional Website Content</td>
-                  <td>Included in the package</td>
-                  <td>Usually not included.</td>
+                  <td>
+                    <span className="comparison-status included">
+                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
+                      Included in the package
+                    </span>
+                  </td>
+                  <td>
+                    <span className="comparison-status excluded">
+                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
+                      Usually not included.
+                    </span>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -299,7 +339,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section soft">
+      <section className="section soft" id="support">
         <div className="container service-grid">
           <article className="service-card">
             <span className="material-symbols-outlined service-icon">article</span>

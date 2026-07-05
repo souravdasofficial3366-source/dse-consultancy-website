@@ -5,6 +5,7 @@ const HEADERS = [
   "Phone Number",
   "Email Address",
   "Business Type",
+  "Selected Package",
   "City/Town",
   "Source Page",
   "Consent"
@@ -28,6 +29,7 @@ function doPost(event) {
       !lead.phone_number ||
       !lead.email_address ||
       !lead.shop_type ||
+      !lead.pricing_package ||
       !lead.city_town ||
       lead.privacy_consent !== true
     ) {
@@ -45,9 +47,22 @@ function doPost(event) {
 
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(HEADERS);
-      sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold");
-      sheet.setFrozenRows(1);
+    } else {
+      const existingHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      if (existingHeaders[5] !== "Selected Package") {
+        sheet.insertColumnAfter(5);
+      }
     }
+
+    sheet
+      .getRange(1, 1, 1, HEADERS.length)
+      .setValues([HEADERS])
+      .setBackground("#0050cb")
+      .setFontColor("#ffffff")
+      .setFontWeight("bold")
+      .setHorizontalAlignment("center");
+    sheet.setRowHeight(1, 34);
+    sheet.setFrozenRows(1);
 
     sheet.appendRow([
       new Date(),
@@ -55,6 +70,7 @@ function doPost(event) {
       safeCell(lead.phone_number),
       safeCell(lead.email_address),
       safeCell(lead.shop_type),
+      safeCell(lead.pricing_package),
       safeCell(lead.city_town),
       safeCell(lead.source_path || "/"),
       "Yes"
@@ -63,6 +79,11 @@ function doPost(event) {
     const row = sheet.getLastRow();
     sheet.getRange(row, 1).setNumberFormat("dd mmm yyyy, hh:mm:ss");
     sheet.getRange(row, 3).setNumberFormat("@");
+    sheet
+      .getRange(row, 1, 1, HEADERS.length)
+      .setBackground(row % 2 === 0 ? "#f4f7ff" : "#ffffff")
+      .setVerticalAlignment("middle");
+    sheet.setRowHeight(row, 30);
     sheet.autoResizeColumns(1, HEADERS.length);
 
     return jsonResponse({ ok: true });

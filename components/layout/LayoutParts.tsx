@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import {
   hasConfiguredPhone,
   hasConfiguredWhatsApp,
+  landingNavigation,
   siteConfig
 } from "@/data/site";
 
@@ -13,7 +15,7 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="container nav-row">
-        <Link aria-label="DSE Consultancy home" className="brand brand-logo" href="/">
+        <Link aria-label="DSE Consultancy home" className="brand brand-logo" href="/#top">
           <Image
             alt="DSE Consultancy Services"
             className="primary-logo"
@@ -23,27 +25,13 @@ export function Header() {
             width={2100}
           />
         </Link>
-        <nav aria-label="Main navigation" className="nav-links">
-          <Link href="/about-us">About</Link>
-          <Link href="/services">Services</Link>
-          <Link href="/case-studies">Cases</Link>
-          <a href="/#industries">Businesses</a>
-          <a href="/#pricing">Pricing</a>
-          <Link href="/contact-us">Contact</Link>
+        <nav aria-label="Landing page navigation" className="nav-links">
+          {landingNavigation.map((item) => (
+            <a href={item.href} key={item.href}>
+              {item.label}
+            </a>
+          ))}
         </nav>
-        <details className="mobile-menu">
-          <summary aria-label="Main navigation menu">
-            <span aria-hidden="true" className="material-symbols-outlined">menu</span>
-          </summary>
-          <nav aria-label="Mobile navigation" className="mobile-menu-panel">
-            <Link href="/about-us">About</Link>
-            <Link href="/services">Services</Link>
-            <Link href="/case-studies">Case studies</Link>
-            <a href="/#industries">Businesses</a>
-            <a href="/#pricing">Pricing</a>
-            <Link href="/contact-us">Contact</Link>
-          </nav>
-        </details>
         <div className="nav-actions">
           {phoneIsReady ? (
             <a aria-label="Call DSE Consultancy" className="mini-proof" href={`tel:${siteConfig.phone}`}>
@@ -63,6 +51,7 @@ export function Header() {
             </a>
           ) : null}
         </div>
+        <MobileNavigation />
       </div>
     </header>
   );
@@ -77,7 +66,7 @@ export function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div>
-            <Link aria-label="DSE Consultancy home" className="brand brand-logo footer-logo" href="/">
+            <Link aria-label="DSE Consultancy home" className="brand brand-logo footer-logo" href="/#top">
               <Image
                 alt="DSE Consultancy Services"
                 className="primary-logo"

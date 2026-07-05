@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { handleLead, LeadValidationError } from "@/lib/leads";
+import { isRecaptchaRequired, verifyRecaptcha } from "@/lib/recaptcha";
 
 export async function POST(request: Request) {
   try {
@@ -19,6 +20,19 @@ export async function POST(request: Request) {
     }
 
     const payload = await request.json();
+    const recaptchaIsValid = await verifyRecaptcha(
+      payload && typeof payload === "object"
+        ? (payload as Record<string, unknown>).recaptcha_token
+        : undefined
+    );
+
+    if (isRecaptchaRequired() && !recaptchaIsValid) {
+      return NextResponse.json(
+        { ok: false, message: "Please complete the reCAPTCHA check and try again." },
+        { status: 400 }
+      );
+    }
+
     const result = await handleLead(payload);
 
     if (!result.stored) {

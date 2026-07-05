@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, Header, WhatsAppFab } from "@/components/layout/LayoutParts";
+import { MobileCallFab } from "@/components/layout/MobileCallFab";
 import { siteConfig } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Header />
           {children}
           <Footer />
+          <MobileCallFab />
           <WhatsAppFab />
         </div>
       </body>

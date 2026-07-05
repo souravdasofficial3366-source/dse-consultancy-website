@@ -1,6 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { RecaptchaField } from "@/components/forms/RecaptchaField";
+
+declare global {
+  interface Window {
+    grecaptcha?: {
+      reset: () => void;
+    };
+  }
+}
 
 type LeadFormProps = {
   sourcePath?: string;
@@ -27,6 +37,12 @@ const businessOptions = [
   "Other local business"
 ];
 
+const packageOptions = [
+  "Essential – ₹3,999 + GST",
+  "Dynamic – ₹6,999 + GST",
+  "Advanced – ₹8,999 + GST"
+];
+
 export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps) {
   const [state, setState] = useState<FormState>({ status: "idle", message: "" });
 
@@ -42,8 +58,10 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
       phone_number: formData.get("phone_number"),
       email_address: formData.get("email_address"),
       shop_type: formData.get("shop_type"),
+      pricing_package: formData.get("pricing_package"),
       city_town: formData.get("city_town"),
       privacy_consent: formData.get("privacy_consent") === "on",
+      recaptcha_token: formData.get("g-recaptcha-response"),
       source_path: sourcePath,
       website: formData.get("website")
     };
@@ -61,6 +79,7 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
       }
 
       form.reset();
+      window.grecaptcha?.reset();
       setState({
         status: "success",
         message: "Thank you. Our team will call you soon."
@@ -129,6 +148,19 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
           </select>
         </label>
         <label className="field-full">
+          Preferred package
+          <select defaultValue="" name="pricing_package" required>
+            <option disabled value="">
+              Select a pricing package
+            </option>
+            {packageOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field-full">
           City or town
           <input
             autoComplete="address-level2"
@@ -145,6 +177,7 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
         <input name="privacy_consent" required type="checkbox" />
         <span>I agree that DSE Consultancy can store my details and contact me about my website.</span>
       </label>
+      <RecaptchaField />
       <button className="primary-button" disabled={state.status === "loading"} type="submit">
         {state.status === "loading" ? "Please wait..." : "Book your website from ₹3,999"}
       </button>

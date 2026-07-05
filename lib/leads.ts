@@ -6,6 +6,7 @@ export type LeadInput = {
   phone_number: string;
   email_address: string;
   shop_type: string;
+  pricing_package: string;
   city_town: string;
   privacy_consent: boolean;
   source_path?: string;
@@ -22,6 +23,11 @@ export type LeadResult = {
 const phoneRegex = /^[6-9][0-9]{9}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const requestTimeoutMs = 8_000;
+const packageOptions = new Set([
+  "Essential – ₹3,999 + GST",
+  "Dynamic – ₹6,999 + GST",
+  "Advanced – ₹8,999 + GST"
+]);
 
 export class LeadValidationError extends Error {
   constructor(message: string) {
@@ -66,6 +72,7 @@ export function cleanLead(input: unknown): LeadInput {
     phone_number: String(value.phone_number || "").replace(/\D/g, ""),
     email_address: requiredText(value.email_address, "email address", 5, 254).toLowerCase(),
     shop_type: requiredText(value.shop_type, "business type", 2, 80),
+    pricing_package: requiredText(value.pricing_package, "pricing package", 2, 80),
     city_town: requiredText(value.city_town, "city or town", 2, 80),
     privacy_consent: value.privacy_consent === true,
     source_path: sourcePath.startsWith("/") && sourcePath.length <= 200 ? sourcePath : "/"
@@ -77,6 +84,10 @@ export function cleanLead(input: unknown): LeadInput {
 
   if (!emailRegex.test(lead.email_address)) {
     throw new LeadValidationError("Please enter a valid email address.");
+  }
+
+  if (!packageOptions.has(lead.pricing_package)) {
+    throw new LeadValidationError("Please select a valid pricing package.");
   }
 
   if (!lead.privacy_consent) {
@@ -176,6 +187,7 @@ export async function sendLeadEmail(lead: LeadInput): Promise<boolean> {
         `Phone: ${lead.phone_number}`,
         `Email: ${lead.email_address}`,
         `Business: ${lead.shop_type}`,
+        `Package: ${lead.pricing_package}`,
         `City/Town: ${lead.city_town}`,
         `Source: ${lead.source_path || "/"}`,
         `Consent: ${lead.privacy_consent ? "Yes" : "No"}`
@@ -202,7 +214,7 @@ export async function sendLeadSms(lead: LeadInput): Promise<boolean> {
         : {})
     },
     body: JSON.stringify({
-      message: `New DSE lead: ${lead.owner_name}, ${lead.phone_number}, ${lead.email_address}, ${lead.shop_type}, ${lead.city_town}`,
+      message: `New DSE lead: ${lead.owner_name}, ${lead.phone_number}, ${lead.email_address}, ${lead.shop_type}, ${lead.pricing_package}, ${lead.city_town}`,
       lead
     }),
     signal: AbortSignal.timeout(requestTimeoutMs)
