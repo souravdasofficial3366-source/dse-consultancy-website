@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
 const [page, component] = await Promise.all([
@@ -118,4 +118,63 @@ test("process card copy remains layered over full-bleed media", () => {
   assert.match(css, /\.consultancy-process-stack-card > video\s*\{[^}]*object-fit:\s*cover/);
   assert.match(css, /\.consultancy-process-stack-scrim\s*\{[^}]*linear-gradient/);
   assert.match(css, /\.consultancy-process-stack-inner\s*\{[^}]*z-index:\s*2/);
+});
+
+const mediaNames = ["discover", "design", "build", "improve"];
+
+async function readMp4Dimensions(path) {
+  const file = await readFile(path);
+  const marker = Buffer.from("tkhd");
+  let offset = 0;
+
+  while ((offset = file.indexOf(marker, offset)) !== -1) {
+    const boxStart = offset - 4;
+
+    if (boxStart >= 0) {
+      const boxSize = file.readUInt32BE(boxStart);
+      const boxEnd = boxStart + boxSize;
+
+      if (boxSize >= 16 && boxEnd <= file.length) {
+        const width = file.readUInt32BE(boxEnd - 8) / 65536;
+        const height = file.readUInt32BE(boxEnd - 4) / 65536;
+
+        if (width > 0 && height > 0) return { width, height };
+      }
+    }
+
+    offset += marker.length;
+  }
+
+  assert.fail(`${path} does not contain readable MP4 track dimensions`);
+}
+
+test("homepage process videos and posters stay within the launch media budget", async () => {
+  let totalVideoBytes = 0;
+
+  for (const name of mediaNames) {
+    const video = await stat(`public/videos/home-process/${name}.mp4`);
+    const poster = await stat(`public/videos/home-process/${name}-poster.jpg`);
+
+    assert.ok(video.size <= 6 * 1024 * 1024, `${name}.mp4 exceeds 6 MB`);
+    assert.ok(poster.size <= 250 * 1024, `${name}-poster.jpg exceeds 250 KB`);
+    totalVideoBytes += video.size;
+  }
+
+  assert.ok(totalVideoBytes <= 20 * 1024 * 1024, "combined process videos exceed 20 MB");
+});
+
+test("each homepage process video keeps its long edge within 1280 pixels", async () => {
+  for (const name of mediaNames) {
+    const { width, height } = await readMp4Dimensions(`public/videos/home-process/${name}.mp4`);
+    assert.ok(Math.max(width, height) <= 1280, `${name}.mp4 is ${width}x${height}`);
+  }
+});
+
+test("the four video sources are documented", async () => {
+  const sources = await readFile("docs/VIDEO_SOURCES.md", "utf8");
+
+  mediaNames.forEach((name) => {
+    assert.match(sources, new RegExp(`home-process/${name}\\.mp4`));
+    assert.match(sources, new RegExp(`${name}.*https://`, "i"));
+  });
 });
