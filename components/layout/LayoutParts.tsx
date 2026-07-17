@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { InteractiveFooter } from "@/components/layout/InteractiveFooter";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import {
   hasConfiguredPhone,
@@ -63,7 +64,8 @@ export function Footer() {
 
   return (
     <footer className="site-footer">
-      <div className="container">
+      <InteractiveFooter>
+        <div className="container">
         <div className="footer-grid">
           <div>
             <Link aria-label="DSE Consultancy home" className="brand brand-logo footer-logo" href="/#top">
@@ -133,7 +135,8 @@ export function Footer() {
           <span>© 2026 DSE Consultancy. All rights reserved.</span>
           <span>Privacy details are shown before every form submission.</span>
         </div>
-      </div>
+        </div>
+      </InteractiveFooter>
     </footer>
   );
 }
