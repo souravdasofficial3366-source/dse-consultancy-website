@@ -40,18 +40,38 @@ test("all three original DSE interface demos are present", () => {
   assert.match(`${searchDemo}${usabilityDemo}${enquiryDemo}`, /aria-hidden="true"/);
 });
 
-test("story observes the section and cards without a document scroll listener", () => {
+test("story cleans up observers and the motion listener without a document scroll listener", () => {
   assert.match(story, /IntersectionObserver/);
   assert.match(story, /prefers-reduced-motion/);
   assert.match(story, /observer\.disconnect\(\)/);
+  assert.match(story, /cardObserver\.disconnect\(\)/);
+  assert.match(story, /mediaQuery\.removeEventListener\("change", updateReducedMotion\)/);
   assert.doesNotMatch(story, /document\.addEventListener\(["']scroll/);
   assert.match(story, /data-active=\{activeIndex === index\}/);
 });
 
-test("each demo runs only while active and clears its loop", () => {
-  [searchDemo, usabilityDemo, enquiryDemo].forEach((source) => {
-    assert.match(source, /active\s*&&\s*!reducedMotion/);
-    assert.match(source, /setInterval|setTimeout/);
-    assert.match(source, /clearInterval|clearTimeout/);
+test("story clears the selected card when no cards remain visible", () => {
+  assert.match(story, /useState<number \| null>\(null\)/);
+  assert.match(story, /if \(visibleCards\.size === 0\) \{\s*setActiveIndex\(null\);\s*return;\s*\}/);
+  assert.match(story, /const isActive = inView && activeIndex !== null && activeIndex === index;/);
+  assert.match(story, /<Demo active=\{isActive\} reducedMotion=\{reducedMotion\} \/>/);
+});
+
+test("each demo has its exact finite active-only loop and static final phase", () => {
+  const contracts = [
+    { source: searchDemo, phaseCount: 5, finalPhase: 4, duration: 1050 },
+    { source: usabilityDemo, phaseCount: 6, finalPhase: 5, duration: 900 },
+    { source: enquiryDemo, phaseCount: 7, finalPhase: 6, duration: 950 }
+  ];
+
+  contracts.forEach(({ source, phaseCount, finalPhase, duration }) => {
+    assert.match(source, new RegExp(`const PHASE_COUNT = ${phaseCount};`));
+    assert.match(source, new RegExp(`const FINAL_PHASE = ${finalPhase};`));
+    assert.match(source, new RegExp(`const PHASE_DURATION = ${duration};`));
+    assert.match(source, /const canAnimate = active && !reducedMotion;/);
+    assert.match(source, /if \(!canAnimate\) \{\s*setPhase\(reducedMotion \? FINAL_PHASE : 0\);/);
+    assert.match(source, /window\.setInterval\([\s\S]*?PHASE_DURATION/);
+    assert.match(source, /window\.clearInterval\(interval\)/);
+    assert.match(source, /data-phase=\{phase\}/);
   });
 });

@@ -49,7 +49,7 @@ const cards: PerformanceCard[] = [
 export function WebsitePerformanceStory() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<Array<HTMLElement | null>>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [inView, setInView] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -91,6 +91,11 @@ export function WebsitePerformanceStory() {
           }
         });
 
+        if (visibleCards.size === 0) {
+          setActiveIndex(null);
+          return;
+        }
+
         const viewportCenter = window.innerHeight / 2;
         const closestIndex = [...visibleCards]
           .map((index) => {
@@ -103,7 +108,7 @@ export function WebsitePerformanceStory() {
           .filter((card): card is { index: number; distance: number } => card !== null)
           .sort((first, second) => first.distance - second.distance)[0]?.index;
 
-        if (closestIndex !== undefined) setActiveIndex(closestIndex);
+        setActiveIndex(closestIndex ?? null);
       },
       { threshold: [0.35, 0.55, 0.75] }
     );
@@ -123,24 +128,28 @@ export function WebsitePerformanceStory() {
         <p>A clear website helps customers discover, understand, and contact your business.</p>
       </div>
       <div className="container wd-performance-stack">
-        {cards.map(({ Demo, ...card }, index) => (
-          <article
-            className="wd-performance-card"
-            data-active={activeIndex === index}
-            data-phase={index}
-            key={card.number}
-            ref={(cardElement) => { cardRefs.current[index] = cardElement; }}
-          >
-            <div className="wd-performance-card-copy">
-              <span className="wd-performance-number">{card.number}</span>
-              <span className="wd-performance-eyebrow">{card.eyebrow}</span>
-              <h3>{card.title}</h3>
-              <p>{card.body}</p>
-              <strong className="wd-performance-proof">{card.proof}</strong>
-            </div>
-            <Demo active={inView && activeIndex === index} reducedMotion={reducedMotion} />
-          </article>
-        ))}
+        {cards.map(({ Demo, ...card }, index) => {
+          const isActive = inView && activeIndex !== null && activeIndex === index;
+
+          return (
+            <article
+              className="wd-performance-card"
+              data-active={activeIndex === index}
+              data-phase={index}
+              key={card.number}
+              ref={(cardElement) => { cardRefs.current[index] = cardElement; }}
+            >
+              <div className="wd-performance-card-copy">
+                <span className="wd-performance-number">{card.number}</span>
+                <span className="wd-performance-eyebrow">{card.eyebrow}</span>
+                <h3>{card.title}</h3>
+                <p>{card.body}</p>
+                <strong className="wd-performance-proof">{card.proof}</strong>
+              </div>
+              <Demo active={isActive} reducedMotion={reducedMotion} />
+            </article>
+          );
+        })}
       </div>
     </section>
   );
