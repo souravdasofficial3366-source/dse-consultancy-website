@@ -7,6 +7,7 @@ import { UsabilityDemo } from "./website-performance/UsabilityDemo";
 
 export type PerformanceDemoProps = {
   active: boolean;
+  compact?: boolean;
   reducedMotion: boolean;
 };
 
@@ -52,7 +53,8 @@ export function WebsitePerformanceStory() {
   const pinStartRef = useRef<HTMLSpanElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const stackRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const cardRefs = useRef<Array<HTMLElement | null>>([]);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [horizontalMode, setHorizontalMode] = useState(false);
   const [inView, setInView] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -90,14 +92,62 @@ export function WebsitePerformanceStory() {
   }, []);
 
   useEffect(() => {
+    if (horizontalMode || reducedMotion) return;
+
+    const cardElements = cardRefs.current.filter(
+      (card): card is HTMLElement => card !== null
+    );
+    if (cardElements.length === 0) return;
+
+    const selectCenteredCard = () => {
+      const centre = window.innerHeight / 2;
+      const nextIndex = cardElements.findIndex((card) => {
+        const { top, bottom } = card.getBoundingClientRect();
+        return top <= centre && bottom >= centre;
+      });
+
+      setActiveIndex(nextIndex === -1 ? null : nextIndex);
+    };
+
+    const observer = new IntersectionObserver(selectCenteredCard, {
+      rootMargin: "-45% 0px -45% 0px"
+    });
+    let frameId = 0;
+
+    const onVerticalScroll = () => {
+      if (frameId !== 0) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0;
+        selectCenteredCard();
+      });
+    };
+
+    cardElements.forEach((card) => observer.observe(card));
+    window.addEventListener("scroll", onVerticalScroll, { passive: true });
+    selectCenteredCard();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", onVerticalScroll);
+      if (frameId !== 0) window.cancelAnimationFrame(frameId);
+    };
+  }, [horizontalMode, reducedMotion]);
+
+  useEffect(() => {
     const pinStart = pinStartRef.current;
     const section = sectionRef.current;
     const stack = stackRef.current;
     if (!pinStart || !section || !stack) return;
 
-    if (!inView || !horizontalMode || reducedMotion) {
+    if (!horizontalMode || reducedMotion) {
       section.style.setProperty("--wd-performance-progress", "0");
-      setActiveIndex(0);
+      if (reducedMotion) setActiveIndex(null);
+      return;
+    }
+
+    if (!inView) {
+      section.style.setProperty("--wd-performance-progress", "0");
+      setActiveIndex(null);
       return;
     }
 
@@ -157,6 +207,9 @@ export function WebsitePerformanceStory() {
               data-active={activeIndex === index}
               data-phase={index}
               key={card.number}
+              ref={(cardElement) => {
+                cardRefs.current[index] = cardElement;
+              }}
             >
               <div className="wd-performance-card-copy">
                 <span className="wd-performance-number">{card.number}</span>
@@ -165,7 +218,7 @@ export function WebsitePerformanceStory() {
                 <p>{card.body}</p>
                 <strong className="wd-performance-proof">{card.proof}</strong>
               </div>
-              <Demo active={inView && activeIndex === index} reducedMotion={reducedMotion} />
+              <Demo active={activeIndex === index} compact={!horizontalMode} reducedMotion={reducedMotion} />
             </article>
           ))}
         </div>

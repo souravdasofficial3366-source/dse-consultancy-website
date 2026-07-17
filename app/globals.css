@@ -7881,7 +7881,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   }
 
   .wd-performance-story[data-in-view="true"] .wd-performance-track,
-  .wd-performance-card[data-active="true"] .wd-performance-demo {
+  .wd-performance-story[data-in-view="true"] .wd-performance-card[data-active="true"] .wd-performance-demo {
     will-change: transform;
   }
 }
@@ -7920,7 +7920,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   }
 
   .wd-performance-story[data-in-view="true"] .wd-performance-track,
-  .wd-performance-card[data-active="true"] .wd-performance-demo {
+  .wd-performance-story[data-in-view="true"] .wd-performance-card[data-active="true"] .wd-performance-demo {
     will-change: transform;
   }
 }

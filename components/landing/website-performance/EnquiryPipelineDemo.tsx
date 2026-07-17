@@ -5,8 +5,9 @@ const stages = ["New enquiry", "Contacted", "Follow-up ready"];
 const PHASE_COUNT = 7;
 const FINAL_PHASE = 6;
 const PHASE_DURATION = 950;
+const COMPACT_PHASE_DURATION = 650;
 
-export function EnquiryPipelineDemo({ active, reducedMotion }: PerformanceDemoProps) {
+export function EnquiryPipelineDemo({ active, compact = false, reducedMotion }: PerformanceDemoProps) {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
@@ -17,13 +18,14 @@ export function EnquiryPipelineDemo({ active, reducedMotion }: PerformanceDemoPr
     }
 
     setPhase(0);
+    const phaseDuration = compact ? COMPACT_PHASE_DURATION : PHASE_DURATION;
     const interval = window.setInterval(
       () => setPhase((current) => (current + 1) % PHASE_COUNT),
-      PHASE_DURATION
+      phaseDuration
     );
 
     return () => window.clearInterval(interval);
-  }, [active, reducedMotion]);
+  }, [active, compact, reducedMotion]);
 
   return (
     <div

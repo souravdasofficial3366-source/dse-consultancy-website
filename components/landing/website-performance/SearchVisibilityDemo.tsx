@@ -4,8 +4,9 @@ import type { PerformanceDemoProps } from "../WebsitePerformanceStory";
 const PHASE_COUNT = 5;
 const FINAL_PHASE = 4;
 const PHASE_DURATION = 1050;
+const COMPACT_PHASE_DURATION = 700;
 
-export function SearchVisibilityDemo({ active, reducedMotion }: PerformanceDemoProps) {
+export function SearchVisibilityDemo({ active, compact = false, reducedMotion }: PerformanceDemoProps) {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
@@ -16,13 +17,14 @@ export function SearchVisibilityDemo({ active, reducedMotion }: PerformanceDemoP
     }
 
     setPhase(0);
+    const phaseDuration = compact ? COMPACT_PHASE_DURATION : PHASE_DURATION;
     const interval = window.setInterval(
       () => setPhase((current) => (current + 1) % PHASE_COUNT),
-      PHASE_DURATION
+      phaseDuration
     );
 
     return () => window.clearInterval(interval);
-  }, [active, reducedMotion]);
+  }, [active, compact, reducedMotion]);
 
   return (
     <div

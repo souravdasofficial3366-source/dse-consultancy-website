@@ -5,8 +5,9 @@ const checks = ["Fast loading", "Clear content", "Easy navigation", "Visible act
 const PHASE_COUNT = 6;
 const FINAL_PHASE = 5;
 const PHASE_DURATION = 900;
+const COMPACT_PHASE_DURATION = 600;
 
-export function UsabilityDemo({ active, reducedMotion }: PerformanceDemoProps) {
+export function UsabilityDemo({ active, compact = false, reducedMotion }: PerformanceDemoProps) {
   const [phase, setPhase] = useState(0);
 
   useEffect(() => {
@@ -17,13 +18,14 @@ export function UsabilityDemo({ active, reducedMotion }: PerformanceDemoProps) {
     }
 
     setPhase(0);
+    const phaseDuration = compact ? COMPACT_PHASE_DURATION : PHASE_DURATION;
     const interval = window.setInterval(
       () => setPhase((current) => (current + 1) % PHASE_COUNT),
-      PHASE_DURATION
+      phaseDuration
     );
 
     return () => window.clearInterval(interval);
-  }, [active, reducedMotion]);
+  }, [active, compact, reducedMotion]);
 
   return (
     <div

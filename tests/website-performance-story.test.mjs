@@ -100,6 +100,22 @@ test("story scopes horizontal progress measurement to the visible eligible secti
   assert.match(story, /data-active=\{activeIndex === index\}/);
 });
 
+test("vertical fallback selects only the card at the viewport centre and cleans its observer", () => {
+  assert.match(story, /const cardRefs = useRef<Array<HTMLElement \| null>>\(\[\]\);/);
+  assert.match(story, /if \(horizontalMode \|\| reducedMotion\) return;/);
+  assert.match(story, /const centre = window\.innerHeight \/ 2;/);
+  assert.match(story, /top <= centre && bottom >= centre/);
+  assert.match(story, /setActiveIndex\(nextIndex === -1 \? null : nextIndex\);/);
+  assert.match(story, /rootMargin: "-45% 0px -45% 0px"/);
+  assert.match(story, /cardElements\.forEach\(\(card\) => observer\.observe\(card\)\);/);
+  assert.match(story, /window\.addEventListener\("scroll", onVerticalScroll, \{ passive: true \}\);/);
+  assert.match(story, /window\.removeEventListener\("scroll", onVerticalScroll\);/);
+  assert.match(story, /cancelAnimationFrame\(frameId\)/);
+  assert.match(story, /observer\.disconnect\(\);/);
+  assert.match(story, /ref=\{\(cardElement\) => \{\s*cardRefs\.current\[index\] = cardElement;\s*\}\}/);
+  assert.match(story, /<Demo active=\{activeIndex === index\} compact=\{!horizontalMode\} reducedMotion=\{reducedMotion\} \/>/);
+});
+
 test("horizontal progress clamps to the full two-stage translation and selects thirds", () => {
   assert.match(story, /const STICKY_TOP = 88;/);
   assert.match(story, /const pinStartRef = useRef<HTMLSpanElement>\(null\);/);
@@ -114,7 +130,7 @@ test("horizontal progress clamps to the full two-stage translation and selects t
   assert.match(story, /className="wd-performance-pin-start"/);
   assert.match(story, /className="wd-performance-track"/);
   assert.match(story, /className="wd-performance-progress"/);
-  assert.match(story, /<Demo active=\{inView && activeIndex === index\} reducedMotion=\{reducedMotion\} \/>/);
+  assert.match(story, /<Demo active=\{activeIndex === index\} compact=\{!horizontalMode\} reducedMotion=\{reducedMotion\} \/>/);
 
   const indices = [0, .2, 1 / 3, .65, 2 / 3, .99, 1]
     .map((progress) => Math.min(2, Math.floor(progress * 3)));
@@ -134,9 +150,26 @@ test("each demo has its exact finite active-only loop and static final phase", (
     assert.match(source, new RegExp(`const PHASE_DURATION = ${duration};`));
     assert.match(source, /const canAnimate = active && !reducedMotion;/);
     assert.match(source, /if \(!canAnimate\) \{\s*setPhase\(reducedMotion \? FINAL_PHASE : 0\);/);
-    assert.match(source, /window\.setInterval\([\s\S]*?PHASE_DURATION/);
+    assert.match(source, /window\.setInterval\([\s\S]*?phaseDuration/);
     assert.match(source, /window\.clearInterval\(interval\)/);
     assert.match(source, /data-phase=\{phase\}/);
+  });
+});
+
+test("compact fallback cards use a separate shorter deterministic timing policy", () => {
+  const contracts = [
+    { source: searchDemo, duration: 1050, compactDuration: 700 },
+    { source: usabilityDemo, duration: 900, compactDuration: 600 },
+    { source: enquiryDemo, duration: 950, compactDuration: 650 }
+  ];
+
+  assert.match(story, /compact\?: boolean;/);
+  contracts.forEach(({ source, duration, compactDuration }) => {
+    assert.match(source, new RegExp(`const PHASE_DURATION = ${duration};`));
+    assert.match(source, new RegExp(`const COMPACT_PHASE_DURATION = ${compactDuration};`));
+    assert.match(source, /\{ active, compact = false, reducedMotion \}: PerformanceDemoProps/);
+    assert.match(source, /const phaseDuration = compact \? COMPACT_PHASE_DURATION : PHASE_DURATION;/);
+    assert.match(source, /\}, \[active, compact, reducedMotion\]\);/);
   });
 });
 
@@ -247,8 +280,8 @@ test("will-change is limited to the visible track and active demos in horizontal
   );
 
   assert.match(ruleBlock(desktop, '.wd-performance-story[data-in-view="true"] .wd-performance-track'), /will-change:\s*transform/);
-  assert.match(ruleBlock(desktop, '.wd-performance-card[data-active="true"] .wd-performance-demo'), /will-change:\s*transform/);
-  assert.match(ruleBlock(tablet, '.wd-performance-card[data-active="true"] .wd-performance-demo'), /will-change:\s*transform/);
+  assert.match(ruleBlock(desktop, '.wd-performance-story[data-in-view="true"] .wd-performance-card[data-active="true"] .wd-performance-demo'), /will-change:\s*transform/);
+  assert.match(ruleBlock(tablet, '.wd-performance-story[data-in-view="true"] .wd-performance-card[data-active="true"] .wd-performance-demo'), /will-change:\s*transform/);
 });
 
 test("performance interfaces protect narrow cards from horizontal overflow", () => {
