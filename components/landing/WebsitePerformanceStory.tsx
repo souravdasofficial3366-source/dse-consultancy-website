@@ -55,6 +55,7 @@ export function WebsitePerformanceStory() {
   const stackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Array<HTMLElement | null>>([]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [finePointer, setFinePointer] = useState(false);
   const [horizontalMode, setHorizontalMode] = useState(false);
   const [inView, setInView] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -64,15 +65,20 @@ export function WebsitePerformanceStory() {
     const horizontalQuery = window.matchMedia(
       "(min-width: 1200px) and (min-height: 760px), (min-width: 1024px) and (max-width: 1199px) and (min-height: 760px) and (orientation: landscape)"
     );
+    const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const updateFinePointer = () => setFinePointer(pointerQuery.matches);
     const updateReducedMotion = () => setReducedMotion(mediaQuery.matches);
     const updateHorizontalMode = () => setHorizontalMode(horizontalQuery.matches);
 
+    updateFinePointer();
     updateReducedMotion();
     updateHorizontalMode();
+    pointerQuery.addEventListener("change", updateFinePointer);
     mediaQuery.addEventListener("change", updateReducedMotion);
     horizontalQuery.addEventListener("change", updateHorizontalMode);
 
     return () => {
+      pointerQuery.removeEventListener("change", updateFinePointer);
       mediaQuery.removeEventListener("change", updateReducedMotion);
       horizontalQuery.removeEventListener("change", updateHorizontalMode);
     };
@@ -82,17 +88,18 @@ export function WebsitePerformanceStory() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { rootMargin: "20% 0px 20%" }
-    );
+    const observer = new IntersectionObserver(([entry]) => {
+      const isIntersecting = entry.isIntersecting;
+      setInView(isIntersecting);
+      if (!isIntersecting) setActiveIndex(null);
+    }, { rootMargin: "20% 0px 20%" });
 
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    if (horizontalMode || reducedMotion) return;
+    if (horizontalMode || reducedMotion || !inView) return;
 
     const cardElements = cardRefs.current.filter(
       (card): card is HTMLElement => card !== null
@@ -131,7 +138,72 @@ export function WebsitePerformanceStory() {
       window.removeEventListener("scroll", onVerticalScroll);
       if (frameId !== 0) window.cancelAnimationFrame(frameId);
     };
-  }, [horizontalMode, reducedMotion]);
+  }, [horizontalMode, inView, reducedMotion]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const demoElements = Array.from(
+      section.querySelectorAll<HTMLElement>(".wd-performance-demo")
+    );
+    const resetParallax = (demo: HTMLElement) => {
+      demo.style.removeProperty("--wd-demo-x");
+      demo.style.removeProperty("--wd-demo-y");
+      demo.style.removeProperty("--wd-demo-rotate-x");
+      demo.style.removeProperty("--wd-demo-rotate-y");
+    };
+
+    if (!(horizontalMode && inView && finePointer && !reducedMotion)) {
+      demoElements.forEach(resetParallax);
+      return;
+    }
+
+    let frameId = 0;
+    let pending: { demo: HTMLElement; x: number; y: number } | null = null;
+
+    const applyParallax = () => {
+      frameId = 0;
+      if (!pending) return;
+
+      const { demo, x, y } = pending;
+      pending = null;
+      demo.style.setProperty("--wd-demo-x", `${x * 8}px`);
+      demo.style.setProperty("--wd-demo-y", `${y * 6}px`);
+      demo.style.setProperty("--wd-demo-rotate-x", `${y * -2}deg`);
+      demo.style.setProperty("--wd-demo-rotate-y", `${x * 2.5}deg`);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      const demo = event.currentTarget as HTMLElement;
+      const bounds = demo.getBoundingClientRect();
+      const x = Math.min(Math.max(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -1), 1);
+      const y = Math.min(Math.max(((event.clientY - bounds.top) / bounds.height) * 2 - 1, -1), 1);
+      pending = { demo, x, y };
+      if (frameId === 0) frameId = window.requestAnimationFrame(applyParallax);
+    };
+
+    const onPointerLeave = (event: PointerEvent) => {
+      const demo = event.currentTarget as HTMLElement;
+      if (pending?.demo === demo) pending = null;
+      resetParallax(demo);
+    };
+
+    demoElements.forEach((demo) => {
+      demo.addEventListener("pointermove", onPointerMove);
+      demo.addEventListener("pointerleave", onPointerLeave);
+    });
+
+    return () => {
+      if (frameId !== 0) window.cancelAnimationFrame(frameId);
+      pending = null;
+      demoElements.forEach((demo) => {
+        demo.removeEventListener("pointermove", onPointerMove);
+        demo.removeEventListener("pointerleave", onPointerLeave);
+        resetParallax(demo);
+      });
+    };
+  }, [finePointer, horizontalMode, inView, reducedMotion]);
 
   useEffect(() => {
     const pinStart = pinStartRef.current;
@@ -201,26 +273,30 @@ export function WebsitePerformanceStory() {
       <span aria-hidden="true" className="wd-performance-pin-start" ref={pinStartRef} />
       <div className="container wd-performance-stack" ref={stackRef}>
         <div className="wd-performance-track">
-          {cards.map(({ Demo, ...card }, index) => (
-            <article
-              className="wd-performance-card"
-              data-active={activeIndex === index}
-              data-phase={index}
-              key={card.number}
-              ref={(cardElement) => {
-                cardRefs.current[index] = cardElement;
-              }}
-            >
-              <div className="wd-performance-card-copy">
-                <span className="wd-performance-number">{card.number}</span>
-                <span className="wd-performance-eyebrow">{card.eyebrow}</span>
-                <h3>{card.title}</h3>
-                <p>{card.body}</p>
-                <strong className="wd-performance-proof">{card.proof}</strong>
-              </div>
-              <Demo active={activeIndex === index} compact={!horizontalMode} reducedMotion={reducedMotion} />
-            </article>
-          ))}
+          {cards.map(({ Demo, ...card }, index) => {
+            const active = inView && activeIndex === index;
+
+            return (
+              <article
+                className="wd-performance-card"
+                data-active={active}
+                data-phase={index}
+                key={card.number}
+                ref={(cardElement) => {
+                  cardRefs.current[index] = cardElement;
+                }}
+              >
+                <div className="wd-performance-card-copy">
+                  <span className="wd-performance-number">{card.number}</span>
+                  <span className="wd-performance-eyebrow">{card.eyebrow}</span>
+                  <h3>{card.title}</h3>
+                  <p>{card.body}</p>
+                  <strong className="wd-performance-proof">{card.proof}</strong>
+                </div>
+                <Demo active={active} compact={!horizontalMode} reducedMotion={reducedMotion} />
+              </article>
+            );
+          })}
         </div>
         <div aria-hidden="true" className="wd-performance-progress">
           <span />

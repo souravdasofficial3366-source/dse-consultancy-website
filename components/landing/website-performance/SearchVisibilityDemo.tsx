@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import type { PerformanceDemoProps } from "../WebsitePerformanceStory";
 
-const PHASE_COUNT = 5;
-const FINAL_PHASE = 4;
+const PHASE_COUNT = 6;
+const FINAL_PHASE = 5;
 const PHASE_DURATION = 1050;
 const COMPACT_PHASE_DURATION = 700;
 
@@ -38,6 +38,8 @@ export function SearchVisibilityDemo({ active, compact = false, reducedMotion }:
         <div className="wd-demo-toolbar"><i /><i /><i /></div>
         <div className="wd-search-query"><span className="material-symbols-outlined">search</span><b>website developer near me</b></div>
         <div className="wd-search-result is-dse-result"><small>Sponsored-free local result</small><strong>DSE Consultancy Services</strong><span>Fast, mobile-first business websites in Kolkata</span></div>
+        <span className="wd-search-cursor material-symbols-outlined">arrow_selector_tool</span>
+        <span className="wd-search-click" />
         <div className="wd-search-preview"><span>DSE</span><strong>Build Trust. Create Enquiries.</strong><i /></div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { PerformanceDemoProps } from "../WebsitePerformanceStory";
 
-const stages = ["New enquiry", "Contacted", "Follow-up ready"];
+const stages = ["New", "Contacted", "Qualified"];
 const PHASE_COUNT = 7;
 const FINAL_PHASE = 6;
 const PHASE_DURATION = 950;

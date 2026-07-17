@@ -66,10 +66,13 @@ test("story preserves the approved heading and three claim-safe cards", () => {
   const approved = [
     "Turn Local Searches Into Real Business Leads",
     "Built So Google And Local Customers Understand Your Business",
+    "Clear service pages, location details, structured headings, and search-friendly technical foundations help the right people discover what you offer.",
     "98 / 100 Google-readiness target",
     "Designed To Feel Clear On Every Screen",
+    "Mobile-first layouts, readable content, familiar navigation, and prominent actions help visitors understand the business without unnecessary friction.",
     "95 / 100 usability target",
     "Give Every Interested Customer A Clear Next Step",
+    "Calls, WhatsApp, and enquiry forms connect attention to an organised follow-up path, making it easier for the business to respond promptly.",
     "80 / 100 enquiry-path target"
   ];
   approved.forEach((copy) => assert.ok(story.includes(copy), `missing: ${copy}`));
@@ -83,7 +86,30 @@ test("all three original DSE interface demos are present", () => {
   assert.match(searchDemo, /SearchVisibilityDemo/);
   assert.match(usabilityDemo, /UsabilityDemo/);
   assert.match(enquiryDemo, /EnquiryPipelineDemo/);
-  assert.match(`${searchDemo}${usabilityDemo}${enquiryDemo}`, /aria-hidden="true"/);
+  [searchDemo, usabilityDemo, enquiryDemo].forEach((source) => {
+    assert.match(source, /aria-hidden="true"/);
+  });
+});
+
+test("interface demos contain every approved storyboard element and exact label", () => {
+  assert.match(searchDemo, /className="wd-search-cursor/);
+  assert.match(searchDemo, /className="wd-search-click"/);
+  assert.match(searchDemo, /className="wd-search-result is-dse-result"/);
+  assert.match(searchDemo, /className="wd-search-preview"/);
+
+  [
+    "Mobile responsive",
+    "Clear navigation",
+    "Readable content",
+    "Visible contact action"
+  ].forEach((label) => assert.ok(usabilityDemo.includes(label), `missing usability label: ${label}`));
+  assert.match(usabilityDemo, /className="wd-usability-cursor/);
+  assert.match(usabilityDemo, /className="wd-usability-completion"/);
+
+  ["New", "Contacted", "Qualified"].forEach((label) => {
+    assert.ok(enquiryDemo.includes(label), `missing enquiry status: ${label}`);
+  });
+  assert.doesNotMatch(enquiryDemo, /Follow-up ready|New enquiry/);
 });
 
 test("story scopes horizontal progress measurement to the visible eligible section", () => {
@@ -97,12 +123,12 @@ test("story scopes horizontal progress measurement to the visible eligible secti
   assert.match(story, /mediaQuery\.removeEventListener\("change", updateReducedMotion\)/);
   assert.match(story, /horizontalQuery\.removeEventListener\("change", updateHorizontalMode\)/);
   assert.doesNotMatch(story, /preventDefault|addEventListener\(["']wheel/);
-  assert.match(story, /data-active=\{activeIndex === index\}/);
+  assert.match(story, /data-active=\{active\}/);
 });
 
 test("vertical fallback selects only the card at the viewport centre and cleans its observer", () => {
   assert.match(story, /const cardRefs = useRef<Array<HTMLElement \| null>>\(\[\]\);/);
-  assert.match(story, /if \(horizontalMode \|\| reducedMotion\) return;/);
+  assert.match(story, /if \(horizontalMode \|\| reducedMotion \|\| !inView\) return;/);
   assert.match(story, /const centre = window\.innerHeight \/ 2;/);
   assert.match(story, /top <= centre && bottom >= centre/);
   assert.match(story, /setActiveIndex\(nextIndex === -1 \? null : nextIndex\);/);
@@ -113,7 +139,20 @@ test("vertical fallback selects only the card at the viewport centre and cleans 
   assert.match(story, /cancelAnimationFrame\(frameId\)/);
   assert.match(story, /observer\.disconnect\(\);/);
   assert.match(story, /ref=\{\(cardElement\) => \{\s*cardRefs\.current\[index\] = cardElement;\s*\}\}/);
-  assert.match(story, /<Demo active=\{activeIndex === index\} compact=\{!horizontalMode\} reducedMotion=\{reducedMotion\} \/>/);
+  assert.match(story, /\}, \[horizontalMode, inView, reducedMotion\]\);/);
+  assert.match(story, /const active = inView && activeIndex === index;/);
+  assert.match(story, /<Demo active=\{active\} compact=\{!horizontalMode\} reducedMotion=\{reducedMotion\} \/>/);
+});
+
+test("observer leave immediately deactivates demos and tears down fallback scroll work", () => {
+  assert.match(story, /const isIntersecting = entry\.isIntersecting;/);
+  assert.match(story, /setInView\(isIntersecting\);/);
+  assert.match(story, /if \(!isIntersecting\) setActiveIndex\(null\);/);
+  assert.match(story, /if \(horizontalMode \|\| reducedMotion \|\| !inView\) return;/);
+  assert.match(story, /window\.removeEventListener\("scroll", onVerticalScroll\);/);
+  assert.match(story, /if \(frameId !== 0\) window\.cancelAnimationFrame\(frameId\);/);
+  assert.match(story, /data-active=\{active\}/);
+  assert.match(story, /<Demo active=\{active\}/);
 });
 
 test("horizontal progress clamps to the full two-stage translation and selects thirds", () => {
@@ -130,7 +169,7 @@ test("horizontal progress clamps to the full two-stage translation and selects t
   assert.match(story, /className="wd-performance-pin-start"/);
   assert.match(story, /className="wd-performance-track"/);
   assert.match(story, /className="wd-performance-progress"/);
-  assert.match(story, /<Demo active=\{activeIndex === index\} compact=\{!horizontalMode\} reducedMotion=\{reducedMotion\} \/>/);
+  assert.match(story, /<Demo active=\{active\} compact=\{!horizontalMode\} reducedMotion=\{reducedMotion\} \/>/);
 
   const indices = [0, .2, 1 / 3, .65, 2 / 3, .99, 1]
     .map((progress) => Math.min(2, Math.floor(progress * 3)));
@@ -139,8 +178,8 @@ test("horizontal progress clamps to the full two-stage translation and selects t
 
 test("each demo has its exact finite active-only loop and static final phase", () => {
   const contracts = [
-    { source: searchDemo, phaseCount: 5, finalPhase: 4, duration: 1050 },
-    { source: usabilityDemo, phaseCount: 6, finalPhase: 5, duration: 900 },
+    { source: searchDemo, phaseCount: 6, finalPhase: 5, duration: 1050 },
+    { source: usabilityDemo, phaseCount: 7, finalPhase: 6, duration: 900 },
     { source: enquiryDemo, phaseCount: 7, finalPhase: 6, duration: 950 }
   ];
 
@@ -154,6 +193,22 @@ test("each demo has its exact finite active-only loop and static final phase", (
     assert.match(source, /window\.clearInterval\(interval\)/);
     assert.match(source, /data-phase=\{phase\}/);
   });
+});
+
+test("fine-pointer parallax is frame-throttled, right-surface-only, and fully reset", () => {
+  assert.match(story, /\(hover: hover\) and \(pointer: fine\)/);
+  assert.match(story, /horizontalMode && inView && finePointer && !reducedMotion/);
+  assert.match(story, /querySelectorAll<HTMLElement>\("\.wd-performance-demo"\)/);
+  assert.match(story, /demo\.addEventListener\("pointermove", onPointerMove\)/);
+  assert.match(story, /demo\.addEventListener\("pointerleave", onPointerLeave\)/);
+  assert.match(story, /window\.requestAnimationFrame\(applyParallax\)/);
+  ["--wd-demo-x", "--wd-demo-y", "--wd-demo-rotate-x", "--wd-demo-rotate-y"].forEach((property) => {
+    assert.ok(story.includes(`setProperty("${property}"`), `missing parallax update: ${property}`);
+    assert.ok(story.includes(`removeProperty("${property}")`), `missing parallax reset: ${property}`);
+  });
+  assert.match(story, /demo\.removeEventListener\("pointermove", onPointerMove\)/);
+  assert.match(story, /demo\.removeEventListener\("pointerleave", onPointerLeave\)/);
+  assert.doesNotMatch(story, /wd-performance-card-copy[\s\S]{0,120}(?:pointermove|--wd-demo-)/);
 });
 
 test("compact fallback cards use a separate shorter deterministic timing policy", () => {
@@ -238,13 +293,20 @@ test("interface transitions cover every exact phase with complete reduced-motion
     ['.wd-search-demo[data-phase="1"] .wd-search-query b', /clip-path:\s*inset\(0 0 0 0\)/],
     ['.wd-search-demo[data-phase="2"] .is-dse-result', /opacity:\s*1[^}]*transform:\s*translateY\(0\)/],
     ['.wd-search-demo[data-phase="3"] .is-dse-result', /border-color:\s*#fe6807[^}]*transform:\s*translateY\(-4px\)/],
-    ['.wd-search-demo[data-phase="4"] .wd-search-preview', /opacity:\s*1[^}]*transform:\s*translateY\(0\) scale\(1\)/],
+    ['.wd-search-demo[data-phase="3"] .wd-search-cursor', /opacity:\s*1[^}]*transform:\s*translate3d/],
+    ['.wd-search-demo[data-phase="4"] .wd-search-cursor', /opacity:\s*1[^}]*transform:\s*translate3d/],
+    ['.wd-search-demo[data-phase="4"] .wd-search-click', /opacity:\s*1[^}]*transform:\s*scale\(1\)/],
+    ['.wd-search-demo[data-phase="5"] .wd-search-preview', /opacity:\s*1[^}]*transform:\s*translateY\(0\) scale\(1\)/],
     ['.wd-usability-demo[data-phase="0"] .wd-usability-desktop', /opacity:\s*0[^}]*transform:\s*translateY\(24px\) scale\(\.96\)/],
     ['.wd-usability-demo[data-phase="1"] .wd-usability-desktop', /opacity:\s*1[^}]*transform:\s*translateY\(0\) scale\(1\)/],
-    ['.wd-usability-demo[data-phase="2"] .wd-usability-mobile', /opacity:\s*1[^}]*transform:\s*translateY\(0\) scale\(1\)/],
+    ['.wd-usability-demo[data-phase="1"] .wd-usability-mobile', /opacity:\s*1[^}]*transform:\s*translateY\(0\) scale\(1\)/],
+    ['.wd-usability-demo[data-phase="2"] .wd-usability-cursor', /opacity:\s*1[^}]*transform:\s*translate3d/],
+    ['.wd-usability-demo[data-phase="2"] .wd-usability-checks li:nth-child(1)', /opacity:\s*1[^}]*transform:\s*translateX\(0\)/],
     ['.wd-usability-demo[data-phase="3"] .wd-usability-checks li:nth-child(-n + 2)', /opacity:\s*1[^}]*transform:\s*translateX\(0\)/],
     ['.wd-usability-demo[data-phase="4"] .wd-usability-checks li:nth-child(-n + 3)', /opacity:\s*1[^}]*transform:\s*translateX\(0\)/],
     ['.wd-usability-demo[data-phase="5"] .wd-usability-checks li', /opacity:\s*1[^}]*transform:\s*translateX\(0\)/],
+    ['.wd-usability-demo[data-phase="6"] .wd-usability-completion span', /transform:\s*scaleX\(1\)/],
+    ['.wd-usability-demo[data-phase="6"] .wd-usability-completion b', /color:\s*#fff9f5/],
     ['.wd-enquiry-demo[data-phase="0"] .wd-enquiry-message', /opacity:\s*0[^}]*transform:\s*translateY\(18px\) scale\(\.96\)/],
     ['.wd-enquiry-demo[data-phase="1"] .wd-enquiry-message', /opacity:\s*1[^}]*transform:\s*translateY\(0\) scale\(1\)/],
     ['.wd-enquiry-demo[data-phase="2"] .wd-enquiry-contact', /opacity:\s*1[^}]*transform:\s*translateX\(0\)/],
