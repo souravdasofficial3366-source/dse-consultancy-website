@@ -55,3 +55,11 @@ test("the gallery renders rows of three accessible looping videos", () => {
   assert.match(component, /IntersectionObserver/);
   assert.match(component, /prefers-reduced-motion/);
 });
+
+test("the gallery observes and syncs each video independently when cards change", () => {
+  assert.match(component, /entries\.forEach\(\(entry\) =>/);
+  assert.match(component, /entry\.target as HTMLVideoElement/);
+  assert.match(component, /observer\.observe\(video\)/);
+  assert.match(component, /visibleVideos\.has\(video\)/);
+  assert.match(component, /\}, \[cards\]\);/);
+});

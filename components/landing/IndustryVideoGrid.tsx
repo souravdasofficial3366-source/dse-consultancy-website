@@ -28,38 +28,44 @@ export function IndustryVideoGrid({ cards }: IndustryVideoGridProps) {
 
     const videos = Array.from(grid.querySelectorAll<HTMLVideoElement>("video"));
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const visibleVideos = new Set<HTMLVideoElement>();
 
-    let isVisible = false;
-
-    const syncPlayback = () => {
-      videos.forEach((video) => {
-        if (isVisible && !motion.matches) {
-          void video.play().catch(() => undefined);
-        } else {
-          video.pause();
-        }
-      });
+    const syncPlayback = (video: HTMLVideoElement) => {
+      if (visibleVideos.has(video) && !motion.matches) {
+        void video.play().catch(() => undefined);
+      } else {
+        video.pause();
+      }
     };
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-        syncPlayback();
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+
+          if (entry.isIntersecting) {
+            visibleVideos.add(video);
+          } else {
+            visibleVideos.delete(video);
+          }
+
+          syncPlayback(video);
+        });
       },
       { threshold: 0.15 }
     );
-    const handleMotionChange = () => syncPlayback();
+    const handleMotionChange = () => videos.forEach(syncPlayback);
 
-    observer.observe(grid);
+    videos.forEach((video) => observer.observe(video));
     motion.addEventListener("change", handleMotionChange);
 
     return () => {
       observer.disconnect();
       motion.removeEventListener("change", handleMotionChange);
-      isVisible = false;
-      syncPlayback();
+      visibleVideos.clear();
+      videos.forEach(syncPlayback);
     };
-  }, []);
+  }, [cards]);
 
   return (
     <div className="industry-video-grid" ref={gridRef}>
