@@ -21,13 +21,16 @@ The interaction may take inspiration from the numbered narrative-left and animat
 
 ## Experience Structure
 
-The section contains three large numbered cards. On supported desktop and laptop viewports, the section becomes a sticky scroll sequence:
+The section contains three large numbered cards. On supported desktop and laptop viewports, the section becomes a pinned horizontal scroll sequence driven by the user’s normal vertical mouse-wheel or trackpad scrolling:
 
-1. The first card enters and holds.
-2. The user scrolls through its interface loop.
-3. The next card rises into view and becomes the active stage.
-4. The preceding card recedes beneath the new card while its number/title edge remains visually understandable.
-5. After the third card, the section releases naturally into pricing.
+1. The section pins below the site header.
+2. The first full-width card is visible.
+3. Continued vertical page scrolling translates the horizontal card track from right to left.
+4. Each card becomes active as it occupies the central stage; only that card runs its detailed interface loop.
+5. The progress indicator advances horizontally beneath the cards.
+6. After the third card reaches its completed position, the section releases naturally into pricing.
+
+The implementation must not intercept, cancel, or reverse the user’s wheel event. Normal document scroll controls a section-scoped progress value, and that value controls horizontal translation.
 
 Each card uses a two-column composition:
 
@@ -119,6 +122,8 @@ This represents the desired completeness of the website enquiry journey. It must
 ## Interaction And Motion
 
 - Use native CSS sticky positioning and lightweight React logic rather than a heavy animation dependency.
+- A passive, requestAnimationFrame-throttled scroll measurement is allowed only while the pinned story is near the viewport because vertical page progress must drive horizontal translation.
+- Do not call `preventDefault()` on wheel, touch, or scroll events.
 - Use transforms and opacity for the primary movement to remain GPU-friendly.
 - Only the active or near-active card should run its detailed interface loop.
 - Pause loops when the section leaves the viewport.
@@ -131,27 +136,28 @@ This represents the desired completeness of the website enquiry journey. It must
 
 ### Desktop And Laptop
 
-- Sticky three-card sequence.
+- Pinned horizontal three-card sequence controlled by normal vertical page scrolling.
 - Left/right ratio approximately `42 / 58`.
 - Each card must fit comfortably within the usable viewport below the site header.
-- Previous phase edges may remain visible, but no heading or control may be clipped.
+- The horizontal track uses three full-stage cards and translates by exactly two stage widths from the first card to the third.
+- A visible horizontal progress rail communicates position in the sequence.
+- No heading, interface control, or card edge may be clipped in the active stage.
 
 ### Tablet
 
-- Retain the two-column presentation only when both columns remain readable.
-- Use shallower sticky offsets than desktop.
-- On short tablet heights, disable sticky positioning and use normal document flow.
+- Use the pinned horizontal experience only for wide landscape tablets when both columns remain readable.
+- Portrait and short-height tablets use normal vertical card flow.
 
 ### Mobile
 
-- Use three normally stacked cards.
+- Use three normally stacked vertical cards.
 - Place the interface artwork below the copy.
 - Shorten each automatic loop.
 - Prevent horizontal scrolling and preserve comfortable tap targets.
 
 ### Reduced Motion
 
-- Disable sticky stacking, parallax, typing, cursor travel, list movement, and automatic state loops.
+- Disable pinning, horizontal translation, parallax, typing, cursor travel, list movement, and automatic state loops.
 - Show each interface in a complete, representative final state.
 - Keep all copy and proof statements visible.
 
@@ -181,7 +187,8 @@ This boundary keeps the current page file readable and allows individual interfa
 
 - No video or image downloads are required for this section.
 - No new animation framework should be added.
-- Avoid continuous document-level scroll handlers; prefer `IntersectionObserver` and CSS sticky positioning.
+- Use `IntersectionObserver` to attach the passive, requestAnimationFrame-throttled scroll measurement only while the story is near the viewport, and remove it when the section leaves.
+- The scroll measurement may update only section progress and active-card index; it must not mutate unrelated page state.
 - Suspend timers and animation state while a card is inactive or offscreen.
 - The section must not create layout shift after hydration.
 
@@ -193,7 +200,9 @@ This boundary keeps the current page file readable and allows individual interfa
 - All three approved titles, body copy, proof statements, and interface demonstrations are present in order.
 - No first-page ranking or qualified-lead guarantee appears in the section.
 - Active-card logic cleans up observers and timers.
-- Desktop sticky, tablet fallback, mobile flow, short-height fallback, and reduced-motion rules are covered.
+- Desktop horizontal pinning, landscape-tablet eligibility, portrait/mobile flow, short-height fallback, and reduced-motion rules are covered.
+- Progress clamps to `0...1`, horizontal translation clamps to exactly two card widths, and active-card selection resolves to `0`, `1`, or `2` at the correct thirds of the sequence.
+- No wheel listener calls `preventDefault()`.
 - Full UI tests, typecheck, and production build pass.
 
 ### Browser Verification
@@ -208,7 +217,8 @@ Verify at minimum:
 
 Confirm:
 
-- the three cards introduce themselves sequentially during scroll;
+- normal vertical mouse-wheel scrolling moves the card track horizontally from right to left;
+- the three cards introduce themselves sequentially and become active in order;
 - left-side text remains stable and readable;
 - each right-side interface loop is distinct and realistic;
 - no percentage ring or video placeholder remains;
