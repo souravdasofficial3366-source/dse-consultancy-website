@@ -72,9 +72,11 @@ Extend each `industryCards` data object with local `video` and `poster` paths. K
 - Preserve the existing pixel-field background and footer content.
 - Track the pointer position relative to the entire footer through request-animation-frame updates.
 - Set normalized pointer coordinates as CSS custom properties on the footer root.
-- Render a broad orange-to-coral radial spotlight centered on those coordinates.
-- Increase the brightness, opacity, and saturation of nearby pixel cells while keeping distant cells dim.
-- Fade the spotlight out smoothly when the pointer leaves the footer.
+- Render a restrained orange-to-coral radial light centered on those coordinates, with a 280-360 pixel influence radius and no hard edge.
+- Keep the maximum spotlight opacity between 0.16 and 0.24 so the existing pixel animation remains the main visual texture.
+- Increase the brightness, opacity, and saturation of nearby pixel cells only slightly while keeping distant cells dim.
+- Update the light position on every animation frame and use an 80-120 millisecond visual transition so it catches the cursor quickly without jitter.
+- Fade the spotlight out over 220-300 milliseconds when the pointer leaves the footer.
 - The effect is visual only and cannot intercept clicks or obscure footer text.
 
 ### Touch and Accessibility
