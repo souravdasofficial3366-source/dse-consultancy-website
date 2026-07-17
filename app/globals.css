@@ -7308,6 +7308,12 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   box-shadow: 0 24px 64px rgba(254, 104, 7, .14);
 }
 
+.wd-performance-story { overflow: clip; }
+.wd-performance-card { position: relative; }
+@media (max-width: 767px) {
+  .wd-performance-card { position: relative; }
+}
+
 @keyframes wd-grid-drift {
   to { transform: translate3d(54px, 54px, 0); }
 }

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import { FaqList } from "@/components/faq/FaqList";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { IndustryVideoGrid } from "@/components/landing/IndustryVideoGrid";
 import { WebsiteDevelopmentExperience } from "@/components/landing/WebsiteDevelopmentExperience";
+import { WebsitePerformanceStory } from "@/components/landing/WebsitePerformanceStory";
 import { LocalBusinessJsonLd } from "@/lib/json-ld";
 import { industryCards, siteConfig } from "@/data/site";
 
@@ -87,24 +87,6 @@ const prices = [
       "Free Website Maintenance for 1 Year",
       "Up to 25 Product Uploads Free"
     ]
-  }
-];
-
-const performanceStats = [
-  {
-    score: 98,
-    title: "First-Page Google Ready",
-    text: "98% of the websites we build are optimized to rank on the first page of Google."
-  },
-  {
-    score: 95,
-    title: "User-Friendly Layout",
-    text: "95% of our layouts follow modern UI/UX standards, making websites easier to use."
-  },
-  {
-    score: 80,
-    title: "Quality Lead Generation",
-    text: "80% of the leads we generate are qualified and ready for sales follow-up."
   }
 ];
 
@@ -271,76 +253,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section dark" id="results">
-        <div className="container advantage-grid">
-          <div className="advantage-copy" data-wd-reveal>
-            <h2>
-              Turn <span className="accent">Local Searches</span> Into Real{" "}
-              <span className="accent">Business Leads</span>
-            </h2>
-            <p className="section-copy">
-              A website should not only look good. It should help people find your business, trust
-              you, and call you.
-            </p>
-            <div className="score-list">
-              {performanceStats.map((stat, index) => (
-                <div className="score-item" data-wd-reveal key={stat.title}>
-                  <span aria-label={`${stat.score} percent`} className="score-ring">
-                    <svg aria-hidden="true" viewBox="0 0 100 100">
-                      <circle className="score-track" cx="50" cy="50" r="43" />
-                      <circle
-                        className="score-progress"
-                        cx="50"
-                        cy="50"
-                        pathLength="100"
-                        r="43"
-                        style={{
-                          animationDelay: `${index * 180}ms`,
-                          strokeDashoffset: 100 - stat.score,
-                          "--wd-score-offset": 100 - stat.score
-                        } as CSSProperties}
-                      />
-                    </svg>
-                    <strong>{stat.score}%</strong>
-                  </span>
-                  <div>
-                    <h3>{stat.title}</h3>
-                    <p>{stat.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="proof-panel" data-wd-reveal data-wd-spotlight>
-            <div
-              aria-label="Website walkthrough video placeholder"
-              className="wd-video-placeholder"
-              role="img"
-            >
-              <div aria-hidden="true" className="wd-video-placeholder-frame">
-                <i />
-                <i />
-                <i />
-                <span />
-              </div>
-              <span className="wd-video-placeholder-status">Video Coming Soon</span>
-              <span
-                aria-hidden="true"
-                className="material-symbols-outlined wd-video-placeholder-play"
-              >
-                play_arrow
-              </span>
-              <div className="wd-video-placeholder-copy">
-                <strong>Website Walkthrough Video</strong>
-                <span>Your project video will play here.</span>
-              </div>
-            </div>
-            <p className="proof-quote">
-              A Clear Website Helps Customers Understand What You Sell and Contact You Faster.
-            </p>
-          </div>
-        </div>
-      </section>
+      <WebsitePerformanceStory />
 
       <section className="section white" id="pricing">
         <div className="container" data-wd-reveal>

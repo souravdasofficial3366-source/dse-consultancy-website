@@ -14,15 +14,14 @@ test("comparison accent is owned by the first cell", () => {
   assert.doesNotMatch(css, /comparison tbody tr::before/);
 });
 
-test("results use a stable video placeholder and looping score animation", () => {
-  assert.match(page, /className="wd-video-placeholder"/);
-  assert.doesNotMatch(page, /<InteractiveWebsiteJourney \/>/);
-  assert.match(css, /animation:\s*wd-score-loop[^;]*infinite/);
+test("results mount the dedicated performance story without obsolete artwork", () => {
+  assert.match(page, /<WebsitePerformanceStory\s*\/>/);
+  assert.doesNotMatch(page, /wd-video-placeholder|score-ring|proof-panel/);
 });
 
-test("results placeholder cannot widen the mobile layout", () => {
-  assert.match(css, /website-development-page \.proof-panel\s*\{[^}]*min-width:\s*0/);
-  assert.match(css, /@media \(max-width: 640px\)[\s\S]*?\.wd-video-placeholder\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3[^}]*min-height:\s*0/);
+test("performance story cannot widen the mobile layout", () => {
+  assert.match(css, /\.wd-performance-story\s*\{[^}]*overflow:\s*(?:clip|hidden)/);
+  assert.match(css, /@media \(max-width: 767px\)[\s\S]*?\.wd-performance-card\s*\{[^}]*position:\s*relative/);
 });
 
 test("featured badge can extend beyond the pricing card", () => {
