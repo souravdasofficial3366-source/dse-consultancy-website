@@ -4930,6 +4930,28 @@ select {
     top: auto;
     min-height: 620px;
   }
+
+  .consultancy-process-stack-inner { grid-template-rows: auto 1fr; }
+  .consultancy-process-stack-header {
+    position: relative;
+    min-height: 48px;
+    padding: 0 72px 0 0;
+    border-bottom: 0;
+    background: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consultancy-process-stack-inner { grid-template-rows: auto 1fr; }
+  .consultancy-process-stack-header {
+    position: relative;
+    min-height: 48px;
+    padding: 0 72px 0 0;
+    border-bottom: 0;
+    background: none;
+    backdrop-filter: none;
+  }
 }
 
 .consultancy-home-insights { background: #fff; }

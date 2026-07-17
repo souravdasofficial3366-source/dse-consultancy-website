@@ -100,6 +100,18 @@ test("mobile, short-height, and reduced-motion modes disable sticky positioning"
     assert.match(rule, /\.consultancy-process-stack-card\s*\{[^}]*position:\s*relative/);
     assert.match(rule, /top:\s*auto/);
   });
+
+  assert.match(shortHeight, /\.consultancy-process-stack-inner\s*\{[^}]*grid-template-rows:\s*auto 1fr/);
+  assert.match(shortHeight, /\.consultancy-process-stack-header\s*\{[^}]*position:\s*relative[^}]*min-height:\s*48px[^}]*padding:\s*0 72px 0 0/);
+
+  const shortHeightStart = css.indexOf("@media (min-width: 768px) and (max-height: 759px)");
+  const reducedMotionStart = css.indexOf("@media (prefers-reduced-motion: reduce)", shortHeightStart);
+  const finalReducedMotion = css.slice(reducedMotionStart, css.indexOf("\n}\n", reducedMotionStart) + 3);
+
+  [finalReducedMotion].forEach((rule) => {
+    assert.match(rule, /\.consultancy-process-stack-inner\s*\{[^}]*grid-template-rows:\s*auto 1fr/);
+    assert.match(rule, /\.consultancy-process-stack-header\s*\{[^}]*position:\s*relative[^}]*min-height:\s*48px[^}]*padding:\s*0 72px 0 0/);
+  });
 });
 
 test("process card copy remains layered over full-bleed media", () => {
