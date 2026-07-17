@@ -6,6 +6,23 @@ const [page, component] = await Promise.all([
   readFile("app/(landing-pages)/page.tsx", "utf8"),
   readFile("components/landing/HomeProcessStack.tsx", "utf8").catch(() => "")
 ]);
+const css = await readFile("app/globals.css", "utf8");
+
+function mediaRule(query) {
+  const start = css.indexOf(`@media ${query}`);
+  assert.notEqual(start, -1, `missing @media ${query}`);
+
+  const openingBrace = css.indexOf("{", start);
+  let depth = 0;
+
+  for (let index = openingBrace; index < css.length; index += 1) {
+    if (css[index] === "{") depth += 1;
+    if (css[index] === "}") depth -= 1;
+    if (depth === 0) return css.slice(start, index + 1);
+  }
+
+  assert.fail(`unterminated @media ${query}`);
+}
 
 const phases = ["Discover", "Design", "Build", "Improve"];
 const descriptions = [
@@ -46,4 +63,37 @@ test("the stack synchronizes playback with visibility and reduced-motion state",
   assert.match(component, /video\.pause\(\)/);
   assert.match(component, /observer\.disconnect\(\)/);
   assert.match(component, /motion\.removeEventListener/);
+});
+
+test("desktop process cards use native sticky stacking with indexed offsets", () => {
+  const desktop = mediaRule("(min-width: 1200px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)");
+
+  assert.match(desktop, /\.consultancy-process-stack-card\s*\{[^}]*position:\s*sticky/);
+  assert.match(desktop, /top:\s*calc\(var\(--process-sticky-top\) \+ var\(--process-offset\)\)/);
+  assert.match(desktop, /z-index:\s*calc\(var\(--process-index\) \+ 1\)/);
+});
+
+test("tablet process cards use a shallower sticky offset", () => {
+  const tablet = mediaRule("(min-width: 768px) and (max-width: 1199px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)");
+
+  assert.match(tablet, /--process-sticky-top:\s*82px/);
+  assert.match(tablet, /top:\s*calc\(var\(--process-sticky-top\) \+ var\(--process-tablet-offset\)\)/);
+  assert.match(tablet, /position:\s*sticky/);
+});
+
+test("mobile, short-height, and reduced-motion modes disable sticky positioning", () => {
+  const mobile = mediaRule("(max-width: 767px)");
+  const shortHeight = mediaRule("(min-width: 768px) and (max-height: 759px)");
+  const reducedMotion = mediaRule("(prefers-reduced-motion: reduce)");
+
+  [mobile, shortHeight, reducedMotion].forEach((rule) => {
+    assert.match(rule, /\.consultancy-process-stack-card\s*\{[^}]*position:\s*relative/);
+    assert.match(rule, /top:\s*auto/);
+  });
+});
+
+test("process card copy remains layered over full-bleed media", () => {
+  assert.match(css, /\.consultancy-process-stack-card > video\s*\{[^}]*object-fit:\s*cover/);
+  assert.match(css, /\.consultancy-process-stack-scrim\s*\{[^}]*linear-gradient/);
+  assert.match(css, /\.consultancy-process-stack-inner\s*\{[^}]*z-index:\s*2/);
 });
