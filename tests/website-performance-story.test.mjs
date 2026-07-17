@@ -39,3 +39,19 @@ test("all three original DSE interface demos are present", () => {
   assert.match(enquiryDemo, /EnquiryPipelineDemo/);
   assert.match(`${searchDemo}${usabilityDemo}${enquiryDemo}`, /aria-hidden="true"/);
 });
+
+test("story observes the section and cards without a document scroll listener", () => {
+  assert.match(story, /IntersectionObserver/);
+  assert.match(story, /prefers-reduced-motion/);
+  assert.match(story, /observer\.disconnect\(\)/);
+  assert.doesNotMatch(story, /document\.addEventListener\(["']scroll/);
+  assert.match(story, /data-active=\{activeIndex === index\}/);
+});
+
+test("each demo runs only while active and clears its loop", () => {
+  [searchDemo, usabilityDemo, enquiryDemo].forEach((source) => {
+    assert.match(source, /active\s*&&\s*!reducedMotion/);
+    assert.match(source, /setInterval|setTimeout/);
+    assert.match(source, /clearInterval|clearTimeout/);
+  });
+});
