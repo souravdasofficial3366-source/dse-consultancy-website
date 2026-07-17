@@ -103,7 +103,19 @@ test("desktop hover expansion stays fine-pointer-only and opts out of reduced mo
   assert.match(hoverSizing, /\.industry-video-row:has\(\.industry-video-card:hover\)/);
   assert.match(hoverSizing, /flex-grow:\s*\.68/);
   assert.match(hoverSizing, /flex-grow:\s*1\.64/);
-  assert.doesNotMatch(hoverSizing, /:focus-within/);
+});
+
+test("keyboard focus suppresses hover sizing when both states exist in a row", () => {
+  const hoverSizing = mediaRule("(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+
+  assert.match(
+    hoverSizing,
+    /\.industry-video-row:has\(\.industry-video-card:hover\):not\(:has\(\.industry-video-card:focus-within\)\) \.industry-video-card/
+  );
+  assert.match(
+    hoverSizing,
+    /\.industry-video-row:has\(\.industry-video-card:hover\):not\(:has\(\.industry-video-card:focus-within\)\)[\s\S]*?\.industry-video-card:hover/
+  );
 });
 
 test("reduced motion cannot apply either desktop sizing rule", () => {
@@ -121,12 +133,18 @@ test("industry video cards have tablet and reduced-motion fallbacks", () => {
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*?\.industry-video-card/);
 });
 
-test("mobile cards keep enough height for long copy", () => {
+test("general mobile cards preserve their four-three proportion", () => {
   const mobile = mediaRule("(max-width: 699px)");
 
-  assert.match(mobile, /\.industry-video-card\s*\{[\s\S]*?min-height:\s*330px/);
+  assert.match(mobile, /\.industry-video-card\s*\{[\s\S]*?min-height:\s*0/);
   assert.match(mobile, /aspect-ratio:\s*4\s*\/\s*3/);
-  assert.doesNotMatch(mobile, /min-height:\s*0/);
+  assert.doesNotMatch(mobile, /min-height:\s*330px/);
+});
+
+test("very narrow mobile cards keep enough height for long copy", () => {
+  const narrowMobile = mediaRule("(max-width: 340px)");
+
+  assert.match(narrowMobile, /\.industry-video-card\s*\{[\s\S]*?min-height:\s*330px/);
 });
 
 test("compressed desktop neighbours retain a legible minimum width", () => {
