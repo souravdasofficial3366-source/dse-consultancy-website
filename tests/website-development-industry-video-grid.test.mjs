@@ -35,6 +35,32 @@ function mediaRule(query) {
   assert.fail(`unterminated @media ${query}`);
 }
 
+async function readMp4Dimensions(path) {
+  const file = await readFile(path);
+  const marker = Buffer.from("tkhd");
+  let offset = 0;
+
+  while ((offset = file.indexOf(marker, offset)) !== -1) {
+    const boxStart = offset - 4;
+
+    if (boxStart >= 0) {
+      const boxSize = file.readUInt32BE(boxStart);
+      const boxEnd = boxStart + boxSize;
+
+      if (boxSize >= 16 && boxEnd <= file.length) {
+        const width = file.readUInt32BE(boxEnd - 8) / 65536;
+        const height = file.readUInt32BE(boxEnd - 4) / 65536;
+
+        if (width > 0 && height > 0) return { width, height };
+      }
+    }
+
+    offset += marker.length;
+  }
+
+  assert.fail(`${path} does not contain readable MP4 track dimensions`);
+}
+
 test("six local industry video loops and posters stay inside the media budget", async () => {
   let totalVideoBytes = 0;
 
@@ -48,6 +74,17 @@ test("six local industry video loops and posters stay inside the media budget", 
   }
 
   assert.ok(totalVideoBytes <= 18 * 1024 * 1024, "combined videos exceed 18 MB");
+});
+
+test("every local industry video keeps its long edge within 1280 pixels", async () => {
+  for (const name of names) {
+    const { width, height } = await readMp4Dimensions(`public/videos/industries/${name}.mp4`);
+
+    assert.ok(
+      Math.max(width, height) <= 1280,
+      `${name}.mp4 is ${width}x${height}; its long edge exceeds 1280 pixels`
+    );
+  }
 });
 
 test("industry data maps every business to local video and poster media", () => {
