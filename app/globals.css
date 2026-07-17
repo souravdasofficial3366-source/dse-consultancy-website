@@ -1400,6 +1400,52 @@ select {
   }
 }
 
+/* Footer cursor response refinement */
+.interactive-footer {
+  --footer-pointer-x: 50%;
+  --footer-pointer-y: 30%;
+}
+
+.interactive-footer::before {
+  position: absolute;
+  z-index: 0;
+  top: var(--footer-pointer-y);
+  left: var(--footer-pointer-x);
+  width: clamp(280px, 24vw, 360px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254, 104, 7, .32), rgba(255, 103, 77, .1) 42%, transparent 72%);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: left 100ms linear, top 100ms linear, opacity 260ms ease;
+}
+
+.interactive-footer[data-pointer-active="true"]::before {
+  opacity: .2;
+}
+
+.interactive-footer-pixels > span {
+  opacity: calc(.035 + var(--pixel-energy) * .28);
+  filter: saturate(calc(.72 + var(--pixel-energy) * .38));
+  transform: scale(calc(.97 + var(--pixel-energy) * .02));
+  transition: opacity 100ms linear, filter 100ms linear, transform 100ms linear;
+}
+
+.interactive-footer[data-pointer-active="false"] .interactive-footer-pixels > span {
+  transition-duration: 260ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-footer::before {
+    top: 22%;
+    left: 50%;
+    opacity: .08;
+    transition: none;
+  }
+}
+
 .industry-video-grid {
   display: grid;
   grid-template-columns: 1fr;
