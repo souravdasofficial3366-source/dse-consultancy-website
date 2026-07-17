@@ -81,6 +81,16 @@ test("tablet process cards use a shallower sticky offset", () => {
   assert.match(tablet, /position:\s*sticky/);
 });
 
+test("sticky overlap keeps each previous phase label in its exposed strip", () => {
+  const desktop = mediaRule("(min-width: 1200px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)");
+  const tablet = mediaRule("(min-width: 768px) and (max-width: 1199px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)");
+
+  assert.match(desktop, /--process-header-strip:\s*48px/);
+  assert.match(tablet, /--process-header-strip:\s*36px/);
+  assert.match(css, /\.consultancy-process-stack-header\s*\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*min-height:\s*var\(--process-header-strip\)[^}]*padding:\s*0/);
+  assert.match(css, /\.consultancy-process-stack-header h3\s*\{[^}]*font-size:\s*clamp\(\.8rem, 1\.35vw, 1\.25rem\)/);
+});
+
 test("mobile, short-height, and reduced-motion modes disable sticky positioning", () => {
   const mobile = mediaRule("(max-width: 767px)");
   const shortHeight = mediaRule("(min-width: 768px) and (max-height: 759px)");

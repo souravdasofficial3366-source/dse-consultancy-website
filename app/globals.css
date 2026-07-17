@@ -4708,6 +4708,7 @@ select {
 
 .consultancy-home-process {
   --process-sticky-top: 96px;
+  --process-header-strip: 64px;
   position: relative;
   padding: clamp(90px, 11vw, 160px) 0;
   overflow: clip;
@@ -4768,10 +4769,19 @@ select {
 }
 
 .consultancy-process-stack-header {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  left: 0;
   display: flex;
-  min-height: 48px;
+  min-height: var(--process-header-strip);
   align-items: center;
   gap: 18px;
+  padding: 0 clamp(108px, 12vw, 170px) 0 clamp(26px, 4vw, 58px);
+  border-bottom: 1px solid rgba(255, 249, 245, .18);
+  background: linear-gradient(90deg, rgba(9, 8, 14, .82), rgba(9, 8, 14, .28));
+  backdrop-filter: blur(10px);
 }
 
 .consultancy-process-stack-header > span {
@@ -4785,7 +4795,7 @@ select {
   margin: 0;
   color: #fff9f5;
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 4.5rem);
+  font-size: clamp(.8rem, 1.35vw, 1.25rem);
   font-weight: 400;
   letter-spacing: -.035em;
   line-height: .95;
@@ -4848,16 +4858,23 @@ select {
 .consultancy-process-stack-progress small { color: #ffad45; font-size: .52rem; text-transform: uppercase; }
 
 @media (min-width: 1200px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .consultancy-home-process {
+    --process-header-strip: 48px;
+  }
+
   .consultancy-process-stack-card {
     position: sticky;
     top: calc(var(--process-sticky-top) + var(--process-offset));
     z-index: calc(var(--process-index) + 1);
   }
+
+  .consultancy-process-stack-inner { grid-template-rows: 1fr; }
 }
 
 @media (min-width: 768px) and (max-width: 1199px) and (min-height: 760px) and (prefers-reduced-motion: no-preference) {
   .consultancy-home-process {
     --process-sticky-top: 82px;
+    --process-header-strip: 36px;
   }
 
   .consultancy-process-stack-card {
@@ -4873,6 +4890,8 @@ select {
   .consultancy-process-stack-content ul {
     justify-content: flex-start;
   }
+
+  .consultancy-process-stack-inner { grid-template-rows: 1fr; }
 }
 
 @media (max-width: 767px) {
@@ -4889,8 +4908,15 @@ select {
     background: linear-gradient(180deg, rgba(9, 8, 14, .24), rgba(9, 8, 14, .94) 76%);
   }
 
-  .consultancy-process-stack-inner { padding: 24px; }
-  .consultancy-process-stack-header { padding-right: 72px; }
+  .consultancy-process-stack-inner { grid-template-rows: auto 1fr; padding: 24px; }
+  .consultancy-process-stack-header {
+    position: relative;
+    min-height: 48px;
+    padding: 0 72px 0 0;
+    border-bottom: 0;
+    background: none;
+    backdrop-filter: none;
+  }
   .consultancy-process-stack-header h3 { font-size: clamp(2rem, 12vw, 3.35rem); }
   .consultancy-process-stack-content { grid-template-columns: 1fr; align-content: end; gap: 22px; }
   .consultancy-process-stack-content > p { font-size: 1rem; }
