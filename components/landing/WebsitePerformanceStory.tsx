@@ -46,21 +46,34 @@ const cards: PerformanceCard[] = [
   }
 ];
 
+const STICKY_TOP = 88;
+
 export function WebsitePerformanceStory() {
+  const pinStartRef = useRef<HTMLSpanElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const cardRefs = useRef<Array<HTMLElement | null>>([]);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [horizontalMode, setHorizontalMode] = useState(false);
   const [inView, setInView] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const horizontalQuery = window.matchMedia(
+      "(min-width: 1200px) and (min-height: 760px), (min-width: 1024px) and (max-width: 1199px) and (min-height: 760px) and (orientation: landscape)"
+    );
     const updateReducedMotion = () => setReducedMotion(mediaQuery.matches);
+    const updateHorizontalMode = () => setHorizontalMode(horizontalQuery.matches);
 
     updateReducedMotion();
+    updateHorizontalMode();
     mediaQuery.addEventListener("change", updateReducedMotion);
+    horizontalQuery.addEventListener("change", updateHorizontalMode);
 
-    return () => mediaQuery.removeEventListener("change", updateReducedMotion);
+    return () => {
+      mediaQuery.removeEventListener("change", updateReducedMotion);
+      horizontalQuery.removeEventListener("change", updateHorizontalMode);
+    };
   }, []);
 
   useEffect(() => {
@@ -77,67 +90,73 @@ export function WebsitePerformanceStory() {
   }, []);
 
   useEffect(() => {
-    const visibleCards = new Set<number>();
-    const cardObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const index = cardRefs.current.indexOf(entry.target as HTMLElement);
-          if (index === -1) return;
+    const pinStart = pinStartRef.current;
+    const section = sectionRef.current;
+    const stack = stackRef.current;
+    if (!pinStart || !section || !stack) return;
 
-          if (entry.isIntersecting) {
-            visibleCards.add(index);
-          } else {
-            visibleCards.delete(index);
-          }
-        });
+    if (!inView || !horizontalMode || reducedMotion) {
+      section.style.setProperty("--wd-performance-progress", "0");
+      setActiveIndex(0);
+      return;
+    }
 
-        if (visibleCards.size === 0) {
-          setActiveIndex(null);
-          return;
-        }
+    let frameId = 0;
 
-        const viewportCenter = window.innerHeight / 2;
-        const closestIndex = [...visibleCards]
-          .map((index) => {
-            const card = cardRefs.current[index];
-            if (!card) return null;
+    const updateProgress = () => {
+      frameId = 0;
+      const sectionTop = window.scrollY + section.getBoundingClientRect().top;
+      const start = window.scrollY + pinStart.getBoundingClientRect().top - STICKY_TOP;
+      const paddingBottom = Number.parseFloat(window.getComputedStyle(section).paddingBottom) || 0;
+      const end = sectionTop
+        + section.offsetHeight
+        - paddingBottom
+        - stack.offsetHeight
+        - STICKY_TOP;
+      const distance = Math.max(end - start, 1);
+      const progress = Math.min(Math.max((window.scrollY - start) / distance, 0), 1);
+      const nextIndex = Math.min(2, Math.floor(progress * 3));
 
-            const { top, height } = card.getBoundingClientRect();
-            return { index, distance: Math.abs(top + height / 2 - viewportCenter) };
-          })
-          .filter((card): card is { index: number; distance: number } => card !== null)
-          .sort((first, second) => first.distance - second.distance)[0]?.index;
+      section.style.setProperty("--wd-performance-progress", String(progress));
+      setActiveIndex(nextIndex);
+    };
 
-        setActiveIndex(closestIndex ?? null);
-      },
-      { threshold: [0.35, 0.55, 0.75] }
-    );
+    const onScroll = () => {
+      if (frameId !== 0) return;
+      frameId = window.requestAnimationFrame(updateProgress);
+    };
 
-    cardRefs.current.forEach((card) => {
-      if (card) cardObserver.observe(card);
-    });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    updateProgress();
 
-    return () => cardObserver.disconnect();
-  }, []);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frameId !== 0) window.cancelAnimationFrame(frameId);
+    };
+  }, [horizontalMode, inView, reducedMotion]);
 
   return (
-    <section className="section dark wd-performance-story" id="results" ref={sectionRef}>
+    <section
+      className="section dark wd-performance-story"
+      data-horizontal={horizontalMode && !reducedMotion}
+      data-in-view={inView}
+      id="results"
+      ref={sectionRef}
+    >
       <div className="container wd-performance-story-intro">
         <span className="eyebrow">Website Performance, Explained</span>
         <h2>Turn Local Searches Into Real Business Leads</h2>
         <p>A clear website helps customers discover, understand, and contact your business.</p>
       </div>
-      <div className="container wd-performance-stack">
-        {cards.map(({ Demo, ...card }, index) => {
-          const isActive = inView && activeIndex !== null && activeIndex === index;
-
-          return (
+      <span aria-hidden="true" className="wd-performance-pin-start" ref={pinStartRef} />
+      <div className="container wd-performance-stack" ref={stackRef}>
+        <div className="wd-performance-track">
+          {cards.map(({ Demo, ...card }, index) => (
             <article
               className="wd-performance-card"
               data-active={activeIndex === index}
               data-phase={index}
               key={card.number}
-              ref={(cardElement) => { cardRefs.current[index] = cardElement; }}
             >
               <div className="wd-performance-card-copy">
                 <span className="wd-performance-number">{card.number}</span>
@@ -146,10 +165,13 @@ export function WebsitePerformanceStory() {
                 <p>{card.body}</p>
                 <strong className="wd-performance-proof">{card.proof}</strong>
               </div>
-              <Demo active={isActive} reducedMotion={reducedMotion} />
+              <Demo active={inView && activeIndex === index} reducedMotion={reducedMotion} />
             </article>
-          );
-        })}
+          ))}
+        </div>
+        <div aria-hidden="true" className="wd-performance-progress">
+          <span />
+        </div>
       </div>
     </section>
   );
