@@ -2,12 +2,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [page, story, searchDemo, usabilityDemo, enquiryDemo] = await Promise.all([
+const [page, story, searchDemo, usabilityDemo, enquiryDemo, css] = await Promise.all([
   readFile("app/(landing-pages)/website-development/page.tsx", "utf8"),
   readFile("components/landing/WebsitePerformanceStory.tsx", "utf8").catch(() => ""),
   readFile("components/landing/website-performance/SearchVisibilityDemo.tsx", "utf8").catch(() => ""),
   readFile("components/landing/website-performance/UsabilityDemo.tsx", "utf8").catch(() => ""),
-  readFile("components/landing/website-performance/EnquiryPipelineDemo.tsx", "utf8").catch(() => "")
+  readFile("components/landing/website-performance/EnquiryPipelineDemo.tsx", "utf8").catch(() => ""),
+  readFile("app/globals.css", "utf8")
 ]);
 
 test("website-development results section mounts the performance story", () => {
@@ -74,4 +75,59 @@ test("each demo has its exact finite active-only loop and static final phase", (
     assert.match(source, /window\.clearInterval\(interval\)/);
     assert.match(source, /data-phase=\{phase\}/);
   });
+});
+
+test("performance cards use supported sticky geometry", () => {
+  assert.match(css, /@media \(min-width: 1200px\) and \(min-height: 760px\) and \(prefers-reduced-motion: no-preference\)[\s\S]*?\.wd-performance-card\s*\{[^}]*position:\s*sticky[^}]*top:/);
+  assert.match(css, /\.wd-performance-card:nth-child\(2\)/);
+  assert.match(css, /\.wd-performance-card:nth-child\(3\)/);
+  assert.match(css, /@media \(min-width: 768px\) and \(max-width: 1199px\) and \(min-height: 900px\) and \(prefers-reduced-motion: no-preference\)[\s\S]*?\.wd-performance-card\s*\{[^}]*position:\s*sticky[^}]*top:/);
+});
+
+test("mobile short-height and reduced-motion modes restore normal flow", () => {
+  const normalFlow = /\.wd-performance-card\s*\{[^}]*position:\s*relative[^}]*top:\s*auto[^}]*transform:\s*none/;
+
+  assert.match(css, new RegExp(String.raw`@media \(max-width: 767px\)[\s\S]*?${normalFlow.source}`));
+  assert.match(css, new RegExp(String.raw`@media \(min-width: 768px\) and \(max-height: 759px\)[\s\S]*?${normalFlow.source}`));
+  assert.match(css, new RegExp(String.raw`@media \(prefers-reduced-motion: reduce\)[\s\S]*?${normalFlow.source}`));
+});
+
+test("interface transitions cover every exact phase with complete reduced-motion states", () => {
+  assert.match(css, /\.wd-performance-demo\s*\{[^}]*will-change:\s*transform/);
+
+  const phaseSelectors = [
+    '.wd-search-demo[data-phase="0"] .wd-search-query b',
+    '.wd-search-demo[data-phase="1"] .wd-search-query b',
+    '.wd-search-demo[data-phase="2"] .is-dse-result',
+    '.wd-search-demo[data-phase="3"] .is-dse-result',
+    '.wd-search-demo[data-phase="4"] .wd-search-preview',
+    '.wd-usability-demo[data-phase="0"] .wd-usability-desktop',
+    '.wd-usability-demo[data-phase="1"] .wd-usability-desktop',
+    '.wd-usability-demo[data-phase="2"] .wd-usability-mobile',
+    '.wd-usability-demo[data-phase="3"] .wd-usability-checks li:nth-child(-n + 2)',
+    '.wd-usability-demo[data-phase="4"] .wd-usability-checks li:nth-child(-n + 3)',
+    '.wd-usability-demo[data-phase="5"] .wd-usability-checks li',
+    '.wd-enquiry-demo[data-phase="0"] .wd-enquiry-message',
+    '.wd-enquiry-demo[data-phase="1"] .wd-enquiry-message',
+    '.wd-enquiry-demo[data-phase="2"] .wd-enquiry-contact',
+    '.wd-enquiry-demo[data-phase="3"] .wd-enquiry-pipeline li:nth-child(1)',
+    '.wd-enquiry-demo[data-phase="4"] .wd-enquiry-pipeline li:nth-child(2)',
+    '.wd-enquiry-demo[data-phase="5"] .wd-enquiry-pipeline li:nth-child(3)',
+    '.wd-enquiry-demo[data-phase="6"] .wd-enquiry-counters'
+  ];
+
+  phaseSelectors.forEach((selector) => assert.ok(css.includes(selector), `missing phase selector: ${selector}`));
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.wd-performance-demo[\s\S]*?animation:\s*none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.wd-search-query b[\s\S]*?clip-path:\s*none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.wd-search-preview[\s\S]*?opacity:\s*1[^}]*transform:\s*none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.wd-usability-checks li[\s\S]*?opacity:\s*1[^}]*transform:\s*none/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.wd-enquiry-counters[\s\S]*?opacity:\s*1[^}]*transform:\s*none/);
+});
+
+test("performance interfaces protect narrow cards from horizontal overflow", () => {
+  assert.match(css, /\.wd-performance-card\s*\{[^}]*min-width:\s*0[^}]*overflow:\s*hidden/);
+  assert.match(css, /\.wd-performance-card-copy\s*\{[^}]*min-width:\s*0/);
+  assert.match(css, /\.wd-performance-demo\s*\{[^}]*min-width:\s*0/);
+  assert.match(css, /\.wd-search-query b\s*\{[^}]*overflow-wrap:\s*anywhere/);
+  assert.match(css, /@media \(max-width: 767px\)[\s\S]*?\.wd-performance-card\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/);
 });
