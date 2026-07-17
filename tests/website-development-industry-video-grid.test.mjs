@@ -19,6 +19,22 @@ const [page, component, data] = await Promise.all([
 
 const css = await readFile("app/globals.css", "utf8");
 
+function mediaRule(query) {
+  const start = css.indexOf(`@media ${query}`);
+  assert.notEqual(start, -1, `missing @media ${query}`);
+
+  const openingBrace = css.indexOf("{", start);
+  let depth = 0;
+
+  for (let index = openingBrace; index < css.length; index += 1) {
+    if (css[index] === "{") depth += 1;
+    if (css[index] === "}") depth -= 1;
+    if (depth === 0) return css.slice(start, index + 1);
+  }
+
+  assert.fail(`unterminated @media ${query}`);
+}
+
 test("six local industry video loops and posters stay inside the media budget", async () => {
   let totalVideoBytes = 0;
 
@@ -68,13 +84,53 @@ test("the gallery observes and syncs each video independently when cards change"
 
 test("desktop industry rows expand one card without affecting the other row", () => {
   assert.match(css, /@media \(min-width: 1100px\)[\s\S]*?\.industry-video-row\s*\{[\s\S]*?display:\s*flex/);
-  assert.match(css, /\.industry-video-row:has\(\.industry-video-card:is\(:hover, :focus-within\)\)/);
   assert.match(css, /flex-grow:\s*1\.64/);
   assert.match(css, /flex-grow:\s*\.68/);
 });
 
-test("industry video cards have tablet, mobile, and reduced-motion fallbacks", () => {
+test("desktop keyboard focus expands independently of pointer capabilities", () => {
+  const focusSizing = mediaRule("(min-width: 1100px) and (prefers-reduced-motion: no-preference)");
+
+  assert.match(focusSizing, /\.industry-video-row:has\(\.industry-video-card:focus-within\)/);
+  assert.match(focusSizing, /flex-grow:\s*\.68/);
+  assert.match(focusSizing, /flex-grow:\s*1\.64/);
+  assert.doesNotMatch(focusSizing, /hover:\s*hover|pointer:\s*fine|:hover/);
+});
+
+test("desktop hover expansion stays fine-pointer-only and opts out of reduced motion", () => {
+  const hoverSizing = mediaRule("(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+
+  assert.match(hoverSizing, /\.industry-video-row:has\(\.industry-video-card:hover\)/);
+  assert.match(hoverSizing, /flex-grow:\s*\.68/);
+  assert.match(hoverSizing, /flex-grow:\s*1\.64/);
+  assert.doesNotMatch(hoverSizing, /:focus-within/);
+});
+
+test("reduced motion cannot apply either desktop sizing rule", () => {
+  const focusSizing = mediaRule("(min-width: 1100px) and (prefers-reduced-motion: no-preference)");
+  const hoverSizing = mediaRule("(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+  const reducedMotion = mediaRule("(prefers-reduced-motion: reduce)");
+  const cssWithoutOptInSizing = css.replace(focusSizing, "").replace(hoverSizing, "");
+
+  assert.doesNotMatch(reducedMotion, /flex-grow:\s*(?:\.68|1\.64)/);
+  assert.doesNotMatch(cssWithoutOptInSizing, /flex-grow:\s*(?:\.68|1\.64)/);
+});
+
+test("industry video cards have tablet and reduced-motion fallbacks", () => {
   assert.match(css, /@media \(min-width: 700px\) and \(max-width: 1099px\)[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(css, /@media \(max-width: 699px\)[\s\S]*?grid-template-columns:\s*1fr/);
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*?\.industry-video-card/);
+});
+
+test("mobile cards keep enough height for long copy", () => {
+  const mobile = mediaRule("(max-width: 699px)");
+
+  assert.match(mobile, /\.industry-video-card\s*\{[\s\S]*?min-height:\s*330px/);
+  assert.match(mobile, /aspect-ratio:\s*4\s*\/\s*3/);
+  assert.doesNotMatch(mobile, /min-height:\s*0/);
+});
+
+test("compressed desktop neighbours retain a legible minimum width", () => {
+  const desktop = mediaRule("(min-width: 1100px)");
+
+  assert.match(desktop, /\.industry-video-card\s*\{[\s\S]*?min-width:\s*210px/);
 });
