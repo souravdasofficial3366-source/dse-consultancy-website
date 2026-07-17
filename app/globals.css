@@ -1881,7 +1881,8 @@ html[data-home-palette="blaze"] .site-footer .footer-bottom {
 
 /* Final footer reduced-motion override must follow normal pixel response. */
 @media (prefers-reduced-motion: reduce) {
-  .interactive-footer::before {
+  .interactive-footer::before,
+  .interactive-footer[data-pointer-active="true"]::before {
     top: 22%;
     left: 50%;
     opacity: .08;

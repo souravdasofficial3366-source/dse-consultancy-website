@@ -76,5 +76,6 @@ test("the final footer reduced-motion rule wins the pixel cascade", () => {
   const finalReducedCss = css.slice(finalReducedMotion);
 
   assert.ok(finalReducedMotion > normalPixelRule, "reduced-motion override must follow normal pixel response");
+  assert.match(finalReducedCss, /\.interactive-footer\[data-pointer-active="true"\]::before\s*\{[^}]*opacity:\s*\.08/);
   assert.match(finalReducedCss, /\.interactive-footer-pixels > span\s*\{[^}]*animation:\s*none\s*!important[^}]*opacity:\s*\.1[^}]*transform:\s*none[^}]*transition:\s*none/);
 });
