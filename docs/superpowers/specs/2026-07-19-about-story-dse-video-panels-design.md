@@ -2,7 +2,7 @@
 
 ## Goal
 
-Replace the static three-colour DSE mark in the About Us story section with three distinct video-backed letter panels. Preserve the current tilted square, rounded silhouette, and D/S/E identity while borrowing only the expanding-panel interaction idea from the Website Development industry gallery. Rebalance the adjacent story heading so it occupies no more than three lines on desktop.
+Replace the static three-colour DSE mark in the About Us story section with three distinct video-backed letter panels. Preserve the current tilted square, rounded silhouette, and D/S/E identity while borrowing only the expanding-panel interaction idea from the Website Development industry gallery. Rebalance the large `Built For Businesses...` heading in the right-hand story column so it occupies no more than three lines on desktop.
 
 ## Chosen approach
 
@@ -28,7 +28,7 @@ The square keeps its existing slight counter-clockwise rotation, rounded outer c
 
 ## Story heading
 
-The text column receives a slightly larger share of the desktop story grid. The heading keeps two semantic text spans, uses a reduced responsive maximum size, and is sized to render in two or three lines at standard desktop widths. Tablet and mobile continue to stack naturally.
+The right-hand text column receives a slightly larger share of the desktop story grid. Its `Built For Businesses That Need A Practical Digital Growth Partner.` heading keeps two semantic text spans, uses a reduced responsive maximum size, and is sized to render in two or three lines at standard desktop widths. This requirement does not apply to the page hero or the D/S/E graphic. Tablet and mobile continue to stack naturally.
 
 ## Accessibility and performance
 
