@@ -46,8 +46,8 @@ Trade-off: this could enforce future consistency, but it is an unnecessary struc
 
 For desktop widths above 960px:
 
-- Change `.consultancy-home-system-copy` from `minmax(0, 4fr) minmax(210px, 1fr)` to a balanced heading/body ratio aligned with the good About-page reference.
-- Give the body/CTA column a practical minimum of approximately 360px while allowing it to grow.
+- Change `.consultancy-home-system-copy` from `minmax(0, 4fr) minmax(210px, 1fr)` to `minmax(0, 1.4fr) minmax(420px, 1fr)`, a proportion visually aligned with the good About-page reference while accounting for the homepage’s longer copy.
+- Give the body/CTA column a practical 420px desktop minimum while allowing it to grow.
 - Use a slightly tighter fluid gap so the right column begins farther left without crowding the heading.
 - Keep bottom alignment so the CTA remains visually connected to the body and the heading baseline.
 - Do not change copy, font sizes, colours, CTA styling, card layout, or section spacing.
