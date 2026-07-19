@@ -28,7 +28,7 @@ The square keeps its existing slight counter-clockwise rotation, rounded outer c
 
 ## Story heading
 
-The right-hand text column receives a slightly larger share of the desktop story grid. Its `Built For Businesses That Need A Practical Digital Growth Partner.` heading keeps two semantic text spans, uses a reduced responsive maximum size, and is sized to render in two or three lines at standard desktop widths. This requirement does not apply to the page hero or the D/S/E graphic. Tablet and mobile continue to stack naturally.
+The right-hand text column receives a slightly larger share of the desktop story grid. Its `Built For Businesses That Need A Practical Digital Growth Partner.` heading uses three intentional desktop line spans—`Built For Businesses`, `That Need A Practical`, and `Digital Growth Partner.`—with a reduced responsive maximum size. This requirement does not apply to the page hero or the D/S/E graphic. Tablet and mobile continue to stack naturally and may wrap further when space requires it.
 
 ## Accessibility and performance
 
