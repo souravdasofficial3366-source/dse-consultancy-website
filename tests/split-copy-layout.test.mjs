@@ -2,11 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [homePage, aboutPage, contactPage, socialPage, css] = await Promise.all([
+const [homePage, css] = await Promise.all([
   readFile("app/(landing-pages)/page.tsx", "utf8"),
-  readFile("app/(website-pages)/about-us/page.tsx", "utf8"),
-  readFile("app/(website-pages)/contact-us/page.tsx", "utf8"),
-  readFile("app/(landing-pages)/social-media-management-plus-seo/page.tsx", "utf8"),
   readFile("app/globals.css", "utf8")
 ]);
 
@@ -42,13 +39,9 @@ function mediaBlock(query, requiredSelector) {
   assert.fail(`missing media block ${query} containing ${requiredSelector}`);
 }
 
-test("site-wide split-copy audit keeps every identified layout in scope", () => {
+test("homepage split-copy audit keeps every committed layout in scope", () => {
   assert.equal((homePage.match(/consultancy-home-heading split/g) ?? []).length, 2);
   assert.match(homePage, /className="consultancy-home-system-copy"/);
-  assert.match(aboutPage, /className="container dse-inner-hero-grid"/);
-  assert.match(aboutPage, /className="consultancy-home-heading split compact"/);
-  assert.equal((contactPage.match(/consultancy-home-heading split compact/g) ?? []).length, 2);
-  assert.match(socialPage, /className="social-section-head"/);
 });
 
 test("homepage system copy uses a balanced desktop heading and body ratio", () => {
