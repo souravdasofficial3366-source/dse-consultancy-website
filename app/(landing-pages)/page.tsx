@@ -1,416 +1,265 @@
-import { FaqList } from "@/components/faq/FaqList";
-import { LeadForm } from "@/components/forms/LeadForm";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { CursorExploreCta } from "@/components/landing/CursorExploreCta";
+import { HeroGrowthDashboard } from "@/components/landing/HeroGrowthDashboard";
+import { HomePalettePreview } from "@/components/landing/HomePalettePreview";
+import { HomeProcessStack, type HomeProcessStep } from "@/components/landing/HomeProcessStack";
+import { blogPosts } from "@/data/blog";
 import { LocalBusinessJsonLd } from "@/lib/json-ld";
-import { industryCards, siteConfig } from "@/data/site";
 
-const faqs = [
+export const metadata: Metadata = {
+  title: "Digital Growth Services For Local Businesses",
+  description:
+    "DSE Consultancy connects website development, social media management and SEO to help local businesses get discovered, build trust and generate enquiries."
+};
+
+const serviceCards = [
   {
-    question: "Is ₹3,999 the final price of the website?",
-    answer:
-      "₹3,999 is the starting price for a simple business website. Final price depends on the pages and features you need. We explain everything clearly on a short phone call before you pay."
+    number: "01",
+    eyebrow: "Website Development",
+    title: "Turn Your Business Into A Digital Destination.",
+    titleLines: ["Turn Your Business", "Into A Digital", "Destination."],
+    text: "A fast, mobile-first website that explains your services clearly and makes calling, WhatsApp and enquiry simple.",
+    href: "/website-development",
+    cta: "Explore Website Development",
+    video: "/videos/growth_visibility_assistant_search.mp4",
+    className: "website"
   },
   {
-    question: "Will my business show on Google?",
-    answer:
-      "Yes. We set up the basic Google details, write clear page titles, add your business information, and help your website get ready for local searches for 1 full year at no extra charge."
-  },
-  {
-    question: "Do I need to know coding or website work?",
-    answer:
-      "No. You only share your business name, photos, phone number, address, and services. We make the website and guide you in simple words."
-  },
-  {
-    question: "Will the website open properly on mobile phones?",
-    answer:
-      "Yes. Your website is made first for mobile phones because most local customers search from mobile."
-  },
-  {
-    question: "Can customers call or WhatsApp me from the website?",
-    answer:
-      "Yes. We add call buttons, WhatsApp buttons, and a simple enquiry form so new customers can contact you quickly."
+    number: "02",
+    eyebrow: "Social Media Management + SEO",
+    title: "Be Found, Stay Active And Build Customer Trust.",
+    titleLines: ["Be Found, Stay Active", "And Build Customer", "Trust."],
+    text: "One connected system for local search visibility, useful content, social proof and quality enquiry paths.",
+    href: "/social-media-management-plus-seo",
+    cta: "Explore SMM + SEO",
+    video: "/videos/growth_social_proof_scroll.mp4",
+    className: "social"
   }
-];
+] as const;
 
-const prices = [
+const processSteps = [
   {
-    name: "Essential",
-    kicker: "For Startups",
-    price: "₹3,999",
-    featured: false,
-    popularLabel: "",
-    items: [
-      "4–5 Static Pages",
-      "Free Domain + Hosting (1st Year)",
-      "Lead Form Integration",
-      "Google My Business Registration",
-      "24/7 Chat Support",
-      "Free Website Maintenance for 3 Months"
-    ]
+    number: "01",
+    title: "Discover",
+    description: "We understand the business, audience, location, services and the action customers should take.",
+    video: "/videos/home-process/discover.mp4",
+    poster: "/videos/home-process/discover-poster.jpg",
+    tags: ["Business Goals", "Customer Journey", "Local Demand"]
   },
   {
-    name: "Dynamic",
-    kicker: "For Growth",
-    price: "₹6,999",
-    featured: true,
-    popularLabel: "Most Popular",
-    items: [
-      "Everything in Essential +",
-      "Admin Dashboard",
-      "Unlimited Blog Updates",
-      "Live Chat Support Integration",
-      "24/7 Chat Support",
-      "Free Website Maintenance for 6 Months"
-    ]
+    number: "02",
+    title: "Design",
+    description: "We shape the message, visual direction, page structure and channel plan around that customer journey.",
+    video: "/videos/home-process/design.mp4",
+    poster: "/videos/home-process/design-poster.jpg",
+    tags: ["Message", "Visual Direction", "Page Structure"]
   },
   {
-    name: "Advanced",
-    kicker: "For Commercial",
-    price: "₹8,999",
-    featured: false,
-    popularLabel: "",
-    items: [
-      "Everything in Dynamic +",
-      "E-Commerce / Storefront",
-      "Payment & Logistics Integration",
-      "Inventory Management",
-      "24/7 Chat Support",
-      "Free Website Maintenance for 1 Year",
-      "Up to 25 Product Uploads Free"
-    ]
+    number: "03",
+    title: "Build",
+    description: "We create, connect and test the website, search, content and enquiry touchpoints.",
+    video: "/videos/home-process/build.mp4",
+    poster: "/videos/home-process/build-poster.jpg",
+    tags: ["Website", "Search Setup", "Enquiry Paths"]
+  },
+  {
+    number: "04",
+    title: "Improve",
+    description: "We review useful signals and refine the system as the business, content and customer needs evolve.",
+    video: "/videos/home-process/improve.mp4",
+    poster: "/videos/home-process/improve-poster.jpg",
+    tags: ["Useful Signals", "Content Refinement", "Ongoing Optimisation"]
   }
-];
+] as const satisfies readonly HomeProcessStep[];
 
-const performanceStats = [
-  {
-    score: 98,
-    title: "First-Page Google Ready",
-    text: "98% of the websites we build are optimized to rank on the first page of Google."
-  },
-  {
-    score: 95,
-    title: "User-Friendly Layout",
-    text: "95% of our layouts follow modern UI/UX standards, making websites easier to use."
-  },
-  {
-    score: 80,
-    title: "Quality Lead Generation",
-    text: "80% of the leads we generate are qualified and ready for sales follow-up."
-  }
-];
-
-export default function HomePage() {
+export default function ConsultancyHomePage() {
   return (
-    <main className="landing-page">
+    <main className="consultancy-home" data-home-palette="blaze" id="top">
       <LocalBusinessJsonLd />
-      <section className="hero" id="top">
-        <div className="container hero-grid">
-          <div className="hero-content">
-            <span className="eyebrow">
-              <span className="pulse-dot" />
-              Trusted by local Indian businesses
-            </span>
+      <HomePalettePreview />
+
+      <section className="consultancy-home-hero">
+        <video aria-hidden="true" autoPlay loop muted playsInline preload="metadata">
+          <source src="/videos/banner_section_Hero_video.mp4" type="video/mp4" />
+        </video>
+        <div className="consultancy-home-hero-shade" />
+        <div className="container consultancy-home-hero-grid">
+          <div className="consultancy-home-hero-copy">
+            <span className="consultancy-home-kicker">Digital Growth, Connected</span>
             <h1>
-              Get Your Professional Website Starting from{" "}
-              <span className="accent">{siteConfig.basePrice}</span>
+              <span>Build Your Presence.</span>
+              <span className="outline">Earn Attention.</span>
+              <span>Create Enquiries.</span>
             </h1>
-            <p className="hero-copy">
-              We make a fast website for your shop, clinic, store, or local business and help
-              customers find you on Google for 1 full year, free.
+            <p>
+              DSE Consultancy brings website development, social media management and SEO together
+              so local businesses can look credible, stay visible and make the next step easy for customers.
             </p>
-            <ul className="trust-list" aria-label="What is included">
-              <li>
-                <span className="material-symbols-outlined">verified</span>
-                Zero HIDDEN COST.
-              </li>
-              <li>
-                <span className="material-symbols-outlined">verified</span>
-                Free Domain, Hosting, SSL, and Website SEO
-              </li>
-              <li>
-                <span className="material-symbols-outlined">verified</span>
-                Fast website that opens on mobile
-              </li>
-            </ul>
+            <div className="consultancy-home-actions">
+              <Link className="consultancy-home-button primary" href="#services">
+                Explore Our Services <span aria-hidden="true">↘</span>
+              </Link>
+              <Link className="consultancy-home-button glass" href="/contact-us">
+                Start A Conversation <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
           </div>
-          <div className="lead-card" id="lead-form">
-            <h2>Get Your Business Website</h2>
-            <LeadForm sourcePath="/" />
-          </div>
+
+          <HeroGrowthDashboard />
         </div>
+        <CursorExploreCta />
       </section>
 
-      <section className="section white" id="why-us">
+      <section className="consultancy-home-services" id="services">
         <div className="container">
-          <div className="section-head center">
-            <h2>What&apos;s Included</h2>
-            <p className="section-copy">
-              Don&apos;t get trapped by &quot;Cheap&quot; ₹999 templates with hidden costs.
-            </p>
-          </div>
-          <div className="comparison">
-            <table>
-              <thead>
-                <tr>
-                  <th>Complimentary Add-ons</th>
-                  <th>DSE Consultancy Services</th>
-                  <th>Others</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Basic Website SEO</td>
-                  <td>
-                    <span className="comparison-status included">
-                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
-                      Included in the package
-                    </span>
-                  </td>
-                  <td>
-                    <span className="comparison-status excluded">
-                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
-                      Not included.
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Google My Business Setup and Manage</td>
-                  <td>
-                    <span className="comparison-status included">
-                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
-                      Included at no extra cost.
-                    </span>
-                  </td>
-                  <td>
-                    <span className="comparison-status excluded">
-                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
-                      Usually not included.
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Social Media Page Creation</td>
-                  <td>
-                    <span className="comparison-status included">
-                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
-                      Included in the package
-                    </span>
-                  </td>
-                  <td>
-                    <span className="comparison-status excluded">
-                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
-                      Usually charged separately.
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Professional Website Content</td>
-                  <td>
-                    <span className="comparison-status included">
-                      <span aria-hidden="true" className="material-symbols-outlined">check_circle</span>
-                      Included in the package
-                    </span>
-                  </td>
-                  <td>
-                    <span className="comparison-status excluded">
-                      <span aria-hidden="true" className="material-symbols-outlined">cancel</span>
-                      Usually not included.
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="industries">
-        <div className="container">
-          <div className="section-head center">
+          <div className="consultancy-home-heading split">
             <div>
-              <h2>Websites for Everyday Businesses</h2>
-              <p className="section-copy">
-                We create simple pages for the way local customers search and call.
+              <span className="consultancy-home-kicker dark">Our Services</span>
+              <h2>
+                <span>Two Growth Engines.</span>
+                <span>One Clear Business Story.</span>
+              </h2>
+            </div>
+            <p>
+              Start with the service your business needs now. Both pages are designed as focused,
+              conversion-ready experiences and connect back into the wider DSE ecosystem.
+            </p>
+          </div>
+
+          <div className="consultancy-service-grid">
+            {serviceCards.map((service) => (
+              <Link
+                className={`consultancy-service-card ${service.className}`}
+                href={service.href}
+                key={service.href}
+              >
+                <video aria-hidden="true" autoPlay loop muted playsInline preload="metadata">
+                  <source src={service.video} type="video/mp4" />
+                </video>
+                <span className="consultancy-service-overlay" />
+                <span className="consultancy-service-number">{service.number}</span>
+                <span className="consultancy-service-content">
+                  <small>{service.eyebrow}</small>
+                  <strong aria-label={service.title}>
+                    {service.titleLines.map((line) => <span key={line}>{line}</span>)}
+                  </strong>
+                  <span>{service.text}</span>
+                  <b>{service.cta} <i aria-hidden="true">↗</i></b>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="consultancy-home-system" id="connected-advantage">
+        <div className="container consultancy-home-system-grid">
+          <div className="consultancy-home-system-copy">
+            <div>
+              <span className="consultancy-home-kicker dark">The Connected Advantage</span>
+              <h2>
+                <span>Every Customer Touchpoint.</span>
+                <span>One Consistent Business.</span>
+              </h2>
+            </div>
+            <div className="consultancy-home-system-intro">
+              <p>
+                Your website, Google presence, social content and contact journey work better when
+                they use one message and guide customers toward one clear action.
               </p>
+              <Link href="/about-us">See How We Think <span aria-hidden="true">↗</span></Link>
             </div>
-            <a className="outline-button" href="#lead-form">
-              Check my business
-            </a>
           </div>
-          <div className="industry-grid">
-            {industryCards.map((card) => (
-              <article className="industry-card" key={card.title}>
-                <div className="industry-image" style={{ backgroundImage: `url("${card.image}")` }} />
-                <div className="industry-content">
-                  <h3>{card.title}</h3>
-                  <p>{card.text}</p>
-                  <a className="secondary-button" href="#lead-form">
-                    View package
-                  </a>
-                </div>
-              </article>
-            ))}
+          <div className="consultancy-system-canvas">
+            <article className="consultancy-system-tile tile-discovery">
+              <video aria-hidden="true" autoPlay loop muted playsInline preload="metadata">
+                <source src="/videos/connected_discovery_navigation.mp4" type="video/mp4" />
+              </video>
+              <span className="consultancy-system-tile-overlay" />
+              <span className="material-symbols-outlined">travel_explore</span>
+              <span className="consultancy-system-tile-copy">
+                <small>01 / Discovery</small>
+                <strong>Customers Find You</strong>
+                <p>Search-ready pages and local visibility create the first meaningful connection.</p>
+              </span>
+            </article>
+            <article className="consultancy-system-tile tile-trust">
+              <video aria-hidden="true" autoPlay loop muted playsInline preload="metadata">
+                <source src="/videos/connected_trust_seminar_audience.mp4" type="video/mp4" />
+              </video>
+              <span className="consultancy-system-tile-overlay" />
+              <span className="material-symbols-outlined">verified</span>
+              <span className="consultancy-system-tile-copy">
+                <small>02 / Trust</small>
+                <strong>Your Presence Feels Active</strong>
+                <p>Clear information, useful content and consistent visual signals reduce uncertainty.</p>
+              </span>
+            </article>
+            <article className="consultancy-system-tile tile-action">
+              <video aria-hidden="true" autoPlay loop muted playsInline preload="metadata">
+                <source src="/videos/connected_action_meeting.mp4" type="video/mp4" />
+              </video>
+              <span className="consultancy-system-tile-overlay" />
+              <span className="material-symbols-outlined">north_east</span>
+              <span className="consultancy-system-tile-copy">
+                <small>03 / Action</small>
+                <strong>Attention Becomes An Enquiry</strong>
+                <p>Calls, WhatsApp, forms and appointments create a simple path to conversation.</p>
+              </span>
+            </article>
           </div>
         </div>
       </section>
 
-      <section className="section dark" id="results">
-        <div className="container advantage-grid">
-          <div className="advantage-copy">
+      <section className="consultancy-home-process" id="process">
+        <div className="container">
+          <div className="consultancy-home-heading center">
+            <span className="consultancy-home-kicker">How We Work</span>
             <h2>
-              Turn <span className="accent">Local Searches</span> Into Real{" "}
-              <span className="accent">Business Leads</span>
+              <span>A Clear Process From First Conversation</span>
+              <span>To Continuous Improvement.</span>
             </h2>
-            <p className="section-copy">
-              A website should not only look good. It should help people find your business, trust
-              you, and call you.
-            </p>
-            <div className="score-list">
-              {performanceStats.map((stat, index) => (
-                <div className="score-item" key={stat.title}>
-                  <span aria-label={`${stat.score} percent`} className="score-ring">
-                    <svg aria-hidden="true" viewBox="0 0 100 100">
-                      <circle className="score-track" cx="50" cy="50" r="43" />
-                      <circle
-                        className="score-progress"
-                        cx="50"
-                        cy="50"
-                        pathLength="100"
-                        r="43"
-                        style={{
-                          animationDelay: `${index * 180}ms`,
-                          strokeDashoffset: 100 - stat.score
-                        }}
-                      />
-                    </svg>
-                    <strong>{stat.score}%</strong>
-                  </span>
-                  <div>
-                    <h3>{stat.title}</h3>
-                    <p>{stat.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
-          <div className="proof-panel">
-            <div className="video-placeholder" role="img" aria-label="Website walkthrough video placeholder">
-              <span aria-hidden="true" className="material-symbols-outlined">play_circle</span>
-              <strong>Website Walkthrough Video</strong>
-            </div>
-            <p className="proof-quote">
-              A Clear Website Helps Customers Understand What You Sell and Contact You Faster.
-            </p>
-          </div>
+          <HomeProcessStack steps={processSteps} />
         </div>
       </section>
 
-      <section className="section white" id="pricing">
+      <section className="consultancy-home-insights" id="insights">
         <div className="container">
-          <div className="section-head center">
-            <h2>Pocket-Friendly Pricing</h2>
-            <p className="section-copy">Professional Digital Assets at Your Fingertips</p>
+          <div className="consultancy-home-heading split compact">
+            <div>
+              <span className="consultancy-home-kicker dark">Latest Thinking</span>
+              <h2>
+                <span>Useful Ideas For Building A</span>
+                <span>Stronger Digital Presence.</span>
+              </h2>
+            </div>
+            <Link className="consultancy-text-link" href="/blog">View All Articles ↗</Link>
           </div>
-          <div className="pricing-grid">
-            {prices.map((plan) => (
-              <article className={`price-card ${plan.featured ? "featured" : ""}`} key={plan.name}>
-                {plan.popularLabel ? <span className="popular-badge">{plan.popularLabel}</span> : null}
-                <h3 className="price-kicker">
-                  {plan.kicker} <span>Starting Price</span>
-                </h3>
-                <div className="price">
-                  {plan.price}
-                  <small> + GST</small>
-                </div>
-                <p className="price-warning">** Pricing may vary as per your requirement</p>
-                <ul className="check-list">
-                  {plan.items.map((item) => (
-                    <li key={item}>
-                      <span className="material-symbols-outlined">check_circle</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a className={plan.featured ? "primary-button" : "outline-button"} href="#lead-form">
-                  Choose {plan.name}
-                </a>
-              </article>
+          <div className="consultancy-insight-grid">
+            {blogPosts.map((post, index) => (
+              <Link className={`consultancy-insight-card ${post.accent}`} href={`/blog/${post.slug}`} key={post.slug}>
+                <span className="consultancy-insight-index">0{index + 1}</span>
+                <small>{post.category}</small>
+                <h3>{post.title}</h3>
+                <p>{post.excerpt}</p>
+                <span className="consultancy-insight-meta">{post.readingTime} <b>↗</b></span>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section soft" id="support">
-        <div className="container service-grid">
-          <article className="service-card">
-            <span className="material-symbols-outlined service-icon">article</span>
-            <h3>We Help You with Website Content</h3>
-            <p>You do not need to write everything. We help explain your services in simple words.</p>
-          </article>
-          <article className="service-card">
-            <span className="material-symbols-outlined service-icon">code_off</span>
-            <h3>No Technical Work for You</h3>
-            <p>Share your details and photos. We handle the website work and guide you clearly.</p>
-          </article>
-          <article className="service-card">
-            <span className="material-symbols-outlined service-icon">travel_explore</span>
-            <h3>Help Customers Find You</h3>
-            <p>Your pages are written so local customers can understand, trust, and call you.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="section white" id="faq">
-        <div className="container">
-          <div className="section-head center">
-            <span className="eyebrow">Questions</span>
-            <h2>Clear Answers Before You Start</h2>
-            <p className="section-copy">
-              No confusing words. No pressure. We explain the package in everyday language.
-            </p>
-          </div>
-          <div className="faq-grid">
-            <FaqList items={faqs} />
-            <aside className="help-card">
-              <span className="material-symbols-outlined">support_agent</span>
-              <h3>Still Have Questions?</h3>
-              <p>Book a short call and tell us about your business.</p>
-              <a className="help-link" href={`tel:${siteConfig.phone}`}>
-                <span className="material-symbols-outlined">call</span>
-                <span>
-                  <small>Call us</small>
-                  <br />
-                  {siteConfig.phone}
-                </span>
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </a>
-              <a className="help-link primary" href={`mailto:${siteConfig.email}`}>
-                <span className="material-symbols-outlined">mail</span>
-                <span>
-                  <small>Email us</small>
-                  <br />
-                  {siteConfig.email}
-                </span>
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </a>
-            </aside>
-          </div>
-          <div className="mini-grid" style={{ marginTop: 36 }}>
-            <article className="mini-card">
-              <span className="material-symbols-outlined">payments</span>
-              <h3>Clear Billing</h3>
-              <p>We tell you the package price and any extra work before payment.</p>
-            </article>
-            <article className="mini-card">
-              <span className="material-symbols-outlined">settings_suggest</span>
-              <h3>Guided Support</h3>
-              <p>We guide you after launch so you know what was done.</p>
-            </article>
-            <article className="mini-card">
-              <span className="material-symbols-outlined">verified_user</span>
-              <h3>Consent First</h3>
-              <p>We store form details only after the visitor agrees to be contacted.</p>
-            </article>
-          </div>
+      <section className="consultancy-home-closing" id="contact">
+        <div className="container consultancy-home-closing-inner">
+          <span>Ready When You Are.</span>
+          <h2>
+            <span>Let&apos;s Build The Digital Presence</span>
+            <span>Your Business Deserves.</span>
+          </h2>
+          <p>Tell us where your business is today and what you want the next customer to do.</p>
+          <Link href="/contact-us">Contact DSE Consultancy <span aria-hidden="true">↗</span></Link>
         </div>
       </section>
     </main>
