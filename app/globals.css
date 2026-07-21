@@ -7969,7 +7969,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   transform: translateY(0);
 }
 
-@media (min-width: 1200px) and (min-height: 760px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1200px) and (min-height: 620px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .wd-performance-story {
     min-height: 300vh;
   }
@@ -8008,42 +8008,44 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1199px) and (min-height: 760px) and (orientation: landscape) and (prefers-reduced-motion: no-preference) {
-  .wd-performance-story {
-    min-height: 300vh;
-  }
-
+@media (min-width: 1200px) and (min-height: 620px) and (max-height: 759px) and (hover: hover) and (pointer: fine) {
   .wd-performance-stack {
-    position: sticky;
-    top: 88px;
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 12px;
-    height: calc(100svh - 104px);
-    overflow: hidden;
+    gap: 10px;
   }
 
-  .wd-performance-track {
-    display: grid;
-    grid-template-columns: repeat(3, 100%);
-    gap: 0;
-    min-height: 0;
-    transform: translate3d(calc(var(--wd-performance-progress, 0) * -200%), 0, 0);
+  .wd-performance-card-copy {
+    padding: clamp(26px, 3vw, 40px);
   }
 
-  .wd-performance-card {
-    height: 100%;
-    min-height: 0;
+  .wd-performance-eyebrow {
+    margin-bottom: 12px;
   }
 
-  .wd-performance-progress {
-    display: block;
-    justify-self: center;
+  .wd-performance-card-copy h3 {
+    font-size: clamp(1.75rem, 2.5vw, 2.4rem);
   }
 
-  .wd-performance-story[data-in-view="true"] .wd-performance-track,
-  .wd-performance-story[data-in-view="true"] .wd-performance-card[data-active="true"] .wd-performance-demo {
-    will-change: transform;
+  .wd-performance-card-copy p {
+    margin: 14px 0 18px;
+    font-size: .88rem;
+    line-height: 1.5;
+  }
+
+  .wd-performance-proof {
+    min-height: 36px;
+    padding: 7px 12px;
+  }
+
+  .wd-performance-demo {
+    padding: clamp(18px, 3vw, 34px);
+  }
+
+  .wd-usability-desktop {
+    min-height: 220px;
+  }
+
+  .wd-usability-mobile {
+    min-height: 200px;
   }
 }
 
@@ -8239,7 +8241,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   }
 }
 
-@media (min-width: 768px) and (max-height: 759px) {
+@media (min-width: 768px) and (max-height: 619px) {
   .wd-performance-story {
     min-height: auto;
   }

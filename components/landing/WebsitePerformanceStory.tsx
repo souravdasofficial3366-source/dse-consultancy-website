@@ -63,7 +63,7 @@ export function WebsitePerformanceStory() {
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const horizontalQuery = window.matchMedia(
-      "(min-width: 1200px) and (min-height: 760px), (min-width: 1024px) and (max-width: 1199px) and (min-height: 760px) and (orientation: landscape)"
+      "(min-width: 1200px) and (min-height: 620px) and (hover: hover) and (pointer: fine)"
     );
     const pointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
     const updateFinePointer = () => setFinePointer(pointerQuery.matches);

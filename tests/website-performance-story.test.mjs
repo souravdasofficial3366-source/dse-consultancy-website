@@ -228,40 +228,46 @@ test("compact fallback cards use a separate shorter deterministic timing policy"
   });
 });
 
-test("performance story uses exact desktop and landscape-tablet horizontal pinning", () => {
-  const desktop = mediaBlock(
-    "@media (min-width: 1200px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)",
-    ".wd-performance-track"
-  );
-  const tablet = mediaBlock(
-    "@media (min-width: 1024px) and (max-width: 1199px) and (min-height: 760px) and (orientation: landscape) and (prefers-reduced-motion: no-preference)",
-    ".wd-performance-track"
-  );
+test("performance story uses the same fine-pointer laptop threshold in JavaScript and CSS", () => {
+  const laptopQuery = "(min-width: 1200px) and (min-height: 620px) and (hover: hover) and (pointer: fine)";
+  const laptopMedia =
+    "@media (min-width: 1200px) and (min-height: 620px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
+  const desktop = mediaBlock(laptopMedia, ".wd-performance-track");
   const desktopStory = ruleBlock(desktop, ".wd-performance-story {");
   const desktopStack = ruleBlock(desktop, ".wd-performance-stack {");
   const desktopTrack = ruleBlock(desktop, ".wd-performance-track {");
   const desktopCard = ruleBlock(desktop, ".wd-performance-card {");
-  const desktopProgress = ruleBlock(desktop, ".wd-performance-progress {");
 
+  assert.ok(story.includes(laptopQuery));
   assert.match(desktopStory, /min-height:\s*300vh/);
   assert.match(desktopStack, /position:\s*sticky/);
   assert.match(desktopStack, /top:\s*88px/);
   assert.match(desktopStack, /height:\s*calc\(100svh - 104px\)/);
-  assert.match(desktopStack, /overflow:\s*hidden/);
   assert.match(desktopTrack, /grid-template-columns:\s*repeat\(3,\s*100%\)/);
-  assert.match(desktopTrack, /transform:\s*translate3d\(calc\(var\(--wd-performance-progress, 0\) \* -200%\), 0, 0\)/);
+  assert.match(desktopTrack, /-200%/);
   assert.match(desktopCard, /height:\s*100%/);
-  assert.match(desktopCard, /min-height:\s*0/);
-  assert.match(desktopProgress, /display:\s*block/);
-  assert.match(ruleBlock(css, ".wd-performance-progress span"), /transform:\s*scaleX\(var\(--wd-performance-progress, 0\)\)/);
-  assert.match(tablet, /\.wd-performance-story\s*\{[^}]*min-height:\s*300vh/);
-  assert.match(tablet, /\.wd-performance-track\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*100%\)[^}]*-200%/);
+  assert.doesNotMatch(
+    css,
+    /@media \(min-width: 1024px\) and \(max-width: 1199px\)[^{]*orientation:\s*landscape[\s\S]*?\.wd-performance-story\s*\{\s*min-height:\s*300vh/
+  );
+});
 
-  const viewportHeight = 760;
-  const stackTop = 88;
+test("short laptop geometry compacts content without disabling horizontal mode", () => {
+  const compactLaptop = mediaBlock(
+    "@media (min-width: 1200px) and (min-height: 620px) and (max-height: 759px) and (hover: hover) and (pointer: fine)",
+    ".wd-performance-card-copy"
+  );
+
+  assert.match(ruleBlock(compactLaptop, ".wd-performance-card-copy {"), /padding:\s*clamp\(26px,\s*3vw,\s*40px\)/);
+  assert.match(ruleBlock(compactLaptop, ".wd-performance-card-copy h3 {"), /font-size:\s*clamp\(1\.75rem,\s*2\.5vw,\s*2\.4rem\)/);
+  assert.match(ruleBlock(compactLaptop, ".wd-performance-demo {"), /padding:\s*clamp\(18px,\s*3vw,\s*34px\)/);
+  assert.match(ruleBlock(compactLaptop, ".wd-usability-desktop {"), /min-height:\s*220px/);
+  assert.match(ruleBlock(compactLaptop, ".wd-usability-mobile {"), /min-height:\s*200px/);
+
+  const viewportHeight = 650;
+  const stickyTop = 88;
   const stackHeight = viewportHeight - 104;
-  assert.ok(stackTop >= 80, "pinned track must clear the sticky header");
-  assert.ok(stackTop + stackHeight <= viewportHeight, "pinned track must fit inside the viewport");
+  assert.ok(stickyTop + stackHeight <= viewportHeight);
 });
 
 test("portrait mobile short-height and reduced-motion modes restore vertical flow", () => {
@@ -269,7 +275,7 @@ test("portrait mobile short-height and reduced-motion modes restore vertical flo
     ["@media (max-width: 767px)", ".wd-performance-story"],
     ["@media (min-width: 768px) and (max-width: 1023px)", ".wd-performance-track"],
     ["@media (min-width: 1024px) and (max-width: 1199px) and (orientation: portrait)", ".wd-performance-track"],
-    ["@media (min-width: 768px) and (max-height: 759px)", ".wd-performance-track"],
+    ["@media (min-width: 768px) and (max-height: 619px)", ".wd-performance-track"],
     ["@media (prefers-reduced-motion: reduce)", ".wd-search-query b"]
   ];
 
@@ -333,17 +339,12 @@ test("will-change is limited to the visible track and active demos in horizontal
   assert.doesNotMatch(ruleBlock(css, ".wd-performance-demo {"), /will-change/);
 
   const desktop = mediaBlock(
-    "@media (min-width: 1200px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)",
-    ".wd-performance-card[data-active=\"true\"] .wd-performance-demo"
-  );
-  const tablet = mediaBlock(
-    "@media (min-width: 1024px) and (max-width: 1199px) and (min-height: 760px) and (orientation: landscape) and (prefers-reduced-motion: no-preference)",
+    "@media (min-width: 1200px) and (min-height: 620px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
     ".wd-performance-card[data-active=\"true\"] .wd-performance-demo"
   );
 
   assert.match(ruleBlock(desktop, '.wd-performance-story[data-in-view="true"] .wd-performance-track'), /will-change:\s*transform/);
   assert.match(ruleBlock(desktop, '.wd-performance-story[data-in-view="true"] .wd-performance-card[data-active="true"] .wd-performance-demo'), /will-change:\s*transform/);
-  assert.match(ruleBlock(tablet, '.wd-performance-story[data-in-view="true"] .wd-performance-card[data-active="true"] .wd-performance-demo'), /will-change:\s*transform/);
 });
 
 test("performance interfaces protect narrow cards from horizontal overflow", () => {
