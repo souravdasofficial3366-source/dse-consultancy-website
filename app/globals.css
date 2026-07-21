@@ -4381,6 +4381,11 @@ select {
   gap: clamp(28px, 4vw, 56px);
 }
 
+.consultancy-home .consultancy-home-heading.split {
+  grid-template-columns: minmax(0, 1.4fr) minmax(420px, 1fr);
+  gap: clamp(24px, 3vw, 44px);
+}
+
 .consultancy-home-heading.center {
   max-width: 850px;
   margin-inline: auto;
@@ -5936,6 +5941,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   .consultancy-signal-board { width: min(82vw,440px); }
   .consultancy-growth-panel { width: min(100%, 620px); margin-top: 26px; }
   .consultancy-home-heading.split { grid-template-columns: 1fr; gap: 22px; }
+  .consultancy-home .consultancy-home-heading.split { grid-template-columns: 1fr; gap: 22px; }
   .consultancy-home-system-copy { grid-template-columns: 1fr; align-items: start; gap: 24px; }
   .consultancy-home-system-intro { max-width: 720px; }
   .consultancy-system-canvas { grid-template-columns: minmax(235px,.82fr) minmax(0,1.18fr); }

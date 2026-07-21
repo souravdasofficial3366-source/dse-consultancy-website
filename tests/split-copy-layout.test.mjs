@@ -39,26 +39,30 @@ function mediaBlock(query, requiredSelector) {
   assert.fail(`missing media block ${query} containing ${requiredSelector}`);
 }
 
-test("homepage split-copy audit keeps every committed layout in scope", () => {
+test("homepage split-copy audit keeps both shared headings and the system section in scope", () => {
   assert.equal((homePage.match(/consultancy-home-heading split/g) ?? []).length, 2);
   assert.match(homePage, /className="consultancy-home-system-copy"/);
 });
 
-test("homepage system copy uses a balanced desktop heading and body ratio", () => {
+test("homepage split headings and system copy use the same balanced desktop family", () => {
+  const homepageSplit = ruleBlock(css, ".consultancy-home .consultancy-home-heading.split {");
   const systemCopy = ruleBlock(css, ".consultancy-home-system-copy {");
+  const balancedColumns = /grid-template-columns:\s*minmax\(0,\s*1\.4fr\)\s+minmax\(420px,\s*1fr\)/;
 
-  assert.match(
-    systemCopy,
-    /grid-template-columns:\s*minmax\(0,\s*1\.4fr\)\s+minmax\(420px,\s*1fr\)/
-  );
+  assert.match(homepageSplit, balancedColumns);
+  assert.match(homepageSplit, /gap:\s*clamp\(24px,\s*3vw,\s*44px\)/);
+  assert.match(systemCopy, balancedColumns);
   assert.match(systemCopy, /gap:\s*clamp\(24px,\s*3vw,\s*44px\)/);
-  assert.doesNotMatch(systemCopy, /minmax\(0,\s*4fr\).*minmax\(210px,\s*1fr\)/s);
 });
 
 test("split-copy layouts retain the existing tablet and mobile stack", () => {
   const responsive = mediaBlock("@media (max-width: 960px)", ".consultancy-home-system-copy");
 
   assert.match(responsive, /\.consultancy-home-heading\.split\s*\{\s*grid-template-columns:\s*1fr/);
+  assert.match(
+    responsive,
+    /\.consultancy-home \.consultancy-home-heading\.split\s*\{\s*grid-template-columns:\s*1fr/
+  );
   assert.match(responsive, /\.consultancy-home-system-copy\s*\{\s*grid-template-columns:\s*1fr/);
   assert.match(responsive, /\.consultancy-home-system-intro\s*\{\s*max-width:\s*720px/);
 });
