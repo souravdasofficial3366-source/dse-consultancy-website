@@ -8083,7 +8083,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   .wd-performance-track {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
+    gap: 18px;
     transform: none;
   }
 
@@ -8123,10 +8123,10 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   }
 
   .wd-performance-demo {
-    min-height: 400px;
+    min-height: 340px;
     border-top: 1px solid rgba(255, 255, 255, .08);
     border-left: 0;
-    padding: clamp(20px, 7vw, 34px);
+    padding: clamp(18px, 6vw, 28px);
     transform: none;
   }
 
@@ -8135,17 +8135,17 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   }
 
   .wd-usability-desktop {
-    min-height: 235px;
+    min-height: 190px;
   }
 
   .wd-usability-mobile {
-    min-height: 215px;
+    min-height: 170px;
   }
 }
 
 @media (max-width: 380px) {
   .wd-performance-demo {
-    min-height: 360px;
+    min-height: 320px;
     padding: 18px;
   }
 

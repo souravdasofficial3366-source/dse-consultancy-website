@@ -189,7 +189,7 @@ test("each demo has its exact finite active-only loop and static final phase", (
     assert.match(source, new RegExp(`const PHASE_DURATION = ${duration};`));
     assert.match(source, /const canAnimate = active && !reducedMotion;/);
     assert.match(source, /if \(!canAnimate\) \{\s*setPhase\(reducedMotion \? FINAL_PHASE : 0\);/);
-    assert.match(source, /window\.setInterval\([\s\S]*?phaseDuration/);
+    assert.match(source, /window\.setInterval\([\s\S]*?PHASE_DURATION/);
     assert.match(source, /window\.clearInterval\(interval\)/);
     assert.match(source, /data-phase=\{phase\}/);
   });
@@ -211,21 +211,32 @@ test("fine-pointer parallax is frame-throttled, right-surface-only, and fully re
   assert.doesNotMatch(story, /wd-performance-card-copy[\s\S]{0,120}(?:pointermove|--wd-demo-)/);
 });
 
-test("compact fallback cards use a separate shorter deterministic timing policy", () => {
+test("compact demos run one cancellable finite sequence while laptop demos may loop", () => {
   const contracts = [
-    { source: searchDemo, duration: 1050, compactDuration: 700 },
-    { source: usabilityDemo, duration: 900, compactDuration: 600 },
-    { source: enquiryDemo, duration: 950, compactDuration: 650 }
+    { source: searchDemo, compactDuration: 700 },
+    { source: usabilityDemo, compactDuration: 600 },
+    { source: enquiryDemo, compactDuration: 650 }
   ];
 
-  assert.match(story, /compact\?: boolean;/);
-  contracts.forEach(({ source, duration, compactDuration }) => {
-    assert.match(source, new RegExp(`const PHASE_DURATION = ${duration};`));
+  contracts.forEach(({ source, compactDuration }) => {
     assert.match(source, new RegExp(`const COMPACT_PHASE_DURATION = ${compactDuration};`));
-    assert.match(source, /\{ active, compact = false, reducedMotion \}: PerformanceDemoProps/);
-    assert.match(source, /const phaseDuration = compact \? COMPACT_PHASE_DURATION : PHASE_DURATION;/);
-    assert.match(source, /\}, \[active, compact, reducedMotion\]\);/);
+    assert.match(source, /if \(compact\) \{/);
+    assert.match(source, /window\.setTimeout\(advanceCompactPhase, COMPACT_PHASE_DURATION\)/);
+    assert.match(source, /nextPhase < FINAL_PHASE/);
+    assert.match(source, /window\.clearTimeout\(timeoutId\)/);
+    assert.match(source, /window\.setInterval/);
+    assert.match(source, /window\.clearInterval\(interval\)/);
   });
+});
+
+test("mobile demo geometry shortens the vertical story without hiding its interface", () => {
+  const mobile = mediaBlock("@media (max-width: 767px)", ".wd-performance-demo");
+  const narrow = mediaBlock("@media (max-width: 380px)", ".wd-performance-demo");
+
+  assert.match(ruleBlock(mobile, ".wd-performance-demo {"), /min-height:\s*340px/);
+  assert.match(ruleBlock(mobile, ".wd-usability-desktop {"), /min-height:\s*190px/);
+  assert.match(ruleBlock(mobile, ".wd-usability-mobile {"), /min-height:\s*170px/);
+  assert.match(ruleBlock(narrow, ".wd-performance-demo {"), /min-height:\s*320px/);
 });
 
 test("performance story uses the same fine-pointer laptop threshold in JavaScript and CSS", () => {

@@ -18,10 +18,26 @@ export function EnquiryPipelineDemo({ active, compact = false, reducedMotion }: 
     }
 
     setPhase(0);
-    const phaseDuration = compact ? COMPACT_PHASE_DURATION : PHASE_DURATION;
+
+    if (compact) {
+      let nextPhase = 1;
+      let timeoutId = 0;
+
+      const advanceCompactPhase = () => {
+        setPhase(nextPhase);
+        if (nextPhase < FINAL_PHASE) {
+          nextPhase += 1;
+          timeoutId = window.setTimeout(advanceCompactPhase, COMPACT_PHASE_DURATION);
+        }
+      };
+
+      timeoutId = window.setTimeout(advanceCompactPhase, COMPACT_PHASE_DURATION);
+      return () => window.clearTimeout(timeoutId);
+    }
+
     const interval = window.setInterval(
       () => setPhase((current) => (current + 1) % PHASE_COUNT),
-      phaseDuration
+      PHASE_DURATION
     );
 
     return () => window.clearInterval(interval);
