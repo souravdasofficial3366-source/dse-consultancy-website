@@ -8991,3 +8991,20 @@ html[data-home-palette="blaze"] .site-footer .footer-bottom {
     transition: none;
   }
 }
+
+.dse-page-faq {
+  padding: clamp(72px, 9vw, 124px) 0;
+  background: #fff9f5;
+}
+
+.dse-page-faq .social-faq-wrap,
+.dse-contact-faq .social-faq-wrap {
+  width: min(100%, 860px);
+  margin: 34px auto 0;
+}
+
+@media (max-width: 767px) {
+  .dse-page-faq {
+    padding: 64px 0;
+  }
+}

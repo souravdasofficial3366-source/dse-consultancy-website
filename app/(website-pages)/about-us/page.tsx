@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { AboutVisionStory } from "@/components/about/AboutVisionStory";
+import { FaqJsonLd } from "@/components/faq/FaqJsonLd";
+import { FaqList } from "@/components/faq/FaqList";
+import { aboutFaqs } from "@/data/faqs";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -10,6 +13,7 @@ export const metadata: Metadata = {
 export default function AboutUsPage() {
   return (
     <main>
+      <FaqJsonLd items={aboutFaqs} />
       <section className="section white">
         <div className="container seo-content">
           <div>
@@ -30,6 +34,20 @@ export default function AboutUsPage() {
         </div>
       </section>
       <AboutVisionStory />
+      <section className="dse-page-faq" id="faq">
+        <div className="container">
+          <div className="consultancy-home-heading center">
+            <span className="consultancy-home-kicker dark">FAQs</span>
+            <h2>
+              <span>How DSE Works</span>
+              <span>With Your Business.</span>
+            </h2>
+          </div>
+          <div className="social-faq-wrap">
+            <FaqList items={aboutFaqs} />
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

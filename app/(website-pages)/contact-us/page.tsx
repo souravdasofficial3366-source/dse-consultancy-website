@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FaqJsonLd } from "@/components/faq/FaqJsonLd";
+import { FaqList } from "@/components/faq/FaqList";
 import { CustomBundlePlanner } from "@/components/forms/CustomBundlePlanner";
 import { LeadForm } from "@/components/forms/LeadForm";
-import { FaqList } from "@/components/faq/FaqList";
+import { contactFaqs } from "@/data/faqs";
 import { siteConfig } from "@/data/site";
 
 export const metadata: Metadata = {
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
 export default function ContactUsPage() {
   return (
     <main className="dse-inner-page dse-contact-page">
+      <FaqJsonLd items={contactFaqs} />
       <section className="dse-contact-hero">
         <div className="container dse-contact-hero-grid">
           <div className="dse-contact-copy">
@@ -75,7 +78,7 @@ export default function ContactUsPage() {
               <span className="consultancy-home-kicker dark">Our Location</span>
               <h2>
                 <span>Find DSE Consultancy</span>
-                <span>In Kalna.</span>
+                <span>In West Bengal.</span>
               </h2>
             </div>
             <div className="dse-contact-address-copy">
@@ -117,11 +120,11 @@ export default function ContactUsPage() {
           <div className="consultancy-home-heading center">
             <span className="consultancy-home-kicker dark">FAQs</span>
             <h2>
-              <span>Common Questions about</span>
-              <span>Our Services</span>
+              <span>Before You</span>
+              <span>Send An Enquiry.</span>
             </h2>
           </div>
-          <div className="social-faq-wrap" style={{ maxWidth: "800px", marginInline: "auto", marginTop: "34px" }}>
+          <div className="social-faq-wrap">
             <FaqList items={contactFaqs} />
           </div>
         </div>
@@ -129,22 +132,3 @@ export default function ContactUsPage() {
     </main>
   );
 }
-
-const contactFaqs = [
-  {
-    question: "Can DSE Consultancy manage local SEO and website design for businesses in Kalna, Burdwan, and Kolkata?",
-    answer: "Yes, we specialize in local SEO and custom web development specifically for local businesses across Burdwan, Kalna, and the wider Kolkata region. We design fast, mobile-friendly websites and optimize Google Business Profiles to help you rank when nearby customers search for your services."
-  },
-  {
-    question: "How do website development and SMM + SEO work together to grow my business?",
-    answer: "Your website is your digital storefront, while social media and local SEO drive traffic to it. By connecting them, we ensure that prospective clients who discover your business on Google Maps or Instagram find a consistent message, active reviews, and a smooth path to call or WhatsApp you directly."
-  },
-  {
-    question: "Do you offer support and maintenance after my website goes live?",
-    answer: "Yes, all our website packages include dedicated launch support, and our higher-tier plans include up to 1 year of free maintenance. We ensure your site remains secure, fast, and optimized for search engine updates."
-  },
-  {
-    question: "How does DSE Consultancy track the success of my digital campaigns?",
-    answer: "We focus on real enquiry signals—such as WhatsApp clicks, direction requests, phone calls on Google Business Profile, and form submissions—rather than just vanity metrics. You receive a clear monthly report outlining these conversions and your search visibility."
-  }
-];
