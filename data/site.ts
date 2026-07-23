@@ -1,13 +1,15 @@
+import { formatInr, websitePackages } from "@/data/service-pricing";
+
 export const siteConfig = {
   name: "DSE Consultancy",
-  basePrice: "₹3,999",
+  basePrice: formatInr(websitePackages[0].price),
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   phone: process.env.NEXT_PUBLIC_DSE_PHONE || "+91 82405 32600",
   whatsapp: process.env.NEXT_PUBLIC_DSE_WHATSAPP || "918240532600",
   email: process.env.NEXT_PUBLIC_DSE_EMAIL || "hello@dseconsultancy.in",
   address:
     process.env.NEXT_PUBLIC_DSE_ADDRESS ||
-    "Ballygunge, Kolkata, West Bengal, India",
+    "Kalna, Burdwan, West Bengal, India",
   socialLinks: [
     { label: "LinkedIn", shortLabel: "in", url: process.env.NEXT_PUBLIC_LINKEDIN_URL },
     { label: "Facebook", shortLabel: "f", url: process.env.NEXT_PUBLIC_FACEBOOK_URL },
@@ -31,7 +33,7 @@ export const siteNavigation = [
   { label: "Website Development", href: "/website-development" },
   { label: "SMM + SEO", href: "/social-media-management-plus-seo" },
   { label: "Contact Us", href: "/contact-us" },
-  { label: "Blog Page", href: "/blog" }
+  { label: "Insights", href: "/blog" }
 ] as const;
 
 export const landingNavigation = siteNavigation;

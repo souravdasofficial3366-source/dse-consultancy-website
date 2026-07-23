@@ -5516,35 +5516,6 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   opacity: 0.48;
 }
 
-.dse-bundle-future-note {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  align-items: center;
-  gap: 14px;
-  padding: 18px;
-  border: 1px dashed #efd0bd;
-  border-radius: 18px;
-  color: #5f6c84;
-}
-
-.dse-bundle-future-note > .material-symbols-outlined {
-  color: #ff8124;
-  font-size: 2rem;
-}
-
-.dse-bundle-future-note strong {
-  display: block;
-  color: var(--dse-ink);
-  font-size: 0.85rem;
-}
-
-.dse-bundle-future-note p {
-  margin: 4px 0 0;
-  font-size: 0.75rem;
-  line-height: 1.5;
-}
-
 .dse-bundle-summary {
   position: sticky;
   top: 110px;
