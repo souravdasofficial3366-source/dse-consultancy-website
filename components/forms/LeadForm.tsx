@@ -60,6 +60,7 @@ export function LeadForm({
       pricing_package: formData.get("pricing_package"),
       form_context: mode,
       city_town: formData.get("city_town"),
+      message: formData.get("message"),
       privacy_consent: formData.get("privacy_consent") === "on",
       turnstile_token: formData.get("turnstile_token"),
       source_path: sourcePath,
@@ -175,6 +176,16 @@ export function LeadForm({
             placeholder="Example: Kolkata"
             required
             type="text"
+          />
+        </label>
+        <label className="field-full">
+          How can we help?
+          <textarea
+            maxLength={1000}
+            name="message"
+            placeholder="Tell us what you need help with"
+            required
+            rows={4}
           />
         </label>
       </div>

@@ -1,4 +1,5 @@
 export type BillingCycle = "one-time" | "monthly";
+export type LeadFormContext = "website" | "audit" | "general";
 
 export type PricingPackage = {
   id: string;
@@ -105,9 +106,20 @@ export const validLeadPackageValues = new Set([
 export function resolveLeadPackage(value: unknown, formContext: unknown) {
   const submitted = String(value || "").trim();
 
-  if (formContext === "general" && !submitted) {
-    return GENERAL_ENQUIRY_PACKAGE;
+  if (formContext === "general") {
+    return !submitted || submitted === GENERAL_ENQUIRY_PACKAGE
+      ? GENERAL_ENQUIRY_PACKAGE
+      : null;
   }
 
-  return validLeadPackageValues.has(submitted) ? submitted : null;
+  if (formContext === "audit") {
+    return submitted === SOCIAL_SEO_AUDIT_PACKAGE ? submitted : null;
+  }
+
+  if (formContext === "website") {
+    const websiteValues = new Set(websitePackages.map(formatLeadPackageOption));
+    return websiteValues.has(submitted) ? submitted : null;
+  }
+
+  return null;
 }

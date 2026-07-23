@@ -60,7 +60,8 @@ a {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -327,7 +328,8 @@ select {
 }
 
 .lead-form input,
-.lead-form select {
+.lead-form select,
+.lead-form textarea {
   width: 100%;
   min-height: 48px;
   border: 1px solid #ead0c0;
@@ -338,8 +340,14 @@ select {
   outline: none;
 }
 
+.lead-form textarea {
+  min-height: 116px;
+  resize: vertical;
+}
+
 .lead-form input:focus,
-.lead-form select:focus {
+.lead-form select:focus,
+.lead-form textarea:focus {
   border-color: var(--brand-electric);
   box-shadow: 0 0 0 3px rgba(254, 104, 7, 0.14);
 }

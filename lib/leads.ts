@@ -1,6 +1,9 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { resolveLeadPackage } from "../data/service-pricing.ts";
+import {
+  resolveLeadPackage,
+  type LeadFormContext
+} from "../data/service-pricing.ts";
 
 export type LeadInput = {
   owner_name: string;
@@ -8,7 +11,9 @@ export type LeadInput = {
   email_address: string;
   shop_type: string;
   pricing_package: string;
+  form_context: LeadFormContext;
   city_town: string;
+  message: string;
   privacy_consent: boolean;
   source_path?: string;
 };
@@ -24,6 +29,11 @@ export type LeadResult = {
 const phoneRegex = /^[6-9][0-9]{9}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const requestTimeoutMs = 8_000;
+const enquiryTypeLabels: Record<LeadFormContext, string> = {
+  general: "general digital-services enquiry",
+  website: "website development enquiry",
+  audit: "social and SEO audit request"
+};
 
 export class LeadValidationError extends Error {
   constructor(message: string) {
@@ -63,21 +73,30 @@ export function cleanLead(input: unknown): LeadInput {
   }
 
   const sourcePath = String(value.source_path || "/").trim();
-  const formContext = String(value.form_context || "website");
-  const isAuditRequest =
-    formContext === "audit" && sourcePath === "/social-media-management-plus-seo";
-  const isContactGeneralRequest = formContext === "general" && sourcePath === "/contact-us";
-  const emailAddress = isAuditRequest
+  const requestedContext = String(value.form_context || "website");
+  const formContext: LeadFormContext =
+    requestedContext === "audit" && sourcePath === "/social-media-management-plus-seo"
+      ? "audit"
+      : requestedContext === "general" && sourcePath === "/contact-us"
+        ? "general"
+        : "website";
+  const emailAddress = formContext === "audit"
     ? String(value.email_address || "").trim().toLowerCase()
     : requiredText(value.email_address, "email address", 5, 254).toLowerCase();
-  const pricingPackage = resolveLeadPackage(
-    value.pricing_package,
-    isContactGeneralRequest ? "general" : "website"
-  );
+  const pricingPackage = resolveLeadPackage(value.pricing_package, formContext);
 
   if (!pricingPackage) {
     throw new LeadValidationError("Please select a valid pricing package.");
   }
+
+  const submittedMessage = String(value.message || "").trim();
+  if (submittedMessage.length > 1000) {
+    throw new LeadValidationError("Message is too long.");
+  }
+  const message =
+    formContext === "audit"
+      ? submittedMessage || "No message provided (audit request)."
+      : requiredText(value.message, "message", 1, 1000);
 
   const lead: LeadInput = {
     owner_name: requiredText(value.owner_name, "name", 2, 80),
@@ -85,7 +104,9 @@ export function cleanLead(input: unknown): LeadInput {
     email_address: emailAddress,
     shop_type: requiredText(value.shop_type, "business type", 2, 80),
     pricing_package: pricingPackage,
+    form_context: formContext,
     city_town: requiredText(value.city_town, "city or town", 2, 80),
+    message,
     privacy_consent: value.privacy_consent === true,
     source_path: sourcePath.startsWith("/") && sourcePath.length <= 200 ? sourcePath : "/"
   };
@@ -178,30 +199,34 @@ export async function sendLeadEmail(lead: LeadInput): Promise<boolean> {
     return false;
   }
 
+  const enquiryType = enquiryTypeLabels[lead.form_context];
+
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json"
     },
-      body: JSON.stringify({
+    body: JSON.stringify({
       from,
       to,
-      subject: `New DSE lead: ${lead.shop_type} in ${lead.city_town}`,
+      subject: `New DSE ${enquiryType}: ${lead.shop_type} in ${lead.city_town}`,
       text: [
-        "New website enquiry",
+        `New ${enquiryType}`,
         "",
         `Owner: ${lead.owner_name}`,
         `Phone: ${lead.phone_number}`,
         `Email: ${lead.email_address || "Not provided"}`,
         `Business: ${lead.shop_type}`,
         `Package: ${lead.pricing_package}`,
+        `Context: ${lead.form_context}`,
         `City/Town: ${lead.city_town}`,
+        `Message: ${lead.message}`,
         `Source: ${lead.source_path || "/"}`,
         `Consent: ${lead.privacy_consent ? "Yes" : "No"}`
       ].join("\n")
-      }),
-      signal: AbortSignal.timeout(requestTimeoutMs)
+    }),
+    signal: AbortSignal.timeout(requestTimeoutMs)
   });
 
   return response.ok;
@@ -213,6 +238,7 @@ export async function sendLeadSms(lead: LeadInput): Promise<boolean> {
     return false;
   }
 
+  const enquiryType = enquiryTypeLabels[lead.form_context];
   const response = await fetch(webhookUrl, {
     method: "POST",
     headers: {
@@ -222,7 +248,7 @@ export async function sendLeadSms(lead: LeadInput): Promise<boolean> {
         : {})
     },
     body: JSON.stringify({
-      message: `New DSE lead: ${lead.owner_name}, ${lead.phone_number}, ${lead.email_address || "No email"}, ${lead.shop_type}, ${lead.pricing_package}, ${lead.city_town}`,
+      message: `New DSE ${enquiryType}: ${lead.owner_name}, ${lead.phone_number}, ${lead.email_address || "No email"}, ${lead.shop_type}, ${lead.pricing_package}, ${lead.city_town}. Context: ${lead.form_context}. Message: ${lead.message}`,
       lead
     }),
     signal: AbortSignal.timeout(requestTimeoutMs)

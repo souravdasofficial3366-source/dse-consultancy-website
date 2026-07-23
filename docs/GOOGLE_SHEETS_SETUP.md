@@ -22,6 +22,14 @@ The script creates an `Enquiries` tab automatically with these columns:
 - City/Town
 - Source Page
 - Consent
+- Form Context
+- Message
+
+The script appends **Form Context** and **Message** after the original nine
+columns, so existing enquiry rows remain compatible. Website-development and
+general Contact enquiries require both an email address and a message. The
+Social + SEO audit form may leave both fields blank; its stored form context
+identifies it as an audit request.
 
 ## 2. Add the shared secret
 
