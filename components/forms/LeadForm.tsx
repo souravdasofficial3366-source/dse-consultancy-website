@@ -3,11 +3,19 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { TurnstileField } from "@/components/forms/TurnstileField";
+import {
+  formatInr,
+  formatLeadPackageOption,
+  websitePackages
+} from "@/data/service-pricing";
+
+type LeadFormMode = "website" | "general";
 
 type LeadFormProps = {
   sourcePath?: string;
   city?: string;
   businessType?: string;
+  mode?: LeadFormMode;
 };
 
 type FormState = {
@@ -29,13 +37,12 @@ const businessOptions = [
   "Other local business"
 ];
 
-const packageOptions = [
-  "Essential – ₹3,999 + GST",
-  "Dynamic – ₹6,999 + GST",
-  "Advanced – ₹8,999 + GST"
-];
-
-export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps) {
+export function LeadForm({
+  sourcePath = "/",
+  city,
+  businessType,
+  mode = "website"
+}: LeadFormProps) {
   const [state, setState] = useState<FormState>({ status: "idle", message: "" });
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -51,6 +58,7 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
       email_address: formData.get("email_address"),
       shop_type: formData.get("shop_type"),
       pricing_package: formData.get("pricing_package"),
+      form_context: mode,
       city_town: formData.get("city_town"),
       privacy_consent: formData.get("privacy_consent") === "on",
       turnstile_token: formData.get("turnstile_token"),
@@ -139,19 +147,24 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
             ))}
           </select>
         </label>
-        <label className="field-full">
-          Preferred package
-          <select defaultValue="" name="pricing_package" required>
-            <option disabled value="">
-              Select a pricing package
-            </option>
-            {packageOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
+        {mode === "website" ? (
+          <label className="field-full">
+            Preferred package
+            <select defaultValue="" name="pricing_package" required>
+              <option disabled value="">
+                Select a pricing package
               </option>
-            ))}
-          </select>
-        </label>
+              {websitePackages.map((item) => {
+                const option = formatLeadPackageOption(item);
+                return (
+                  <option key={item.id} value={option}>
+                    {option}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+        ) : null}
         <label className="field-full">
           City or town
           <input
@@ -167,11 +180,19 @@ export function LeadForm({ sourcePath = "/", city, businessType }: LeadFormProps
       </div>
       <label className="consent-row">
         <input name="privacy_consent" required type="checkbox" />
-        <span>I agree that DSE Consultancy can store my details and contact me about my website.</span>
+        <span>
+          {mode === "general"
+            ? "I agree that DSE Consultancy can store my details and contact me about digital services."
+            : "I agree that DSE Consultancy can store my details and contact me about my website."}
+        </span>
       </label>
       <TurnstileField />
       <button className="primary-button" disabled={state.status === "loading"} type="submit">
-        {state.status === "loading" ? "Please wait..." : "Book your website from ₹3,999"}
+        {state.status === "loading"
+          ? "Please wait..."
+          : mode === "general"
+            ? "Request A Call Back"
+            : `Book your website from ${formatInr(websitePackages[0].price)}`}
       </button>
       <p className="form-note">No spam. We only use your details to call you back.</p>
       {state.message ? (
