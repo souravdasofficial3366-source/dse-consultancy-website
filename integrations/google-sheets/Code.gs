@@ -8,7 +8,9 @@ const HEADERS = [
   "Selected Package",
   "City/Town",
   "Source Page",
-  "Consent"
+  "Consent",
+  "Form Context",
+  "Message"
 ];
 
 function doPost(event) {
@@ -24,15 +26,7 @@ function doPost(event) {
     }
 
     const lead = payload.lead || {};
-    if (
-      !lead.owner_name ||
-      !lead.phone_number ||
-      !lead.email_address ||
-      !lead.shop_type ||
-      !lead.pricing_package ||
-      !lead.city_town ||
-      lead.privacy_consent !== true
-    ) {
+    if (!validateLead(lead)) {
       return jsonResponse({ ok: false, error: "Invalid enquiry data." });
     }
 
@@ -73,7 +67,9 @@ function doPost(event) {
       safeCell(lead.pricing_package),
       safeCell(lead.city_town),
       safeCell(lead.source_path || "/"),
-      "Yes"
+      "Yes",
+      safeCell(lead.form_context),
+      safeCell(lead.message || "")
     ]);
 
     const row = sheet.getLastRow();
@@ -97,6 +93,27 @@ function doPost(event) {
       lock.releaseLock();
     }
   }
+}
+
+function validateLead(lead) {
+  if (
+    !lead ||
+    !lead.owner_name ||
+    !lead.phone_number ||
+    !lead.shop_type ||
+    !lead.pricing_package ||
+    !lead.city_town ||
+    lead.privacy_consent !== true ||
+    !["website", "general", "audit"].includes(lead.form_context)
+  ) {
+    return false;
+  }
+
+  if (lead.form_context === "audit") {
+    return true;
+  }
+
+  return Boolean(lead.email_address && lead.message);
 }
 
 function safeCell(value) {
