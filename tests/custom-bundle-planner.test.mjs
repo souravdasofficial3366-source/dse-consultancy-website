@@ -2,12 +2,13 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [websitePage, socialPage, planner, siteData, jsonLd, css] = await Promise.all([
+const [websitePage, socialPage, planner, siteData, jsonLd, layout, css] = await Promise.all([
   readFile("app/(landing-pages)/website-development/page.tsx", "utf8"),
   readFile("app/(landing-pages)/social-media-management-plus-seo/page.tsx", "utf8"),
   readFile("components/forms/CustomBundlePlanner.tsx", "utf8"),
   readFile("data/site.ts", "utf8"),
   readFile("lib/json-ld.tsx", "utf8"),
+  readFile("app/layout.tsx", "utf8"),
   readFile("app/globals.css", "utf8")
 ]);
 
@@ -52,4 +53,16 @@ test("LocalBusiness offer pricing uses the shared website starting price", () =>
   assert.doesNotMatch(siteData, /basePrice:\s*"₹5,999"/);
   assert.match(jsonLd, /websitePackages\[0\]\.price/);
   assert.doesNotMatch(jsonLd, /price: "3999"/);
+});
+
+test("root metadata covers the broader service offering without obsolete pricing", () => {
+  assert.doesNotMatch(layout, /₹3,999|Website for Shops from/);
+  assert.match(
+    layout,
+    /default: "DSE Consultancy \| Website Development, SMM And SEO"/
+  );
+  assert.match(
+    layout,
+    /DSE Consultancy connects website development, social media management and SEO/
+  );
 });
