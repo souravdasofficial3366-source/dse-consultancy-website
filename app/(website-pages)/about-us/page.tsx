@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AboutVisionStory } from "@/components/about/AboutVisionStory";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -28,6 +29,7 @@ export default function AboutUsPage() {
           </aside>
         </div>
       </section>
+      <AboutVisionStory />
     </main>
   );
 }

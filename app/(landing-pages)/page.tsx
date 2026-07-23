@@ -253,13 +253,18 @@ export default function ConsultancyHomePage() {
 
       <section className="consultancy-home-closing" id="contact">
         <div className="container consultancy-home-closing-inner">
-          <span>Ready When You Are.</span>
+          <span>Built Around Better Enquiries</span>
           <h2>
-            <span>Let&apos;s Build The Digital Presence</span>
-            <span>Your Business Deserves.</span>
+            <span>Turn Digital Attention Into</span>
+            <span>Real Business Opportunities.</span>
           </h2>
-          <p>Tell us where your business is today and what you want the next customer to do.</p>
-          <Link href="/contact-us">Contact DSE Consultancy <span aria-hidden="true">↗</span></Link>
+          <p>
+            Connect your website, local search and social presence around the actions that matter—calls,
+            WhatsApp conversations and qualified enquiries.
+          </p>
+          <Link href="/contact-us">
+            Plan Your Digital Growth <span aria-hidden="true">↗</span>
+          </Link>
         </div>
       </section>
     </main>
