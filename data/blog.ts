@@ -13,6 +13,9 @@ export type BlogPost = {
   displayDate: string;
   readingTime: string;
   accent: "blue" | "violet" | "coral";
+  author?: string;
+  audience?: string;
+  keyTakeaways?: string[];
   sections: BlogSection[];
 };
 
@@ -27,6 +30,13 @@ export const blogPosts: BlogPost[] = [
     displayDate: "14 July 2026",
     readingTime: "6 min read",
     accent: "blue",
+    author: "DSE Consultancy",
+    audience: "Local business owners building a clearer digital presence",
+    keyTakeaways: [
+      "Answer what you offer, where you serve, and how customers can contact you on the first screen.",
+      "Launch with focused pages that explain the business and support local discovery.",
+      "Test forms, menus, buttons, and contact actions on a real mobile screen."
+    ],
     sections: [
       {
         heading: "Start With The Customer's Question",
@@ -66,6 +76,13 @@ export const blogPosts: BlogPost[] = [
     displayDate: "10 July 2026",
     readingTime: "7 min read",
     accent: "violet",
+    author: "DSE Consultancy",
+    audience: "Local businesses connecting search visibility with social trust",
+    keyTakeaways: [
+      "Search helps people discover a business while current social proof helps them trust it.",
+      "Use the same service message and business details across Google, website, social, and WhatsApp.",
+      "Measure calls, enquiries, clicks, and visits instead of relying on likes alone."
+    ],
     sections: [
       {
         heading: "Visibility Is Only The First Step",
@@ -103,6 +120,13 @@ export const blogPosts: BlogPost[] = [
     displayDate: "6 July 2026",
     readingTime: "5 min read",
     accent: "coral",
+    author: "DSE Consultancy",
+    audience: "Local businesses maintaining accurate Google visibility",
+    keyTakeaways: [
+      "Keep hours, phone numbers, service areas, categories, and links accurate.",
+      "Use recent photos, updates, and review replies to show useful business activity.",
+      "Send profile visitors to a focused page that matches what they searched for."
+    ],
     sections: [
       {
         heading: "Keep The Profile Accurate",
