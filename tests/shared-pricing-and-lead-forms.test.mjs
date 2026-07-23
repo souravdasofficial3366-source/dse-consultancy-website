@@ -3,6 +3,26 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const pricingPath = new URL("../data/service-pricing.ts", import.meta.url);
+const leadsPath = new URL("../lib/leads.ts", import.meta.url);
+
+function validLead(overrides = {}) {
+  return {
+    owner_name: "DSE Customer",
+    phone_number: "9876543210",
+    email_address: "customer@example.com",
+    shop_type: "Local business",
+    pricing_package: "Essential – ₹5,999 + GST",
+    city_town: "Kalna",
+    privacy_consent: true,
+    source_path: "/website-development",
+    ...overrides
+  };
+}
+
+async function loadCleanLead() {
+  const { cleanLead } = await import(leadsPath.href);
+  return cleanLead;
+}
 
 test("the shared catalogue owns every approved package price", async () => {
   const pricing = await import(pricingPath.href);
@@ -91,4 +111,79 @@ test("the audit form uses the shared free-audit value", () => {
 test("lead validation imports the shared package allow-list", () => {
   assert.match(leadModuleSource, /resolveLeadPackage/);
   assert.doesNotMatch(leadModuleSource, /const packageOptions = new Set/);
+});
+
+test("website leads require an email address", async () => {
+  const cleanLead = await loadCleanLead();
+
+  assert.throws(
+    () => cleanLead(validLead({ email_address: "" })),
+    /Please enter your email address\./
+  );
+});
+
+test("general Contact leads require an email address", async () => {
+  const cleanLead = await loadCleanLead();
+
+  assert.throws(
+    () =>
+      cleanLead(
+        validLead({
+          email_address: "",
+          pricing_package: null,
+          form_context: "general",
+          source_path: "/contact-us"
+        })
+      ),
+    /Please enter your email address\./
+  );
+});
+
+test("audit leads may omit an email address", async () => {
+  const cleanLead = await loadCleanLead();
+
+  assert.equal(
+    cleanLead(
+      validLead({
+        email_address: "",
+        pricing_package: "Social + SEO Audit – Free",
+        form_context: "audit",
+        source_path: "/social-media-management-plus-seo"
+      })
+    ).email_address,
+    ""
+  );
+});
+
+test("website sources reject a general-context attempt to bypass package selection", async () => {
+  const cleanLead = await loadCleanLead();
+
+  assert.throws(
+    () => cleanLead(validLead({ pricing_package: null, form_context: "general" })),
+    /Please select a valid pricing package\./
+  );
+});
+
+test("general Contact requests receive the internal general-enquiry package", async () => {
+  const cleanLead = await loadCleanLead();
+
+  assert.equal(
+    cleanLead(
+      validLead({
+        pricing_package: null,
+        form_context: "general",
+        source_path: "/contact-us"
+      })
+    ).pricing_package,
+    "General enquiry – package to be discussed"
+  );
+});
+
+test("unknown non-empty packages remain rejected", async () => {
+  const cleanLead = await loadCleanLead();
+
+  assert.throws(
+    () => cleanLead(validLead({ pricing_package: "Invented Package – ₹1" })),
+    /Please select a valid pricing package\./
+  );
 });

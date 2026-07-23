@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { resolveLeadPackage } from "@/data/service-pricing";
+import { resolveLeadPackage } from "../data/service-pricing.ts";
 
 export type LeadInput = {
   owner_name: string;
@@ -63,9 +63,17 @@ export function cleanLead(input: unknown): LeadInput {
   }
 
   const sourcePath = String(value.source_path || "/").trim();
-  const emailAddress = String(value.email_address || "").trim().toLowerCase();
   const formContext = String(value.form_context || "website");
-  const pricingPackage = resolveLeadPackage(value.pricing_package, formContext);
+  const isAuditRequest =
+    formContext === "audit" && sourcePath === "/social-media-management-plus-seo";
+  const isContactGeneralRequest = formContext === "general" && sourcePath === "/contact-us";
+  const emailAddress = isAuditRequest
+    ? String(value.email_address || "").trim().toLowerCase()
+    : requiredText(value.email_address, "email address", 5, 254).toLowerCase();
+  const pricingPackage = resolveLeadPackage(
+    value.pricing_package,
+    isContactGeneralRequest ? "general" : "website"
+  );
 
   if (!pricingPackage) {
     throw new LeadValidationError("Please select a valid pricing package.");
