@@ -7,15 +7,15 @@ import { siteConfig } from "@/data/site";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
   title: {
-    default: "DSE Consultancy | Website for Shops from ₹3,999",
+    default: "DSE Consultancy | Website Development, SMM And SEO",
     template: "%s | DSE Consultancy"
   },
   description:
-    "Affordable websites for small Indian shops, clinics, stores, and local businesses. Get a website from ₹3,999 with 1 year of free Google ranking help.",
+    "DSE Consultancy connects website development, social media management and SEO for local businesses that want stronger visibility, trust and enquiries.",
   openGraph: {
     title: "DSE Consultancy",
     description:
-      "Get a fast business website and help customers find your shop on Google.",
+      "Connected website development, social media management and SEO for growing local businesses.",
     url: siteConfig.siteUrl,
     siteName: "DSE Consultancy",
     locale: "en_IN",
@@ -30,11 +30,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Montserrat:wght@600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <div className="page-shell">
           <Header />
           {children}
