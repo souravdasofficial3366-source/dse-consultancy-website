@@ -8,10 +8,24 @@ const socialPagePath = path.join(
   sourceRoot,
   "app/(landing-pages)/social-media-management-plus-seo/page.tsx"
 );
-const socialPage = await readFile(socialPagePath, "utf8");
+const toolCarouselPath = path.join(
+  sourceRoot,
+  "components/landing/ToolLogoCarousel.tsx"
+);
+const [socialPage, toolCarousel] = await Promise.all([
+  readFile(socialPagePath, "utf8"),
+  readFile(toolCarouselPath, "utf8")
+]);
 const componentImports = [
   ...socialPage.matchAll(/from "(@\/components\/[^"]+)"/g)
 ].map((match) => match[1]);
+const logoAssets = [
+  ...new Set(
+    [socialPage, toolCarousel].flatMap((source) =>
+      [...source.matchAll(/"(\/logos\/tools\/[^"]+\.svg)"/g)].map((match) => match[1])
+    )
+  )
+].sort();
 
 async function resolvesToSourceFile(importPath) {
   const relativePath = importPath.replace(/^@\//, "");
@@ -41,6 +55,21 @@ test("every local component imported by the SMM page resolves to source", async 
   for (const importPath of componentImports) {
     if (!(await resolvesToSourceFile(importPath))) {
       missing.push(importPath);
+    }
+  }
+
+  assert.deepEqual(missing, []);
+});
+
+test("every tool logo referenced by the SMM page resolves to a public asset", async () => {
+  assert.equal(logoAssets.length, 32);
+
+  const missing = [];
+  for (const assetPath of logoAssets) {
+    try {
+      await access(path.join(sourceRoot, "public", assetPath.replace(/^\//, "")));
+    } catch {
+      missing.push(assetPath);
     }
   }
 
