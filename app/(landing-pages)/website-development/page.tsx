@@ -4,6 +4,10 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { IndustryVideoGrid } from "@/components/landing/IndustryVideoGrid";
 import { WebsiteDevelopmentExperience } from "@/components/landing/WebsiteDevelopmentExperience";
 import { WebsitePerformanceStory } from "@/components/landing/WebsitePerformanceStory";
+import {
+  formatPackagePrice,
+  websitePackages
+} from "@/data/service-pricing";
 import { LocalBusinessJsonLd } from "@/lib/json-ld";
 import { industryCards, siteConfig } from "@/data/site";
 
@@ -15,9 +19,8 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    question: "Is ₹3,999 the final price of the website?",
-    answer:
-      "₹3,999 is the starting price for a simple business website. Final price depends on the pages and features you need. We explain everything clearly on a short phone call before you pay."
+    question: `Is ${siteConfig.basePrice} the final price of the website?`,
+    answer: `${siteConfig.basePrice} is the starting price for a simple business website. Final price depends on the pages and features you need. We explain everything clearly on a short phone call before you pay.`
   },
   {
     question: "Will my business show on Google?",
@@ -43,14 +46,14 @@ const faqs = [
 
 const prices = [
   {
-    name: "Essential",
+    ...websitePackages[0],
     kicker: "For Startups",
-    price: "₹3,999",
+    priceLabel: formatPackagePrice(websitePackages[0]),
     featured: false,
     popularLabel: "",
     items: [
       "4–5 Static Pages",
-      "Free Domain + Hosting (1st Year)",
+      "Hosting (1st Year)",
       "Lead Form Integration",
       "Google My Business Registration",
       "24/7 Chat Support",
@@ -58,12 +61,13 @@ const prices = [
     ]
   },
   {
-    name: "Dynamic",
+    ...websitePackages[1],
     kicker: "For Growth",
-    price: "₹6,999",
+    priceLabel: formatPackagePrice(websitePackages[1]),
     featured: true,
     popularLabel: "Most Popular",
     items: [
+      "Free Domain + Hosting (1st Year)",
       "Everything in Essential +",
       "Admin Dashboard",
       "Unlimited Blog Updates",
@@ -73,12 +77,13 @@ const prices = [
     ]
   },
   {
-    name: "Advanced",
+    ...websitePackages[2],
     kicker: "For Commercial",
-    price: "₹8,999",
+    priceLabel: formatPackagePrice(websitePackages[2]),
     featured: false,
     popularLabel: "",
     items: [
+      "Free Domain + Hosting (1st Year)",
       "Everything in Dynamic +",
       "E-Commerce / Storefront",
       "Payment & Logistics Integration",
@@ -122,8 +127,8 @@ export default function HomePage() {
               Trusted by local Indian businesses
             </span>
             <h1>
-              Get Your Professional Website Starting from{" "}
-              <span className="accent">{siteConfig.basePrice}</span>
+              <span>Get Your Professional Website</span>
+              <span>Starting from <span className="accent">{siteConfig.basePrice}</span></span>
             </h1>
             <p className="hero-copy">
               We make a fast website for your shop, clinic, store, or local business and help
@@ -136,7 +141,7 @@ export default function HomePage() {
               </li>
               <li>
                 <span className="material-symbols-outlined">verified</span>
-                Free Domain, Hosting, SSL, and Website SEO
+                Hosting included; domain included on Growth and Commercial plans
               </li>
               <li>
                 <span className="material-symbols-outlined">verified</span>
@@ -145,7 +150,10 @@ export default function HomePage() {
             </ul>
           </div>
           <div className="lead-card" data-wd-reveal data-wd-spotlight data-wd-tilt id="lead-form">
-            <h2>Get Your Business Website</h2>
+            <h2>
+              <span>Get Your Business</span>
+              <span>Website Today</span>
+            </h2>
             <LeadForm sourcePath="/website-development" />
           </div>
         </div>
@@ -154,7 +162,11 @@ export default function HomePage() {
       <section className="section white" id="why-us">
         <div className="container" data-wd-reveal>
           <div className="section-head center">
-            <h2>What&apos;s Included</h2>
+            <span className="eyebrow">Included By Default</span>
+            <h2>
+              <span>What&apos;s</span>
+              <span>Included</span>
+            </h2>
             <p className="section-copy">
               Don&apos;t get trapped by &quot;Cheap&quot; ₹999 templates with hidden costs.
             </p>
@@ -239,7 +251,11 @@ export default function HomePage() {
         <div className="container" data-wd-reveal>
           <div className="section-head center">
             <div>
-              <h2>Websites for Everyday Businesses</h2>
+              <span className="eyebrow">Built For Local Business</span>
+              <h2>
+                <span>Websites for</span>
+                <span>Everyday Businesses</span>
+              </h2>
               <p className="section-copy">
                 We create simple pages for the way local customers search and call.
               </p>
@@ -258,7 +274,11 @@ export default function HomePage() {
       <section className="section white" id="pricing">
         <div className="container" data-wd-reveal>
           <div className="section-head center">
-            <h2>Pocket-Friendly Pricing</h2>
+            <span className="eyebrow">Simple, Clear Pricing</span>
+            <h2>
+              <span>Pocket-Friendly</span>
+              <span>Pricing</span>
+            </h2>
             <p className="section-copy">Professional Digital Assets at Your Fingertips</p>
           </div>
           <div className="pricing-grid">
@@ -275,7 +295,7 @@ export default function HomePage() {
                   {plan.kicker} <span>Starting Price</span>
                 </h3>
                 <div className="price">
-                  {plan.price}
+                  {plan.priceLabel}
                   <small> + GST</small>
                 </div>
                 <p className="price-warning">** Pricing may vary as per your requirement</p>
@@ -304,17 +324,17 @@ export default function HomePage() {
       <section className="section soft" id="support">
         <div className="container service-grid">
           <article className="service-card" data-wd-reveal data-wd-spotlight>
-            <span className="material-symbols-outlined service-icon">edit_note</span>
+            <span className="service-icon" aria-hidden="true"><span className="material-symbols-outlined">edit_note</span></span>
             <h3>We Help You with Website Content</h3>
             <p>You do not need to write everything. We help explain your services in simple words.</p>
           </article>
           <article className="service-card" data-wd-reveal data-wd-spotlight>
-            <span className="material-symbols-outlined service-icon">code_off</span>
+            <span className="service-icon" aria-hidden="true"><span className="material-symbols-outlined">code_off</span></span>
             <h3>No Technical Work for You</h3>
             <p>Share your details and photos. We handle the website work and guide you clearly.</p>
           </article>
           <article className="service-card" data-wd-reveal data-wd-spotlight>
-            <span className="material-symbols-outlined service-icon">travel_explore</span>
+            <span className="service-icon" aria-hidden="true"><span className="material-symbols-outlined">travel_explore</span></span>
             <h3>Help Customers Find You</h3>
             <p>Your pages are written so local customers can understand, trust, and call you.</p>
           </article>
@@ -325,7 +345,10 @@ export default function HomePage() {
         <div className="container" data-wd-reveal>
           <div className="section-head center">
             <span className="eyebrow">Questions</span>
-            <h2>Clear Answers Before You Start</h2>
+            <h2>
+              <span>Clear Answers</span>
+              <span>Before You Start</span>
+            </h2>
             <p className="section-copy">
               No confusing words. No pressure. We explain the package in everyday language.
             </p>
@@ -358,17 +381,17 @@ export default function HomePage() {
           </div>
           <div className="mini-grid" style={{ marginTop: 36 }}>
             <article className="mini-card" data-wd-reveal data-wd-spotlight>
-              <span className="material-symbols-outlined">payments</span>
+              <span className="mini-card-icon" aria-hidden="true"><span className="material-symbols-outlined">payments</span></span>
               <h3>Clear Billing</h3>
               <p>We tell you the package price and any extra work before payment.</p>
             </article>
             <article className="mini-card" data-wd-reveal data-wd-spotlight>
-              <span className="material-symbols-outlined">settings_suggest</span>
+              <span className="mini-card-icon" aria-hidden="true"><span className="material-symbols-outlined">settings_suggest</span></span>
               <h3>Guided Support</h3>
               <p>We guide you after launch so you know what was done.</p>
             </article>
             <article className="mini-card" data-wd-reveal data-wd-spotlight>
-              <span className="material-symbols-outlined">verified_user</span>
+              <span className="mini-card-icon" aria-hidden="true"><span className="material-symbols-outlined">verified_user</span></span>
               <h3>Consent First</h3>
               <p>We store form details only after the visitor agrees to be contacted.</p>
             </article>
