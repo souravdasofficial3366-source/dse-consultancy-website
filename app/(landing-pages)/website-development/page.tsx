@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { FaqJsonLd } from "@/components/faq/FaqJsonLd";
 import { FaqList } from "@/components/faq/FaqList";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { IndustryVideoGrid } from "@/components/landing/IndustryVideoGrid";
 import { WebsiteDevelopmentExperience } from "@/components/landing/WebsiteDevelopmentExperience";
 import { WebsitePerformanceStory } from "@/components/landing/WebsitePerformanceStory";
+import { websiteDevelopmentFaqs } from "@/data/faqs";
 import {
   formatPackagePrice,
   websitePackages
@@ -16,33 +18,6 @@ export const metadata: Metadata = {
   description:
     "Affordable, mobile-friendly business website development with Google-ready content, lead forms, WhatsApp and ongoing support."
 };
-
-const faqs = [
-  {
-    question: `Is ${siteConfig.basePrice} the final price of the website?`,
-    answer: `${siteConfig.basePrice} is the starting price for a simple business website. Final price depends on the pages and features you need. We explain everything clearly on a short phone call before you pay.`
-  },
-  {
-    question: "Will my business show on Google?",
-    answer:
-      "Yes. We set up the basic Google details, write clear page titles, add your business information, and help your website get ready for local searches for 1 full year at no extra charge."
-  },
-  {
-    question: "Do I need to know coding or website work?",
-    answer:
-      "No. You only share your business name, photos, phone number, address, and services. We make the website and guide you in simple words."
-  },
-  {
-    question: "Will the website open properly on mobile phones?",
-    answer:
-      "Yes. Your website is made first for mobile phones because most local customers search from mobile."
-  },
-  {
-    question: "Can customers call or WhatsApp me from the website?",
-    answer:
-      "Yes. We add call buttons, WhatsApp buttons, and a simple enquiry form so new customers can contact you quickly."
-  }
-];
 
 const prices = [
   {
@@ -100,6 +75,7 @@ export default function HomePage() {
     <main className="landing-page website-development-page">
       <WebsiteDevelopmentExperience />
       <LocalBusinessJsonLd />
+      <FaqJsonLd items={websiteDevelopmentFaqs} />
       <section className="hero wd-hero" id="top">
         <div aria-hidden="true" className="wd-hero-grid-art">
           <span className="wd-hero-fragment fragment-browser">
@@ -345,16 +321,21 @@ export default function HomePage() {
         <div className="container" data-wd-reveal>
           <div className="section-head center">
             <span className="eyebrow">Questions</span>
-            <h2>
-              <span>Clear Answers</span>
-              <span>Before You Start</span>
-            </h2>
+              <h2>
+                <span>Clear Answers</span>
+                <span>Before You Start.</span>
+              </h2>
             <p className="section-copy">
               No confusing words. No pressure. We explain the package in everyday language.
             </p>
           </div>
           <div className="faq-grid">
-            <FaqList items={faqs} />
+            <FaqList items={websiteDevelopmentFaqs}
+              actions={{
+                primary: { href: "#lead-form", label: "Book a call" },
+                secondary: { href: "#pricing", label: "See prices" }
+              }}
+            />
             <aside className="help-card" data-wd-spotlight>
               <span className="material-symbols-outlined">support_agent</span>
               <h3>Still Have Questions?</h3>

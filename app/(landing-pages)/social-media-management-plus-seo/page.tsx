@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { FaqJsonLd } from "@/components/faq/FaqJsonLd";
 import { FaqList } from "@/components/faq/FaqList";
 import { SocialSeoAuditForm } from "@/components/forms/SocialSeoAuditForm";
 import { CounterStats } from "@/components/landing/CounterStats";
 import { MonthlyManagementBento } from "@/components/landing/MonthlyManagementBento";
 import { SocialSeoStudio } from "@/components/landing/SocialSeoStudio";
 import { ToolLogoCarousel } from "@/components/landing/ToolLogoCarousel";
+import { socialSeoFaqs } from "@/data/faqs";
 import {
   formatPackagePrice,
   socialSeoPackages
@@ -154,44 +156,6 @@ const plans = socialSeoPackages.map((pricing, index) => ({
   priceLabel: formatPackagePrice(pricing)
 }));
 
-const faqs = [
-  {
-    question: "Will you guarantee first-page ranking?",
-    answer:
-      "No honest SEO partner should guarantee fixed rankings. We improve the signals Google uses, keep your profiles active, and report progress clearly."
-  },
-  {
-    question: "How soon will I see results?",
-    answer:
-      "Social consistency can improve quickly. SEO and local visibility usually need steady work over a few months, depending on your city and competition."
-  },
-  {
-    question: "Do I need to send photos and videos?",
-    answer:
-      "Yes, real business photos and short videos help. We guide you on what to send and can plan content shoots if you need more support."
-  },
-  {
-    question: "Which platforms should my business use?",
-    answer:
-      "We choose based on your business. Most local businesses need Google Business Profile, WhatsApp, Instagram, and Facebook. Some service businesses also benefit from YouTube or LinkedIn."
-  },
-  {
-    question: "Can you manage Google reviews?",
-    answer:
-      "We can help with review request systems and reply drafts. We do not create fake reviews or ask customers to post anything dishonest."
-  },
-  {
-    question: "Is ad spend included?",
-    answer:
-      "No. This package is for organic social media plus local SEO. Paid ads can be quoted separately if they are needed."
-  },
-  {
-    question: "Can this work without a website?",
-    answer:
-      "Yes, we can start with Google Business Profile, social pages, and WhatsApp. A website or landing page usually improves trust and tracking, so we may recommend it later."
-  }
-];
-
 export default function SocialMediaSeoLandingPage() {
   const whatsappHref = hasConfiguredWhatsApp()
     ? `https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
@@ -202,6 +166,7 @@ export default function SocialMediaSeoLandingPage() {
   return (
     <main className="social-seo-page">
       <LocalBusinessJsonLd />
+      <FaqJsonLd items={socialSeoFaqs} />
       <section className="social-hero" id="top">
         <video
           aria-hidden="true"
@@ -520,11 +485,16 @@ export default function SocialMediaSeoLandingPage() {
             <span className="social-kicker">FAQs</span>
             <h2>
               <span>Clear Answers</span>
-              <span>Before You Start</span>
+              <span>Before You Start.</span>
             </h2>
           </div>
           <div className="social-faq-wrap">
-            <FaqList items={faqs} />
+            <FaqList items={socialSeoFaqs}
+              actions={{
+                primary: { href: "#audit", label: "Book an appointment" },
+                secondary: { href: "#pricing", label: "See packages" }
+              }}
+            />
           </div>
         </div>
       </section>

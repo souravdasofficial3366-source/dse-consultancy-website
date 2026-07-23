@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FaqJsonLd } from "@/components/faq/FaqJsonLd";
+import { FaqList } from "@/components/faq/FaqList";
 import { CursorExploreCta } from "@/components/landing/CursorExploreCta";
 import { HeroGrowthDashboard } from "@/components/landing/HeroGrowthDashboard";
 import { HomePalettePreview } from "@/components/landing/HomePalettePreview";
 import { HomeProcessStack, type HomeProcessStep } from "@/components/landing/HomeProcessStack";
 import { blogPosts } from "@/data/blog";
+import { homeFaqs } from "@/data/faqs";
 import { LocalBusinessJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
@@ -77,6 +80,7 @@ export default function ConsultancyHomePage() {
   return (
     <main className="consultancy-home" data-home-palette="blaze" id="top">
       <LocalBusinessJsonLd />
+      <FaqJsonLd items={homeFaqs} />
       <HomePalettePreview />
 
       <section className="consultancy-home-hero">
@@ -247,6 +251,21 @@ export default function ConsultancyHomePage() {
                 <span className="consultancy-insight-meta">{post.readingTime} <b>↗</b></span>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="dse-page-faq" id="faq">
+        <div className="container">
+          <div className="consultancy-home-heading center">
+            <span className="consultancy-home-kicker dark">FAQs</span>
+            <h2>
+              <span>Clear Answers</span>
+              <span>Before You Choose.</span>
+            </h2>
+          </div>
+          <div className="social-faq-wrap">
+            <FaqList items={homeFaqs} />
           </div>
         </div>
       </section>
