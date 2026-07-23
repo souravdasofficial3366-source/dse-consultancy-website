@@ -5,7 +5,7 @@ import {
   readdirSync,
   statSync
 } from "node:fs";
-import { dirname, extname, join, relative, resolve } from "node:path";
+import { dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import test from "node:test";
 
 const sourceRoot = resolve(process.env.DSE_SOURCE_ROOT || process.cwd());
@@ -65,7 +65,7 @@ function sourceFiles() {
 function localRuntimePaths(source) {
   const paths = new Set();
   const matcher =
-    /(?:["'`]|\()(?<path>\/[^"'`()\s?#]+\.(?:avif|gif|jpe?g|mp4|png|svg|ttf|webm|woff2?))(?:[?#][^"'`()\s]*)?(?:["'`]|\))/gi;
+    /(?:["'`]|\()(?<path>\/[^"'`()\s?#]+\.(?:avif|gif|ico|jpe?g|mp4|otf|png|svg|ttf|webm|webp|woff2?))(?:[?#][^"'`()\s]*)?(?:["'`]|\))/gi;
 
   for (const match of source.matchAll(matcher)) {
     paths.add(match.groups.path);
@@ -73,6 +73,50 @@ function localRuntimePaths(source) {
 
   return [...paths];
 }
+
+function resolvePublicRuntimePath(runtimePath) {
+  const publicRoot = resolve(sourceRoot, "public");
+  const target = resolve(publicRoot, runtimePath.replace(/^\/+/, ""));
+  const relativeTarget = relative(publicRoot, target);
+
+  if (
+    relativeTarget === ".." ||
+    relativeTarget.startsWith(`..${sep}`) ||
+    isAbsolute(relativeTarget)
+  ) {
+    return null;
+  }
+
+  return target;
+}
+
+test("runtime scanning covers current and future image, icon, video and font formats", () => {
+  const found = localRuntimePaths(`
+    url("/images/preview.webp")
+    href="/favicon.ico"
+    src="/fonts/BrandDisplay.otf"
+    src="/images/existing.png"
+  `);
+
+  assert.deepEqual(
+    found.sort(),
+    [
+      "/favicon.ico",
+      "/fonts/BrandDisplay.otf",
+      "/images/existing.png",
+      "/images/preview.webp"
+    ]
+  );
+});
+
+test("runtime asset resolution cannot escape the public root", () => {
+  assert.equal(resolvePublicRuntimePath("/../escape.webp"), null);
+  assert.equal(resolvePublicRuntimePath("/images/../../escape.ico"), null);
+
+  const validTarget = resolvePublicRuntimePath("/images/preview.webp");
+  assert.ok(validTarget?.startsWith(`${resolve(sourceRoot, "public")}/`));
+  assert.equal(validTarget, resolve(sourceRoot, "public/images/preview.webp"));
+});
 
 function resolveCodeImport(importer, specifier) {
   if (!specifier.startsWith("@/") && !specifier.startsWith(".")) {
@@ -117,8 +161,8 @@ test("all local runtime paths referenced by source and CSS exist under public", 
 
   for (const file of sourceFiles()) {
     for (const runtimePath of localRuntimePaths(read(file))) {
-      const target = absolute(join("public", runtimePath.replace(/^\//, "")));
-      if (!existsSync(target) || !statSync(target).isFile()) {
+      const target = resolvePublicRuntimePath(runtimePath);
+      if (!target || !existsSync(target) || !statSync(target).isFile()) {
         missing.push(`${relative(sourceRoot, absolute(file))}: ${runtimePath}`);
       }
     }

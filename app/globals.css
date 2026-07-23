@@ -9247,7 +9247,7 @@ html[data-home-palette="blaze"] .site-footer .footer-bottom {
   min-height: 92svh;
   align-items: center;
   padding: 9svh 0;
-  opacity: .42;
+  opacity: .6;
   transition: opacity 500ms ease;
 }
 
@@ -9495,21 +9495,6 @@ html[data-home-palette="blaze"] .site-footer .footer-bottom {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .interactive-footer::before,
-  .interactive-footer[data-pointer-active="true"]::before {
-    top: 22%;
-    left: 50%;
-    opacity: .08;
-    transition: none;
-  }
-
-  .interactive-footer-pixels > span {
-    animation: none !important;
-    opacity: .1;
-    transform: none;
-    transition: none;
-  }
-
   .dse-vision-story__stack-position,
   .dse-vision-story__chapter,
   .dse-vision-story__rail > span,

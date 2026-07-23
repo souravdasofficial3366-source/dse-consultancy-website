@@ -12,10 +12,10 @@ export const visualTemplates: Record<number, string> = {
       <!-- PHASE A: OTHER AGENCY FAILING MODEL -->
       <g class="phase-a">
         <text x="200" y="55" fill="#FFF9F5" font-family="Montserrat" font-size="14" font-weight="700" letter-spacing="1" text-anchor="middle" opacity="0.6">OTHER AGENCY MODEL</text>
-        
+
         <!-- Failing Zig-zag Path -->
         <path d="M 85 120 L 315 120 L 85 270 L 315 270" stroke="rgba(255, 255, 255, 0.25)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        
+
         <!-- Stalling Pulse -->
         <path d="M 85 120 L 315 120 L 85 270 L 315 270" stroke="#FF8124" stroke-width="3.5" fill="none" class="phase-a-pulse" stroke-linecap="round"/>
 
@@ -38,7 +38,7 @@ export const visualTemplates: Record<number, string> = {
       <!-- PHASE B: DSE CLEAN NETWORK -->
       <g class="phase-b">
         <text x="200" y="55" fill="#FE6807" font-family="Montserrat" font-size="14" font-weight="800" letter-spacing="1.5" text-anchor="middle">DSE PARTNER NETWORK</text>
-        
+
         <!-- Clean X-shaped Network Lines -->
         <line x1="200" y1="195" x2="85" y2="120" stroke="rgba(254, 104, 7, 0.3)" stroke-width="2" class="phase-b-lines"/>
         <line x1="200" y1="195" x2="315" y2="120" stroke="rgba(254, 104, 7, 0.3)" stroke-width="2" class="phase-b-lines"/>
@@ -79,7 +79,7 @@ export const visualTemplates: Record<number, string> = {
           <stop offset="100%" stop-color="#FE6807" stop-opacity="0"/>
         </radialGradient>
       </defs>
-      
+
       <!-- Outer boundary -->
       <rect x="30" y="30" width="340" height="340" rx="8" fill="rgba(254,104,7,0.01)" stroke="rgba(254, 104, 7, 0.1)" stroke-width="1"/>
       <circle cx="200" cy="195" r="140" stroke="rgba(254, 104, 7, 0.08)" stroke-width="1"/>
@@ -151,7 +151,7 @@ export const visualTemplates: Record<number, string> = {
 
       <!-- Evidence Decisions -->
       <path d="M50 260 Q110 230 170 180 T290 110 T350 80" stroke="#FE6807" stroke-width="3.5" class="anim-path-draw" fill="none"/>
-      
+
       <!-- Glowing Overlay flow line -->
       <path d="M50 260 Q110 230 170 180 T290 110 T350 80" stroke="#FFAD45" stroke-width="3" stroke-linecap="round" fill="none" class="anim-evidence-flow"/>
 
@@ -159,13 +159,13 @@ export const visualTemplates: Record<number, string> = {
 
       <circle cx="170" cy="180" r="7" fill="#09080E" stroke="#FFAD45" stroke-width="2.5"/>
       <circle cx="290" cy="110" r="7" fill="#09080E" stroke="#FFAD45" stroke-width="2.5"/>
-      
+
       <g transform="translate(140, 210)" class="anim-label-fade">
         <rect width="90" height="30" rx="4" fill="rgba(18, 16, 26, 0.85)" stroke="rgba(254, 104, 7, 0.3)" stroke-width="1"/>
         <text x="5" y="12" fill="#FFF9F5" font-family="Anek Telugu" font-size="11" font-weight="500">SEARCH SIGNALS</text>
         <text x="5" y="24" fill="#FE6807" font-family="Anek Telugu" font-size="11" font-weight="700">TRAFFIC: +42%</text>
       </g>
-      
+
       <g transform="translate(260, 140)" class="anim-label-fade">
         <rect width="90" height="30" rx="4" fill="rgba(18, 16, 26, 0.85)" stroke="rgba(254, 104, 7, 0.3)" stroke-width="1"/>
         <text x="5" y="12" fill="#FFF9F5" font-family="Anek Telugu" font-size="11" font-weight="500">OPS ENQUIRIES</text>
@@ -181,7 +181,7 @@ export const visualTemplates: Record<number, string> = {
       <!-- LEFT SIDE: FEASIBILITY DIAGNOSTICS -->
       <g transform="translate(5, 0)">
         <text x="105" y="65" fill="#FFAD45" font-family="Montserrat" font-size="13" font-weight="700" text-anchor="middle">FEASIBILITY</text>
-        
+
         <!-- Arc Gauge for Demand -->
         <g transform="translate(105, 125)">
           <path d="M-30 0 A30 30 0 0 1 30 0" stroke="rgba(254,104,7,0.1)" stroke-width="6" fill="none" stroke-linecap="round"/>
@@ -219,7 +219,7 @@ export const visualTemplates: Record<number, string> = {
       <!-- RIGHT SIDE: TRANSPARENT COST LAYERS -->
       <g transform="translate(5, 0)">
         <text x="295" y="65" fill="#FFAD45" font-family="Montserrat" font-size="13" font-weight="700" text-anchor="middle">COST STRUCTURE</text>
-        
+
         <!-- Stacked layers -->
         <g transform="translate(200, 80)">
           <!-- Options -->
@@ -227,13 +227,13 @@ export const visualTemplates: Record<number, string> = {
             <rect x="0" y="10" width="170" height="28" rx="3" fill="rgba(254,173,69,0.04)" stroke="#FFAD45" stroke-width="1.2" stroke-dasharray="2,2"/>
             <text x="10" y="28" fill="#FFF9F5" font-family="Montserrat" font-size="11" font-weight="700">03 / OPTIONS (20%)</text>
           </g>
-          
+
           <!-- Improvements -->
           <g class="anim-layer-2">
             <rect x="0" y="45" width="170" height="28" rx="3" fill="rgba(255,129,36,0.06)" stroke="#FF8124" stroke-width="1.2" stroke-dasharray="4,2"/>
             <text x="10" y="63" fill="#FFF9F5" font-family="Montserrat" font-size="11" font-weight="700">02 / BOOSTERS (30%)</text>
           </g>
-          
+
           <!-- Essentials -->
           <g class="anim-layer-1">
             <rect x="0" y="80" width="170" height="36" rx="3" fill="rgba(254,104,7,0.1)" stroke="#FE6807" stroke-width="2"/>
@@ -266,7 +266,7 @@ export const visualTemplates: Record<number, string> = {
       <!-- Canyon Cliffs -->
       <path d="M 20 240 L 100 240 L 100 350" stroke="#FFF9F5" stroke-width="2.5" fill="none"/>
       <path d="M 300 240 L 300 350 L 380 350" stroke="#FFF9F5" stroke-width="2.5" fill="none"/>
-      
+
       <!-- Cliff Base Shading / Hatching -->
       <line x1="100" y1="260" x2="80" y2="280" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
       <line x1="100" y1="290" x2="80" y2="310" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1.5"/>
@@ -337,7 +337,7 @@ export const visualTemplates: Record<number, string> = {
       <!-- Central Phone Frame -->
       <rect x="58" y="29" width="284" height="342" rx="25" fill="#09080E" stroke="#FE6807" stroke-width="3"/>
       <rect x="64" y="35" width="272" height="330" rx="20" fill="#12101A"/>
-      
+
       <!-- Phone Top Notch -->
       <rect x="168" y="41" width="64" height="8" rx="4" fill="#09080E"/>
 
@@ -410,7 +410,7 @@ export const visualTemplates: Record<number, string> = {
 
       <!-- Interlocking Arch Blocks -->
       <!-- Fixed Outer group handles translate layout, inner handles animation to prevent overrides -->
-      
+
       <!-- Block 1: Website (Left Base) -->
       <g transform="translate(60, 260)">
         <g class="arch-left">
