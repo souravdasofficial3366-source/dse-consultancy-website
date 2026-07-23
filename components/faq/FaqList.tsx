@@ -1,17 +1,14 @@
 "use client";
 
 import { useId, useState } from "react";
-
-export type FaqItem = {
-  question: string;
-  answer: string;
-};
+import type { FaqActions, FaqItem } from "@/data/faqs";
 
 type FaqListProps = {
-  items: FaqItem[];
+  items: readonly FaqItem[];
+  actions?: FaqActions;
 };
 
-export function FaqList({ items }: FaqListProps) {
+export function FaqList({ items, actions }: FaqListProps) {
   const [openIndex, setOpenIndex] = useState(0);
   const listId = useId();
 
@@ -40,14 +37,16 @@ export function FaqList({ items }: FaqListProps) {
             {isOpen ? (
               <div className="faq-answer" id={answerId}>
                 <p>{item.answer}</p>
-                {index === 0 ? (
+                {index === 0 && actions ? (
                   <div className="faq-actions">
-                    <a className="primary-button" href="#lead-form">
-                      Book a call
+                    <a className="primary-button" href={actions.primary.href}>
+                      {actions.primary.label}
                     </a>
-                    <a className="outline-button" href="#pricing">
-                      See prices
-                    </a>
+                    {actions.secondary ? (
+                      <a className="outline-button" href={actions.secondary.href}>
+                        {actions.secondary.label}
+                      </a>
+                    ) : null}
                   </div>
                 ) : null}
               </div>
