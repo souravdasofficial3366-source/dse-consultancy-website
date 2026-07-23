@@ -59,3 +59,36 @@ test("general enquiries normalize safely while invalid packages return null", as
   assert.equal(pricing.resolveLeadPackage("Invented Package – ₹1", "website"), null);
   assert.equal(pricing.resolveLeadPackage("", "website"), null);
 });
+
+const [leadForm, contactPage, leadModuleSource, auditForm] = await Promise.all([
+  readFile("components/forms/LeadForm.tsx", "utf8"),
+  readFile("app/(website-pages)/contact-us/page.tsx", "utf8"),
+  readFile("lib/leads.ts", "utf8"),
+  readFile("components/forms/SocialSeoAuditForm.tsx", "utf8")
+]);
+
+test("the Contact hero requests a general LeadForm without a package field", () => {
+  assert.match(contactPage, /<LeadForm mode="general" sourcePath="\/contact-us" \/>/);
+  assert.match(leadForm, /mode === "website"/);
+  assert.match(leadForm, /Request A Call Back/);
+  assert.match(leadForm, /contact me about digital services/);
+  assert.doesNotMatch(contactPage, /pricing_package/);
+});
+
+test("website mode derives options and CTA from the shared catalogue", () => {
+  assert.match(leadForm, /websitePackages\.map/);
+  assert.match(leadForm, /formatLeadPackageOption/);
+  assert.match(leadForm, /formatInr\(websitePackages\[0\]\.price\)/);
+  assert.doesNotMatch(leadForm, /const packageOptions/);
+  assert.doesNotMatch(leadForm, /₹5,999/);
+});
+
+test("the audit form uses the shared free-audit value", () => {
+  assert.match(auditForm, /SOCIAL_SEO_AUDIT_PACKAGE/);
+  assert.doesNotMatch(auditForm, /pricing_package: "Social \+ SEO Audit – Free"/);
+});
+
+test("lead validation imports the shared package allow-list", () => {
+  assert.match(leadModuleSource, /resolveLeadPackage/);
+  assert.doesNotMatch(leadModuleSource, /const packageOptions = new Set/);
+});
