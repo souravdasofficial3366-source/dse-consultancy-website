@@ -39,6 +39,85 @@ test("the About story keeps its committed visual runtime dependency", () => {
   assert.match(storyVisuals, /export const visionStateLabels:/);
 });
 
+test("the About story has a complete dark desktop timeline composition", () => {
+  assert.match(
+    css,
+    /\.dse-vision-story\s*\{[^}]*position:\s*relative[^}]*overflow:\s*clip[^}]*background:\s*#09080e[^}]*color:\s*#fff9f5/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__grid-overlay\s*\{[^}]*linear-gradient[^}]*background-size:/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__journey\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(0,\s*[^)]+\)\s+minmax\(0,\s*[^)]+\)/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__desktop\s*\{[^}]*position:\s*sticky[^}]*top:/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__visual-stack\s*\{[^}]*position:\s*relative[^}]*min-height:/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__stack-position\s*\{[^}]*position:\s*absolute[^}]*transition:/
+  );
+});
+
+test("the About story styles timeline states, rail, dots and large two-line chapter type", () => {
+  assert.match(
+    css,
+    /\.dse-vision-story__stack-position\.active\s*\{[^}]*opacity:\s*1[^}]*transform:\s*translate3d\(0,\s*0,\s*0\)\s*scale\(1\)/
+  );
+  assert.match(css, /\.dse-vision-story__stack-position\.next-1\s*\{[^}]*opacity:/);
+  assert.match(
+    css,
+    /\.dse-vision-story__stack-position:is\(\.prev,\s*\.past\)\s*\{[^}]*opacity:\s*0/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__rail\s*\{[^}]*position:\s*absolute[^}]*background:/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__rail > span\s*\{[^}]*background:\s*#fe6807/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__dot\s*\{[^}]*position:\s*absolute[^}]*border-radius:\s*50%/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__chapter-copy h3\s*\{[^}]*color:\s*#fff9f5[^}]*font-size:\s*clamp\([^}]*line-height:/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__heading-line\s*\{[^}]*display:\s*block[^}]*white-space:\s*nowrap/
+  );
+});
+
+test("the About story has mobile and reduced-motion fallbacks", () => {
+  assert.match(css, /\.dse-vision-story__mobile\s*\{[^}]*display:\s*none/);
+  assert.match(
+    css,
+    /@media \(max-width:\s*900px\)\s*\{[\s\S]*?\.dse-vision-story__desktop\s*\{[^}]*display:\s*none[\s\S]*?\.dse-vision-story__mobile\s*\{[^}]*display:\s*block/
+  );
+  assert.match(
+    css,
+    /@media \(max-width:\s*900px\)\s*\{[\s\S]*?\.dse-vision-story__journey\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/
+  );
+  assert.match(
+    css,
+    /@media \(max-width:\s*900px\)\s*\{[\s\S]*?\.dse-vision-story__heading-line\s*\{[^}]*white-space:\s*normal/
+  );
+  assert.match(
+    css,
+    /@media \(prefers-reduced-motion:\s*reduce\)\s*\{[\s\S]*?\.dse-vision-story__stack-position[\s\S]*?transition:\s*none/
+  );
+});
+
 test("all three growth cards keep stable visual class names", () => {
   ["visibility", "social-proof", "business-call"].forEach((name) => {
     assert.ok(social.includes(`visual: "${name}"`));
