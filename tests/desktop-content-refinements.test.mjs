@@ -12,6 +12,28 @@ const [home, footer, story, storyVisuals, about, social, css] = await Promise.al
   readFile("app/globals.css", "utf8")
 ]);
 
+function extractCssBlock(source, marker, fromIndex = 0) {
+  const markerIndex = source.indexOf(marker, fromIndex);
+  assert.notEqual(markerIndex, -1, `Missing CSS block marker: ${marker}`);
+
+  const openBrace = source.indexOf("{", markerIndex);
+  assert.notEqual(openBrace, -1, `Missing opening brace after: ${marker}`);
+
+  let depth = 0;
+  for (let index = openBrace; index < source.length; index += 1) {
+    if (source[index] === "{") depth += 1;
+    if (source[index] === "}") depth -= 1;
+    if (depth === 0) {
+      return {
+        start: markerIndex,
+        text: source.slice(markerIndex, index + 1)
+      };
+    }
+  }
+
+  assert.fail(`Missing closing brace after: ${marker}`);
+}
+
 test("the Home closing copy is unique while the footer remains unchanged", () => {
   assert.match(home, /Built Around Better Enquiries/);
   assert.match(home, /Turn Digital Attention Into/);
@@ -96,26 +118,41 @@ test("the About story styles timeline states, rail, dots and large two-line chap
     css,
     /\.dse-vision-story__heading-line\s*\{[^}]*display:\s*block[^}]*white-space:\s*nowrap/
   );
+  assert.match(
+    css,
+    /\.dse-vision-story__chapter\s*\{[^}]*opacity:\s*\.6(?:0)?/
+  );
 });
 
 test("the About story has mobile and reduced-motion fallbacks", () => {
+  const aboutStylesStart = css.indexOf("/* About operating-philosophy timeline */");
+  const mobileCss = extractCssBlock(css, "@media (max-width: 900px)", aboutStylesStart).text;
+  const reducedMotionCss = extractCssBlock(
+    css,
+    "@media (prefers-reduced-motion: reduce)",
+    aboutStylesStart
+  ).text;
+
   assert.match(css, /\.dse-vision-story__mobile\s*\{[^}]*display:\s*none/);
   assert.match(
-    css,
-    /@media \(max-width:\s*900px\)\s*\{[\s\S]*?\.dse-vision-story__desktop\s*\{[^}]*display:\s*none[\s\S]*?\.dse-vision-story__mobile\s*\{[^}]*display:\s*block/
+    mobileCss,
+    /\.dse-vision-story__desktop\s*\{[^}]*display:\s*none/
   );
   assert.match(
-    css,
-    /@media \(max-width:\s*900px\)\s*\{[\s\S]*?\.dse-vision-story__journey\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/
+    mobileCss,
+    /\.dse-vision-story__mobile\s*\{[^}]*display:\s*block/
   );
   assert.match(
-    css,
-    /@media \(max-width:\s*900px\)\s*\{[\s\S]*?\.dse-vision-story__heading-line\s*\{[^}]*white-space:\s*normal/
+    mobileCss,
+    /\.dse-vision-story__journey\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/
   );
   assert.match(
-    css,
-    /@media \(prefers-reduced-motion:\s*reduce\)\s*\{[\s\S]*?\.dse-vision-story__stack-position[\s\S]*?transition:\s*none/
+    mobileCss,
+    /\.dse-vision-story__heading-line\s*\{[^}]*white-space:\s*normal/
   );
+  assert.match(reducedMotionCss, /\.dse-vision-story__stack-position/);
+  assert.match(reducedMotionCss, /transition:\s*none/);
+  assert.doesNotMatch(reducedMotionCss, /\.interactive-footer/);
 });
 
 test("all three growth cards keep stable visual class names", () => {

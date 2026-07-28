@@ -9,7 +9,7 @@ export const siteConfig = {
   email: process.env.NEXT_PUBLIC_DSE_EMAIL || "hello@dseconsultancy.in",
   address:
     process.env.NEXT_PUBLIC_DSE_ADDRESS ||
-    "Kalna, Burdwan, West Bengal, India",
+    "Ballygunge, Kolkata, West Bengal, India",
   socialLinks: [
     { label: "LinkedIn", shortLabel: "in", url: process.env.NEXT_PUBLIC_LINKEDIN_URL },
     { label: "Facebook", shortLabel: "f", url: process.env.NEXT_PUBLIC_FACEBOOK_URL },
@@ -33,7 +33,7 @@ export const siteNavigation = [
   { label: "Website Development", href: "/website-development" },
   { label: "SMM + SEO", href: "/social-media-management-plus-seo" },
   { label: "Contact Us", href: "/contact-us" },
-  { label: "Insights", href: "/blog" }
+  { label: "Blog Page", href: "/blog" }
 ] as const;
 
 export const landingNavigation = siteNavigation;
