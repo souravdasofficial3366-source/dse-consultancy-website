@@ -4,7 +4,7 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { getLocalSeoSlugs } from "@/data/local-seo";
 import { siteConfig } from "@/data/site";
 import { LocalBusinessJsonLd } from "@/lib/json-ld";
-import { getLocalPageContent } from "@/lib/local-pages";
+import { getLocalPageContent } from "@/lib/local-page-content";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -52,6 +52,7 @@ export default async function LocalSeoPage({ params }: PageProps) {
         city={page.city}
         description={page.description}
         pageUrl={`${siteConfig.siteUrl}/${page.slug}`}
+        pricing={page.pricing}
       />
       <section className="seo-hero">
         <div className="container seo-content">
@@ -65,7 +66,7 @@ export default async function LocalSeoPage({ params }: PageProps) {
             <ul className="trust-list">
               <li>
                 <span className="material-symbols-outlined">verified</span>
-                Simple website from {siteConfig.basePrice}
+                Simple website from {page.pricing.startingPriceLabel}
               </li>
               <li>
                 <span className="material-symbols-outlined">verified</span>
@@ -115,7 +116,7 @@ export default async function LocalSeoPage({ params }: PageProps) {
           <aside className="seo-panel">
             <h2>Starting package</h2>
             <div className="price">
-              {siteConfig.basePrice}
+              {page.pricing.startingPriceLabel}
               <small> + GST</small>
             </div>
             <p>

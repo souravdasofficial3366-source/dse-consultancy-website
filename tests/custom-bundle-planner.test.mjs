@@ -48,10 +48,12 @@ test("the future placeholder is removed from markup and CSS", () => {
   assert.doesNotMatch(css, /\.dse-bundle-future-note/);
 });
 
-test("LocalBusiness offer pricing uses the shared website starting price", () => {
-  assert.match(siteData, /formatInr\(websitePackages\[0\]\.price\)/);
+test("site metadata and LocalBusiness offers use the reusable website pricing snapshot", () => {
+  assert.match(siteData, /websitePricing/);
+  assert.match(siteData, /basePrice:\s*websitePricing\.startingPriceLabel/);
   assert.doesNotMatch(siteData, /basePrice:\s*"₹5,999"/);
-  assert.match(jsonLd, /websitePackages\[0\]\.price/);
+  assert.match(jsonLd, /pricing = websitePricing/);
+  assert.match(jsonLd, /createLocalBusinessData/);
   assert.doesNotMatch(jsonLd, /price: "3999"/);
 });
 

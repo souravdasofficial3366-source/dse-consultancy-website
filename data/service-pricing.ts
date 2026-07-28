@@ -20,6 +20,12 @@ export type PricingService = {
   packages: readonly PricingPackage[];
 };
 
+export type WebsitePricingSnapshot = {
+  startingPrice: number;
+  startingPriceLabel: string;
+  startingPackageName: string;
+};
+
 const inr = new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",
@@ -89,6 +95,24 @@ export function formatInr(value: number) {
 export function formatPackagePrice(item: PricingPackage) {
   return `${formatInr(item.price)}${item.billing === "monthly" ? "/month" : ""}`;
 }
+
+export function createWebsitePricingSnapshot(
+  packages: readonly PricingPackage[]
+): WebsitePricingSnapshot {
+  const startingPackage = packages[0];
+
+  if (!startingPackage) {
+    throw new Error("At least one website package is required.");
+  }
+
+  return {
+    startingPrice: startingPackage.price,
+    startingPriceLabel: formatPackagePrice(startingPackage),
+    startingPackageName: startingPackage.name
+  };
+}
+
+export const websitePricing = createWebsitePricingSnapshot(websitePackages);
 
 export function formatLeadPackageOption(item: PricingPackage) {
   return `${item.name} – ${formatInr(item.price)} + GST${

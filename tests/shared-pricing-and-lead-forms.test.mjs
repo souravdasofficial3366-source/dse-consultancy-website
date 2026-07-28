@@ -4,6 +4,10 @@ import test from "node:test";
 
 const pricingPath = new URL("../data/service-pricing.ts", import.meta.url);
 const leadsPath = new URL("../lib/leads.ts", import.meta.url);
+const pricingModule = await import(pricingPath.href);
+const currentWebsiteOption = pricingModule.formatLeadPackageOption(
+  pricingModule.websitePackages[0]
+);
 
 function validLead(overrides = {}) {
   return {
@@ -11,7 +15,7 @@ function validLead(overrides = {}) {
     phone_number: "9876543210",
     email_address: "customer@example.com",
     shop_type: "Local business",
-    pricing_package: "Essential – ₹5,999 + GST",
+    pricing_package: currentWebsiteOption,
     form_context: "website",
     city_town: "Kalna",
     message: "Please call me about a business website.",
@@ -26,45 +30,64 @@ async function loadCleanLead() {
   return cleanLead;
 }
 
-test("the shared catalogue owns every approved package price", async () => {
-  const pricing = await import(pricingPath.href);
-
+test("the shared catalogue keeps stable package identities and valid ascending prices", () => {
   assert.deepEqual(
-    pricing.websitePackages.map(({ id, name, price }) => ({ id, name, price })),
+    pricingModule.websitePackages.map(({ id, name }) => ({ id, name })),
     [
-      { id: "essential", name: "Essential", price: 5999 },
-      { id: "dynamic", name: "Dynamic", price: 7999 },
-      { id: "advanced", name: "Advanced", price: 10999 }
+      { id: "essential", name: "Essential" },
+      { id: "dynamic", name: "Dynamic" },
+      { id: "advanced", name: "Advanced" }
     ]
   );
   assert.deepEqual(
-    pricing.socialSeoPackages.map(({ id, name, price }) => ({ id, name, price })),
+    pricingModule.socialSeoPackages.map(({ id, name }) => ({ id, name })),
     [
-      { id: "essential-presence", name: "Essential Presence", price: 6999 },
-      { id: "business-growth", name: "Business Growth", price: 9999 },
-      { id: "complete-growth", name: "Complete Growth", price: 15999 }
+      { id: "essential-presence", name: "Essential Presence" },
+      { id: "business-growth", name: "Business Growth" },
+      { id: "complete-growth", name: "Complete Growth" }
     ]
   );
+  for (const packages of [
+    pricingModule.websitePackages,
+    pricingModule.socialSeoPackages
+  ]) {
+    assert.ok(packages.every(({ price }) => Number.isInteger(price) && price > 0));
+    assert.deepEqual(
+      packages.map(({ price }) => price),
+      packages.map(({ price }) => price).toSorted((a, b) => a - b)
+    );
+  }
 });
 
 test("catalogue formatters produce page and lead-form labels", async () => {
   const pricing = await import(pricingPath.href);
+  const oneTimePackage = {
+    id: "example",
+    name: "Example",
+    price: 12345,
+    billing: "one-time",
+    gst: "additional"
+  };
+  const monthlyPackage = {
+    ...oneTimePackage,
+    billing: "monthly"
+  };
 
-  assert.equal(pricing.formatPackagePrice(pricing.websitePackages[0]), "₹5,999");
-  assert.equal(pricing.formatPackagePrice(pricing.socialSeoPackages[0]), "₹6,999/month");
+  assert.equal(pricing.formatPackagePrice(oneTimePackage), "₹12,345");
+  assert.equal(pricing.formatPackagePrice(monthlyPackage), "₹12,345/month");
   assert.equal(
-    pricing.formatLeadPackageOption(pricing.websitePackages[0]),
-    "Essential – ₹5,999 + GST"
+    pricing.formatLeadPackageOption(oneTimePackage),
+    "Example – ₹12,345 + GST"
   );
 });
 
 test("the lead allow-list is derived from current catalogue values", async () => {
   const pricing = await import(pricingPath.href);
 
-  assert.ok(pricing.validLeadPackageValues.has("Essential – ₹5,999 + GST"));
+  assert.ok(pricing.validLeadPackageValues.has(currentWebsiteOption));
   assert.ok(pricing.validLeadPackageValues.has("Social + SEO Audit – Free"));
   assert.ok(pricing.validLeadPackageValues.has(pricing.GENERAL_ENQUIRY_PACKAGE));
-  assert.equal(pricing.validLeadPackageValues.has("Essential – ₹3,999 + GST"), false);
+  assert.equal(pricing.validLeadPackageValues.has("Essential – ₹1 + GST"), false);
 });
 
 test("general enquiries normalize safely while invalid packages return null", async () => {
@@ -75,8 +98,8 @@ test("general enquiries normalize safely while invalid packages return null", as
     "General enquiry – package to be discussed"
   );
   assert.equal(
-    pricing.resolveLeadPackage("Essential – ₹5,999 + GST", "website"),
-    "Essential – ₹5,999 + GST"
+    pricing.resolveLeadPackage(currentWebsiteOption, "website"),
+    currentWebsiteOption
   );
   assert.equal(pricing.resolveLeadPackage("Invented Package – ₹1", "website"), null);
   assert.equal(pricing.resolveLeadPackage("", "website"), null);
@@ -147,7 +170,8 @@ test("the shared LeadForm renders and submits a required enquiry message", () =>
 test("website mode derives options and CTA from the shared catalogue", () => {
   assert.match(leadForm, /websitePackages\.map/);
   assert.match(leadForm, /formatLeadPackageOption/);
-  assert.match(leadForm, /formatInr\(websitePackages\[0\]\.price\)/);
+  assert.match(leadForm, /websitePricing\.startingPriceLabel/);
+  assert.doesNotMatch(leadForm, /formatInr\(websitePackages\[0\]\.price\)/);
   assert.doesNotMatch(leadForm, /const packageOptions/);
   assert.doesNotMatch(leadForm, /₹5,999/);
 });

@@ -1,8 +1,8 @@
-import { formatInr, websitePackages } from "@/data/service-pricing";
+import { websitePricing } from "@/data/service-pricing";
 
 export const siteConfig = {
   name: "DSE Consultancy",
-  basePrice: formatInr(websitePackages[0].price),
+  basePrice: websitePricing.startingPriceLabel,
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   phone: process.env.NEXT_PUBLIC_DSE_PHONE || "+91 82405 32600",
   whatsapp: process.env.NEXT_PUBLIC_DSE_WHATSAPP || "918240532600",

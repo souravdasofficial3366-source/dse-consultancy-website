@@ -4,9 +4,9 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { TurnstileField } from "@/components/forms/TurnstileField";
 import {
-  formatInr,
   formatLeadPackageOption,
-  websitePackages
+  websitePackages,
+  websitePricing
 } from "@/data/service-pricing";
 
 type LeadFormMode = "website" | "general";
@@ -203,7 +203,7 @@ export function LeadForm({
           ? "Please wait..."
           : mode === "general"
             ? "Request A Call Back"
-            : `Book your website from ${formatInr(websitePackages[0].price)}`}
+            : `Book your website from ${websitePricing.startingPriceLabel}`}
       </button>
       <p className="form-note">No spam. We only use your details to call you back.</p>
       {state.message ? (

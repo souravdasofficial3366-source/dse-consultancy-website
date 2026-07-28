@@ -8,6 +8,7 @@ Use these files instead:
 | --- | --- |
 | Home landing page | `app/(landing-pages)/page.tsx` |
 | Local SEO pages like `/website-design-for-shops-in-kolkata` | `app/(local-seo-pages)/[slug]/page.tsx` |
+| All Website and SMM + SEO package prices | `data/service-pricing.ts` |
 | About page | `app/(website-pages)/about-us/page.tsx` |
 | Contact page | `app/(website-pages)/contact-us/page.tsx` |
 | Services list | `app/(website-pages)/services/page.tsx` |
@@ -18,6 +19,10 @@ Use these files instead:
 | Lead form | `components/forms/LeadForm.tsx` |
 | FAQ behavior | `components/faq/FaqList.tsx` |
 | Colors and layout styles | `app/globals.css` |
+
+Package amounts must be edited only in `data/service-pricing.ts`. After the site is rebuilt and
+deployed, the service pages, sitemap-generated local pages, forms, custom estimate, metadata, and
+structured data all receive the updated values from that catalogue.
 
 ## Page Folders
 

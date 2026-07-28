@@ -1,5 +1,7 @@
-import { siteConfig } from "@/data/site";
-import { toTitle } from "@/data/local-seo";
+import {
+  websitePricing,
+  type WebsitePricingSnapshot
+} from "../data/service-pricing.ts";
 
 export type LocalPageKind = "shops-in-city" | "business-in-city" | "google-in-city";
 
@@ -12,17 +14,25 @@ export type LocalPageContent = {
   description: string;
   h1: string;
   subtext: string;
+  pricing: WebsitePricingSnapshot;
 };
 
 function cityName(slugPart: string) {
-  return toTitle(slugPart);
+  return slugPart
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 function businessName(slugPart: string) {
   return slugPart.replace(/-/g, " ");
 }
 
-export function getLocalPageContent(slug: string): LocalPageContent | null {
+export function getLocalPageContent(
+  slug: string,
+  pricing: WebsitePricingSnapshot = websitePricing
+): LocalPageContent | null {
   const shopMatch = slug.match(/^website-design-for-shops-in-([a-z0-9-]+)$/);
   if (shopMatch) {
     const city = cityName(shopMatch[1]);
@@ -30,11 +40,12 @@ export function getLocalPageContent(slug: string): LocalPageContent | null {
       kind: "shops-in-city",
       city,
       slug,
-      title: `Website for shops in ${city} from ${siteConfig.basePrice}`,
+      title: `Website for shops in ${city} from ${pricing.startingPriceLabel}`,
       description: `Get a website for your shop in ${city}. We help people find your business on Google and call you directly.`,
-      h1: `Get a beautiful website for your shop in ${city} for just ${siteConfig.basePrice}.`,
+      h1: `Get a beautiful website for your shop in ${city} for just ${pricing.startingPriceLabel}.`,
       subtext:
-        "We build your website and help your business show on Google for 1 full year, free."
+        "We build your website and help your business show on Google for 1 full year, free.",
+      pricing
     };
   }
 
@@ -51,7 +62,8 @@ export function getLocalPageContent(slug: string): LocalPageContent | null {
       description: `Make a simple website for your ${businessType} in ${city} and get customer calls from Google.`,
       h1: `Get your ${businessType} found on Google in ${city}.`,
       subtext:
-        "Start getting customer calls and WhatsApp messages directly on your mobile phone."
+        "Start getting customer calls and WhatsApp messages directly on your mobile phone.",
+      pricing
     };
   }
 
@@ -67,7 +79,8 @@ export function getLocalPageContent(slug: string): LocalPageContent | null {
       description: `Make a simple website for your ${businessType} and get customer calls from Google.`,
       h1: `Get your ${businessType} found on Google.`,
       subtext:
-        "Start getting customer calls and WhatsApp messages directly on your mobile phone."
+        "Start getting customer calls and WhatsApp messages directly on your mobile phone.",
+      pricing
     };
   }
 
@@ -82,7 +95,8 @@ export function getLocalPageContent(slug: string): LocalPageContent | null {
       description: `DSE Consultancy helps small businesses in ${city} get a website and appear when customers search nearby.`,
       h1: `Get your business on Google in ${city}.`,
       subtext:
-        "We make your website, set up your Google details, and help nearby customers call you."
+        "We make your website, set up your Google details, and help nearby customers call you.",
+      pricing
     };
   }
 
