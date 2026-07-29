@@ -44,15 +44,21 @@ test("homepage split-copy audit keeps both shared headings and the system sectio
   assert.match(homePage, /className="consultancy-home-system-copy"/);
 });
 
-test("homepage split headings and system copy use the same balanced desktop family", () => {
+test("homepage split headings stay balanced while the system gets its approved wide desktop ratio", () => {
   const homepageSplit = ruleBlock(css, ".consultancy-home .consultancy-home-heading.split {");
-  const systemCopy = ruleBlock(css, ".consultancy-home-system-copy {");
+  const systemWide = ruleBlock(css, ".consultancy-home-system-copy {");
+  const systemSectionStart = css.indexOf(".consultancy-home-system {");
+  const systemBaseStart = css.indexOf(".consultancy-home-system-copy {", systemSectionStart);
+  const systemBase = blockAt(css, systemBaseStart);
   const balancedColumns = /grid-template-columns:\s*minmax\(0,\s*1\.4fr\)\s+minmax\(420px,\s*1fr\)/;
 
   assert.match(homepageSplit, balancedColumns);
   assert.match(homepageSplit, /gap:\s*clamp\(24px,\s*3vw,\s*44px\)/);
-  assert.match(systemCopy, balancedColumns);
-  assert.match(systemCopy, /gap:\s*clamp\(24px,\s*3vw,\s*44px\)/);
+  assert.match(
+    systemWide,
+    /grid-template-columns:\s*minmax\(0,\s*1\.75fr\)\s+minmax\(400px,\s*\.9fr\)/
+  );
+  assert.match(systemBase, /gap:\s*clamp\(24px,\s*3vw,\s*44px\)/);
 });
 
 test("split-copy layouts retain the existing tablet and mobile stack", () => {

@@ -4030,6 +4030,30 @@ textarea {
   transform: translateY(-4px);
 }
 
+.consultancy-home-button-arrow {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  border-radius: 50%;
+  transition: background 240ms ease, color 240ms ease, transform 240ms ease;
+}
+
+.consultancy-home-button.primary .consultancy-home-button-arrow {
+  background: #09080e;
+  color: #fff;
+}
+
+.consultancy-home-button.glass .consultancy-home-button-arrow {
+  background: #fe6807;
+  color: #09080e;
+}
+
+.consultancy-home-button:hover .consultancy-home-button-arrow {
+  transform: scale(1.08);
+}
+
 .consultancy-signal-board {
   position: relative;
   width: min(100%, 450px);
@@ -4387,6 +4411,10 @@ textarea {
   background: #fff7f2;
 }
 
+.consultancy-home-services {
+  padding-bottom: 0;
+}
+
 .consultancy-home-heading {
   margin-bottom: clamp(40px, 6vw, 72px);
 }
@@ -4443,6 +4471,21 @@ textarea {
 }
 
 .consultancy-home-heading.compact h2 { font-size: clamp(2.2rem, 4.2vw, 4.4rem); }
+
+@media (min-width: 1200px) {
+  .consultancy-home-system-copy {
+    grid-template-columns: minmax(0, 1.75fr) minmax(400px, .9fr);
+  }
+
+  .consultancy-home-insights .consultancy-home-heading.split {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .consultancy-home-system-copy h2 span,
+  .consultancy-home-insights .consultancy-home-heading h2 span {
+    white-space: nowrap;
+  }
+}
 
 .consultancy-home-heading > p,
 .consultancy-home-heading.split > p {
@@ -5230,6 +5273,29 @@ html[data-home-palette="neon"] :is(.icon-button, .mobile-menu summary) {
   .consultancy-home-closing p
 ) {
   color: rgba(255, 255, 255, 0.68);
+}
+
+.consultancy-home[data-home-palette="blaze"] .consultancy-home-closing {
+  background: linear-gradient(135deg, #fe6807 0%, #ff8124 58%, #d739a4 100%);
+  color: #09080e;
+}
+
+.consultancy-home[data-home-palette="blaze"] .consultancy-home-closing :is(
+  h2,
+  .consultancy-home-closing-inner > span
+) {
+  color: #09080e;
+  -webkit-text-fill-color: currentColor;
+}
+
+.consultancy-home[data-home-palette="blaze"] .consultancy-home-closing p {
+  color: rgba(9, 8, 14, .72);
+}
+
+.consultancy-home[data-home-palette="blaze"] .consultancy-home-closing a {
+  border-radius: 999px;
+  background: #09080e;
+  color: #fff;
 }
 
 .consultancy-home[data-home-palette="blaze"] .consultancy-insight-card {

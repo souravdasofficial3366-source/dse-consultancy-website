@@ -102,10 +102,12 @@ export default function ConsultancyHomePage() {
             </p>
             <div className="consultancy-home-actions">
               <Link className="consultancy-home-button primary" href="#services">
-                Explore Our Services <span aria-hidden="true">↘</span>
+                Explore Our Services
+                <span aria-hidden="true" className="consultancy-home-button-arrow">↘</span>
               </Link>
               <Link className="consultancy-home-button glass" href="/contact-us">
-                Start A Conversation <span aria-hidden="true">↗</span>
+                Start A Conversation
+                <span aria-hidden="true" className="consultancy-home-button-arrow">↗</span>
               </Link>
             </div>
           </div>
