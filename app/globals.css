@@ -5264,11 +5264,6 @@ html[data-home-palette="neon"] :is(.icon-button, .mobile-menu summary) {
   color: rgba(255, 255, 255, 0.66);
 }
 
-.consultancy-home[data-home-palette="blaze"] .consultancy-home-closing a {
-  background: linear-gradient(135deg, #fe6807, #ff9b38);
-  color: #09080e;
-}
-
 html[data-home-palette="blaze"] .site-header {
   border-bottom-color: rgba(254, 104, 7, 0.18);
   background: rgba(9, 8, 14, 0.96);
@@ -8708,17 +8703,18 @@ html[data-home-palette="blaze"] .site-footer .footer-contact-actions a {
 
 .site-footer .footer-contact-actions a:hover,
 .site-footer .footer-contact-actions a:focus-visible,
-html[data-home-palette="blaze"] .site-footer .footer-contact-actions a:hover {
+html[data-home-palette="blaze"] .site-footer .footer-contact-actions a:hover,
+html[data-home-palette="blaze"] .site-footer .footer-contact-actions a:focus-visible {
   background: #fe6807;
   color: #09080e;
 }
 
-.whatsapp-header-btn {
+.site-header .icon-button.whatsapp-header-btn {
   border-color: #25d366;
   transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
 }
 
-.whatsapp-header-btn:is(:hover, :focus-visible) {
+.site-header .whatsapp-header-btn:is(:hover, :focus-visible) {
   border-color: #25d366;
   background: #25d366;
   transform: translateY(-2px);

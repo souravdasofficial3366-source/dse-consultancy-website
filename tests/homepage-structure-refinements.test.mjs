@@ -78,4 +78,13 @@ test("the Blaze homepage closing section keeps the approved bright CTA treatment
     css,
     /\.consultancy-home\[data-home-palette="blaze"\] \.consultancy-home-closing a\s*\{[^}]*border-radius:\s*999px[^}]*background:\s*#09080e[^}]*color:\s*#fff/
   );
+  assert.equal(
+    (
+      css.match(
+        /\.consultancy-home\[data-home-palette="blaze"\] \.consultancy-home-closing a\s*\{/g
+      ) ?? []
+    ).length,
+    1,
+    "a later duplicate Blaze CTA rule must not override the black pill"
+  );
 });

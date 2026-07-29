@@ -13,11 +13,11 @@ test("header WhatsApp keeps its configured destination and green asset", () => {
   assert.match(layout, /src="\/icons\/whatsapp-green\.svg"/);
   assert.match(
     css,
-    /\.whatsapp-header-btn\s*\{[^}]*border-color:\s*#25d366/
+    /\.site-header \.icon-button\.whatsapp-header-btn\s*\{[^}]*border-color:\s*#25d366/
   );
   assert.match(
     css,
-    /\.whatsapp-header-btn:is\(:hover,\s*:focus-visible\)\s*\{[^}]*background:\s*#25d366/
+    /\.site-header \.whatsapp-header-btn:is\(:hover,\s*:focus-visible\)\s*\{[^}]*background:\s*#25d366/
   );
   assert.match(
     css,
@@ -31,6 +31,10 @@ test("footer WhatsApp matches orange neighbours and turns dark on interaction", 
   assert.match(
     css,
     /\.footer-whatsapp-link:is\(:hover,\s*:focus-visible\) img\s*\{[^}]*filter:\s*brightness\(0\)/
+  );
+  assert.match(
+    css,
+    /html\[data-home-palette="blaze"\] \.site-footer \.footer-contact-actions a:focus-visible\s*\{[^}]*background:\s*#fe6807/
   );
 });
 
