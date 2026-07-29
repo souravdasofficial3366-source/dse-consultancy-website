@@ -279,11 +279,15 @@ git commit -m "feat: refine homepage structure and closing CTA"
 In `tests/homepage-process-mask-cards.test.mjs`:
 
 ```js
+const processStepsStart = page.indexOf("const processSteps = [");
+const processStepsEnd = page.indexOf("] as const;", processStepsStart);
+const processStepsSource = page.slice(processStepsStart, processStepsEnd);
+
 test("process cards render no visible sequence labels", () => {
   assert.doesNotMatch(component, /step\.number/);
   assert.doesNotMatch(component, /consultancy-process-stack-progress/);
   assert.doesNotMatch(component, /<small>of 04<\/small>/);
-  assert.doesNotMatch(page, /number:\s*"0[1-4]"/);
+  assert.doesNotMatch(processStepsSource, /number:\s*"0[1-4]"/);
 });
 
 test("each process title owns the highest centred slide layer", () => {
