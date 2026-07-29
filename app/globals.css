@@ -8713,6 +8713,30 @@ html[data-home-palette="blaze"] .site-footer .footer-contact-actions a:hover {
   color: #09080e;
 }
 
+.whatsapp-header-btn {
+  border-color: #25d366;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.whatsapp-header-btn:is(:hover, :focus-visible) {
+  border-color: #25d366;
+  background: #25d366;
+  transform: translateY(-2px);
+}
+
+.whatsapp-header-btn img,
+.footer-whatsapp-link img {
+  transition: filter 180ms ease;
+}
+
+.whatsapp-header-btn:is(:hover, :focus-visible) img {
+  filter: brightness(0);
+}
+
+.footer-whatsapp-link:is(:hover, :focus-visible) img {
+  filter: brightness(0);
+}
+
 .site-footer .footer-bottom,
 html[data-home-palette="blaze"] .site-footer .footer-bottom {
   border-top-color: rgba(255, 255, 255, .14);

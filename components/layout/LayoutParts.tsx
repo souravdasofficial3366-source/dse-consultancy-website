@@ -87,11 +87,12 @@ export function Footer() {
                 {whatsappIsReady ? (
                   <a
                     aria-label="Message DSE Consultancy on WhatsApp"
+                    className="footer-whatsapp-link"
                     href={`https://wa.me/${siteConfig.whatsapp}`}
                     rel="noreferrer"
                     target="_blank"
                   >
-                    <Image alt="" height={22} src="/icons/whatsapp.svg" width={22} />
+                    <Image alt="" height={22} src="/icons/whatsapp-orange.svg" width={22} />
                   </a>
                 ) : null}
                 {phoneIsReady ? (
