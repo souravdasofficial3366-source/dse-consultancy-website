@@ -96,21 +96,36 @@ The font family, font size, font weight, letter spacing, copy, colours, and CTA 
 
 At narrower desktop and tablet widths, the heading may wrap naturally rather than overflow. At the existing responsive breakpoint, the section continues to stack into one column.
 
-### 4.4 Process-card numbers
+### 4.4 Process-card numbers and scroll-matched centre titles
 
 Remove all visible numbering from the four process cards:
 
 - remove the `01`, `02`, `03`, and `04` before the card titles;
 - remove the circular `01 of 04`, `02 of 04`, `03 of 04`, and `04 of 04` indicators.
 
+For laptop and desktop widths, replace the current top title row with a new centred title treatment:
+
+- each card owns its associated Discover, Design, Build, or Improve title;
+- the active card title is positioned in the horizontal and vertical centre of the visible slide;
+- the title sits on the highest local stacking layer, in front of the video, scrim, and other card content;
+- the title is large, centred, and high-contrast without changing the title wording;
+- as normal page scrolling advances the sticky stack, the title changes with its own card so the visible title always matches the visible slide;
+- the interaction remains driven by normal page scrolling, with no carousel controls, timer, forced snap, or intercepted wheel event;
+- the bottom description and outcome tags remain in their current zones and must not cover the centred title.
+
+For mobile widths:
+
+- do not force the title into the middle of the smaller card;
+- keep a compact title near the top of each card, without the removed number;
+- preserve natural vertical scrolling and readable spacing.
+
 Keep:
 
-- Discover, Design, Build, and Improve titles;
 - descriptions and outcome tags;
 - background videos and overlays;
 - card borders, heights, sticky stacking, offsets, and animation behaviour.
 
-The internal array index may continue to control sticky offsets, but it must not be rendered as visible text. The data type should no longer require a display number solely for these removed elements.
+The internal array index may continue to control sticky offsets and card order, but it must not be rendered as visible text. The data type should no longer require a display number solely for the removed elements.
 
 ### 4.5 Latest Thinking split
 
@@ -184,6 +199,7 @@ The footer structure, logo, explanatory text, link columns, colours, spacing, an
 Add a dedicated semantic class to the WhatsApp contact link so its image can follow the same visual contrast rule as the neighbouring phone and email icons.
 
 - The existing footer contact-circle base appearance stays unchanged.
+- In the normal state, the WhatsApp glyph uses the same orange tone as the neighbouring phone and email glyphs instead of white.
 - On hover and keyboard focus, the circle keeps the existing orange background.
 - The WhatsApp glyph changes to dark ink/black, matching the phone and email glyphs.
 - The glyph must remain visible throughout the transition.
@@ -212,12 +228,13 @@ Before production edits, add focused tests that fail against the current impleme
 2. Homepage services bottom padding is zero without changing the shared section group.
 3. Connected Advantage has a section-specific wide-desktop split and controlled two-line spans.
 4. Process-card display numbers and `of 04` indicators are absent while index-driven stacking remains.
-5. Latest Thinking uses a flexible heading plus intrinsic-width CTA layout and controlled two-line spans.
-6. The homepage closing section uses the approved orange-pink gradient, dark text, and black pill CTA despite the Blaze palette.
-7. The header WhatsApp button uses green base and hover treatments.
-8. The footer WhatsApp link has a dedicated hook and a dark visible glyph on hover/focus.
-9. The floating WhatsApp button remains green and unchanged.
-10. Responsive rules still prevent overflow and preserve existing one-column fallbacks.
+5. Each laptop/desktop process card owns a centred, foreground title that changes with the visible sticky slide; mobile keeps a compact top title.
+6. Latest Thinking uses a flexible heading plus intrinsic-width CTA layout and controlled two-line spans.
+7. The homepage closing section uses the approved orange-pink gradient, dark text, and black pill CTA despite the Blaze palette.
+8. The header WhatsApp button uses green base and hover treatments.
+9. The footer WhatsApp link has a dedicated hook, matches neighbouring orange glyphs normally, and has a dark visible glyph on hover/focus.
+10. The floating WhatsApp button remains green and unchanged.
+11. Responsive rules still prevent overflow and preserve existing one-column fallbacks.
 
 Tests should assert user-visible behaviour and stable structural contracts, not incidental formatting.
 
@@ -245,9 +262,11 @@ The work is accepted when:
 - the two requested desktop headings resolve to two controlled lines at the supplied desktop scale;
 - the right-side copy and CTA columns remain readable rather than stretched or excessively wrapped;
 - no process numbers remain visible;
+- the laptop/desktop process title appears in the centre foreground of its own slide and changes with the card reached through normal scrolling;
+- mobile process titles remain compact and readable near the top rather than being forced into the centre;
 - the closing section matches the About-page gradient reference without copying the About page;
 - the header WhatsApp button matches Hostinger;
-- the footer WhatsApp glyph remains visible in black on orange hover/focus;
+- the footer WhatsApp glyph matches the neighbouring orange glyphs normally and remains visible in black on orange hover/focus;
 - the floating WhatsApp button and footer layout are unchanged;
 - automated checks and browser verification pass;
 - no unrelated page, animation, content, pricing, form, or responsive structure changes.
