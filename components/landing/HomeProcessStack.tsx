@@ -4,7 +4,6 @@ import type { CSSProperties } from "react";
 import { useEffect, useRef } from "react";
 
 export type HomeProcessStep = {
-  number: string;
   title: string;
   description: string;
   video: string;
@@ -78,7 +77,7 @@ export function HomeProcessStack({ steps }: HomeProcessStackProps) {
         };
 
         return (
-          <article className="consultancy-process-stack-card" key={step.number} style={style}>
+          <article className="consultancy-process-stack-card" key={step.title} style={style}>
             <video
               aria-hidden="true"
               loop
@@ -90,19 +89,12 @@ export function HomeProcessStack({ steps }: HomeProcessStackProps) {
             />
             <span aria-hidden="true" className="consultancy-process-stack-scrim" />
             <div className="consultancy-process-stack-inner">
-              <header className="consultancy-process-stack-header">
-                <span>{step.number}</span>
-                <h3>{step.title}</h3>
-              </header>
+              <h3 className="consultancy-process-stack-title">{step.title}</h3>
               <div className="consultancy-process-stack-content">
                 <p>{step.description}</p>
                 <ul aria-label={`${step.title} outcomes`}>
                   {step.tags.map((tag) => <li key={tag}>{tag}</li>)}
                 </ul>
-                <span aria-hidden="true" className="consultancy-process-stack-progress">
-                  <b>{step.number}</b>
-                  <small>of 04</small>
-                </span>
               </div>
             </div>
           </article>

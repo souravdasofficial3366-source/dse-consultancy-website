@@ -7,6 +7,9 @@ const [page, component] = await Promise.all([
   readFile("components/landing/HomeProcessStack.tsx", "utf8").catch(() => "")
 ]);
 const css = await readFile("app/globals.css", "utf8");
+const processStepsStart = page.indexOf("const processSteps = [");
+const processStepsEnd = page.indexOf("] as const;", processStepsStart);
+const processStepsSource = page.slice(processStepsStart, processStepsEnd);
 
 function mediaRule(query) {
   const start = css.indexOf(`@media ${query}`);
@@ -45,7 +48,10 @@ test("the process stack renders semantic poster-backed videos and three tags per
   assert.match(component, /export type HomeProcessStep/);
   assert.match(component, /steps\.map\(\(step, index\) =>/);
   assert.match(component, /<article/);
-  assert.match(component, /<h3>{step\.title}<\/h3>/);
+  assert.match(
+    component,
+    /<h3 className="consultancy-process-stack-title">{step\.title}<\/h3>/
+  );
   assert.match(component, /aria-hidden="true"/);
   assert.match(component, /muted/);
   assert.match(component, /loop/);
@@ -53,6 +59,24 @@ test("the process stack renders semantic poster-backed videos and three tags per
   assert.match(component, /preload="metadata"/);
   assert.match(component, /poster={step\.poster}/);
   assert.match(component, /step\.tags\.map/);
+});
+
+test("process cards render no visible sequence labels", () => {
+  assert.doesNotMatch(component, /step\.number/);
+  assert.doesNotMatch(component, /consultancy-process-stack-progress/);
+  assert.doesNotMatch(component, /<small>of 04<\/small>/);
+  assert.doesNotMatch(processStepsSource, /number:\s*"0[1-4]"/);
+});
+
+test("each process title owns the highest centred slide layer", () => {
+  assert.match(
+    component,
+    /<h3 className="consultancy-process-stack-title">{step\.title}<\/h3>/
+  );
+  assert.match(
+    css,
+    /\.consultancy-process-stack-title\s*\{[^}]*position:\s*absolute[^}]*z-index:\s*4[^}]*top:\s*50%[^}]*left:\s*50%[^}]*transform:\s*translate\(-50%,\s*-50%\)/
+  );
 });
 
 test("the stack synchronizes playback with visibility and reduced-motion state", () => {
@@ -81,14 +105,13 @@ test("tablet process cards use a shallower sticky offset", () => {
   assert.match(tablet, /position:\s*sticky/);
 });
 
-test("sticky overlap keeps each previous phase label in its exposed strip", () => {
+test("sticky overlap retains indexed card offsets without visible header labels", () => {
   const desktop = mediaRule("(min-width: 1200px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)");
   const tablet = mediaRule("(min-width: 768px) and (max-width: 1199px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)");
 
-  assert.match(desktop, /--process-header-strip:\s*48px/);
-  assert.match(tablet, /--process-header-strip:\s*36px/);
-  assert.match(css, /\.consultancy-process-stack-header\s*\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*min-height:\s*var\(--process-header-strip\)[^}]*padding:\s*0/);
-  assert.match(css, /\.consultancy-process-stack-header h3\s*\{[^}]*font-size:\s*clamp\(\.8rem, 1\.35vw, 1\.25rem\)/);
+  assert.match(desktop, /top:\s*calc\(var\(--process-sticky-top\) \+ var\(--process-offset\)\)/);
+  assert.match(tablet, /top:\s*calc\(var\(--process-sticky-top\) \+ var\(--process-tablet-offset\)\)/);
+  assert.doesNotMatch(component, /consultancy-process-stack-header/);
 });
 
 test("mobile, short-height, and reduced-motion modes disable sticky positioning", () => {
@@ -102,7 +125,6 @@ test("mobile, short-height, and reduced-motion modes disable sticky positioning"
   });
 
   assert.match(shortHeight, /\.consultancy-process-stack-inner\s*\{[^}]*grid-template-rows:\s*auto 1fr/);
-  assert.match(shortHeight, /\.consultancy-process-stack-header\s*\{[^}]*position:\s*relative[^}]*min-height:\s*48px[^}]*padding:\s*0 72px 0 0/);
 
   const shortHeightStart = css.indexOf("@media (min-width: 768px) and (max-height: 759px)");
   const reducedMotionStart = css.indexOf("@media (prefers-reduced-motion: reduce)", shortHeightStart);
@@ -110,8 +132,16 @@ test("mobile, short-height, and reduced-motion modes disable sticky positioning"
 
   [finalReducedMotion].forEach((rule) => {
     assert.match(rule, /\.consultancy-process-stack-inner\s*\{[^}]*grid-template-rows:\s*auto 1fr/);
-    assert.match(rule, /\.consultancy-process-stack-header\s*\{[^}]*position:\s*relative[^}]*min-height:\s*48px[^}]*padding:\s*0 72px 0 0/);
   });
+});
+
+test("mobile titles return to a compact top position", () => {
+  const mobile = mediaRule("(max-width: 767px)");
+
+  assert.match(
+    mobile,
+    /\.consultancy-process-stack-title\s*\{[^}]*position:\s*relative[^}]*top:\s*auto[^}]*left:\s*auto[^}]*transform:\s*none/
+  );
 });
 
 test("process card copy remains layered over full-bleed media", () => {

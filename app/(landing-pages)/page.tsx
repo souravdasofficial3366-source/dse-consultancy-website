@@ -43,7 +43,6 @@ const serviceCards = [
 
 const processSteps = [
   {
-    number: "01",
     title: "Discover",
     description: "We understand the business, audience, location, services and the action customers should take.",
     video: "/videos/home-process/discover.mp4",
@@ -51,7 +50,6 @@ const processSteps = [
     tags: ["Business Goals", "Customer Journey", "Local Demand"]
   },
   {
-    number: "02",
     title: "Design",
     description: "We shape the message, visual direction, page structure and channel plan around that customer journey.",
     video: "/videos/home-process/design.mp4",
@@ -59,7 +57,6 @@ const processSteps = [
     tags: ["Message", "Visual Direction", "Page Structure"]
   },
   {
-    number: "03",
     title: "Build",
     description: "We create, connect and test the website, search, content and enquiry touchpoints.",
     video: "/videos/home-process/build.mp4",
@@ -67,7 +64,6 @@ const processSteps = [
     tags: ["Website", "Search Setup", "Enquiry Paths"]
   },
   {
-    number: "04",
     title: "Improve",
     description: "We review useful signals and refine the system as the business, content and customer needs evolve.",
     video: "/videos/home-process/improve.mp4",
