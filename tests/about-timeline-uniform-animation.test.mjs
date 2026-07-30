@@ -168,3 +168,20 @@ test("About SVG motion has a complete reduced-motion final state", async () => {
   assert.match(reducedMotion, /\.phase-a\s*\{[^}]*display:\s*none/);
   assert.match(reducedMotion, /\.phase-b\s*\{[^}]*opacity:\s*1\s*!important/);
 });
+
+test("About timeline titles keep the two-line desktop rhythm and release wrapping on smaller screens", async () => {
+  const css = await read("app/globals.css");
+
+  assert.match(
+    css,
+    /\.dse-vision-story__chapter-copy h3\s*\{[^}]*font-size:\s*clamp\(3rem,\s*3\.7vw,\s*3\.5rem\)/
+  );
+  assert.match(
+    css,
+    /\.dse-vision-story__heading-line\s*\{[^}]*display:\s*block;[^}]*white-space:\s*nowrap/
+  );
+  assert.match(
+    css,
+    /@media\s*\(max-width:\s*900px\)[\s\S]*?\.dse-vision-story__heading-line\s*\{[^}]*white-space:\s*normal/
+  );
+});
