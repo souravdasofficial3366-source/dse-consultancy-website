@@ -4005,6 +4005,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
+  gap: 14px;
   min-width: 220px;
   padding: 16px 18px;
   border: 1px solid rgba(255, 255, 255, 0.24);

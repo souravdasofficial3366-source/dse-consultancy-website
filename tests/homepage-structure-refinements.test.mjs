@@ -33,6 +33,15 @@ test("both hero actions render their arrows in dedicated circular hooks", () => 
   );
 });
 
+test("hero actions match the service-card CTA text-to-icon spacing", () => {
+  const serviceCtaRules = css.match(/^\.consultancy-service-content b\s*\{[^}]*\}/gm) ?? [];
+  const effectiveServiceCta = serviceCtaRules.at(-1) ?? "";
+  const heroCta = cssBlock(".consultancy-home-button {");
+
+  assert.match(effectiveServiceCta, /gap:\s*14px/);
+  assert.match(heroCta, /gap:\s*14px/);
+});
+
 test("services remove only their bottom gap before Connected Advantage", () => {
   assert.match(
     cssBlock(".consultancy-home-services {"),
