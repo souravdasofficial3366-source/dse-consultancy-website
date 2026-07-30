@@ -17,7 +17,7 @@ test("hero keeps dynamic pricing and the current website lead form", () => {
   assert.doesNotMatch(page, /Starting from ₹[0-9,]+/);
 });
 
-test("hero owns four deliberate visual lines without changing its words", () => {
+test("hero keeps its dynamic words while allowing natural line wrapping", () => {
   const lines = page.match(/className="wd-hero-title-line"/g) ?? [];
   assert.equal(lines.length, 4);
   assert.match(page, /<span className="wd-hero-title-line">Get Your<\/span>/);
@@ -26,6 +26,14 @@ test("hero owns four deliberate visual lines without changing its words", () => 
   assert.match(
     page,
     /<span className="wd-hero-title-line">\s*Starting from <span className="accent">\{siteConfig\.basePrice\}<\/span>\s*<\/span>/
+  );
+  assert.match(
+    css,
+    /\.website-development-page \.wd-hero-title-line\s*\{[^}]*display:\s*inline/
+  );
+  assert.doesNotMatch(
+    css,
+    /\.website-development-page \.wd-hero-title-line\s*\{[^}]*display:\s*block/
   );
 });
 
@@ -63,14 +71,14 @@ test("dark hero styling is isolated to the Website Development page", () => {
   assert.doesNotMatch(css, /(?:^|\n)\.hero\s*\{[^}]*#09080e/);
 });
 
-test("desktop hero proportions reset safely on narrow screens", () => {
+test("desktop hero proportions reset safely without forced title breaks", () => {
   assert.match(
     css,
     /@media \(min-width: 981px\)[\s\S]*?\.website-development-page \.wd-hero \.hero-grid/
   );
-  assert.match(
+  assert.doesNotMatch(
     css,
-    /@media \(max-width: 980px\)[\s\S]*?\.website-development-page \.wd-hero-title-line/
+    /@media \(max-width: 980px\)[\s\S]*?\.website-development-page \.wd-hero-title-line::after/
   );
 });
 

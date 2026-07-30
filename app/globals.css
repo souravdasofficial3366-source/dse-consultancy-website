@@ -6442,7 +6442,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
 }
 
 .website-development-page .wd-hero-title-line {
-  display: block;
+  display: inline;
 }
 
 .website-development-page .wd-hero .lead-card h2 > span {
@@ -6603,16 +6603,6 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   .website-development-page .wd-hero .hero-grid {
     grid-template-columns: minmax(0, 1.22fr) minmax(380px, .78fr);
     gap: clamp(48px, 5vw, 82px);
-  }
-}
-
-@media (max-width: 980px) {
-  .website-development-page .wd-hero-title-line {
-    display: inline;
-  }
-
-  .website-development-page .wd-hero-title-line::after {
-    content: " ";
   }
 }
 
@@ -8054,8 +8044,8 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
 .wd-enquiry-pipeline::before {
   position: absolute;
   top: 20px;
-  right: 12%;
-  left: 12%;
+  right: calc(16.6667% - 2.6667px);
+  left: calc(16.6667% - 2.6667px);
   height: 2px;
   background: rgba(255, 255, 255, .1);
   content: "";

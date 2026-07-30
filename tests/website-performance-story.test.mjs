@@ -120,6 +120,14 @@ test("interface demos contain every approved storyboard element and exact label"
   assert.doesNotMatch(enquiryDemo, /Follow-up ready|New enquiry/);
 });
 
+test("enquiry pipeline connector stops at the first and third step centres", () => {
+  const connector = ruleBlock(css, ".wd-enquiry-pipeline::before {");
+
+  assert.match(connector, /left:\s*calc\(16\.6667% - 2\.6667px\)/);
+  assert.match(connector, /right:\s*calc\(16\.6667% - 2\.6667px\)/);
+  assert.doesNotMatch(connector, /(?:left|right):\s*12%/);
+});
+
 test("story scopes horizontal progress measurement to the visible eligible section", () => {
   assert.match(story, /IntersectionObserver/);
   assert.match(story, /prefers-reduced-motion/);
