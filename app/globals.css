@@ -5334,6 +5334,7 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
 .dse-inner-hero-note span { color: #ffad45; font-size: .68rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
 .dse-inner-hero-note p { margin: 16px 0 0; color: rgba(255,255,255,.72); line-height: 1.7; }
 
+.dse-about-hero h1 { font-size: clamp(3.1rem, 5vw, 5.1rem); line-height: .95; }
 .dse-about-hero h1 > span { display: block; }
 .dse-about-story h2 > span { display: block; }
 .dse-about-hero .dse-inner-hero-note { align-self: center; }

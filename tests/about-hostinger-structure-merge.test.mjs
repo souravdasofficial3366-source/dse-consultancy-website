@@ -50,6 +50,7 @@ test("the About page merges the Hostinger upper structure with the Vercel lower 
   assert.match(page, /Digital Growth Partner\./);
   assert.match(page, /DSE Consultancy is a Kolkata-focused digital consultancy/);
   assert.match(page, /Our work begins with the business/);
+  assert.match(page, /<main className="dse-inner-page dse-about-page">/);
 
   assert.ok(page.indexOf("<AboutStoryVideoMark />") < page.indexOf("<AboutVisionStory />"));
   assert.ok(page.indexOf("<AboutVisionStory />") < page.indexOf('id="faq"'));
@@ -82,6 +83,10 @@ test("the About hero and story retain their desktop composition and responsive f
   const css = await read("app/globals.css");
 
   assert.match(css, /\.dse-about-hero h1 > span\s*\{\s*display:\s*block/);
+  assert.match(
+    css,
+    /\.dse-about-hero h1\s*\{[^}]*font-size:\s*clamp\(3\.1rem,\s*5vw,\s*5\.1rem\)/
+  );
   assert.match(
     css,
     /\.dse-about-story-grid\s*\{[^}]*grid-template-columns:\s*minmax\(280px,\s*\.58fr\)\s+minmax\(0,\s*1\.12fr\)/

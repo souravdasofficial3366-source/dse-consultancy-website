@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AboutUsPage() {
   return (
-    <main className="dse-about-page">
+    <main className="dse-inner-page dse-about-page">
       <FaqJsonLd items={aboutFaqs} />
 
       <section className="dse-inner-hero dse-about-hero">
