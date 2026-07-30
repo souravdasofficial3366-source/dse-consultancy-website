@@ -4474,7 +4474,7 @@ textarea {
 .consultancy-home-heading.compact h2 { font-size: clamp(2.2rem, 4.2vw, 4.4rem); }
 
 @media (min-width: 1200px) {
-  .consultancy-home-system-copy {
+  .consultancy-home .consultancy-home-system-copy {
     grid-template-columns: minmax(0, 2.1fr) minmax(380px, 1fr);
   }
 

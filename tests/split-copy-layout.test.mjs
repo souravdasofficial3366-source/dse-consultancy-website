@@ -46,7 +46,7 @@ test("homepage split-copy audit keeps both shared headings and the system sectio
 
 test("homepage split headings stay balanced while the system gets its approved wide desktop ratio", () => {
   const homepageSplit = ruleBlock(css, ".consultancy-home .consultancy-home-heading.split {");
-  const systemWide = ruleBlock(css, ".consultancy-home-system-copy {");
+  const systemWide = ruleBlock(css, ".consultancy-home .consultancy-home-system-copy {");
   const systemSectionStart = css.indexOf(".consultancy-home-system {");
   const systemBaseStart = css.indexOf(".consultancy-home-system-copy {", systemSectionStart);
   const systemBase = blockAt(css, systemBaseStart);
