@@ -31,3 +31,49 @@ test("the About story media pauses offscreen and when reduced motion is requeste
   assert.match(component, /observer\.disconnect\(\)/);
   assert.match(component, /removeEventListener/);
 });
+
+test("the About page merges the Hostinger upper structure with the Vercel lower structure", async () => {
+  const [page, layout] = await Promise.all([
+    read("app/(website-pages)/about-us/page.tsx"),
+    read("components/layout/LayoutParts.tsx")
+  ]);
+
+  assert.match(page, /AboutStoryVideoMark/);
+  assert.match(page, /About DSE Consultancy/);
+  assert.match(page, /Digital Work/);
+  assert.match(page, /Should Feel Clear,/);
+  assert.match(page, /Connected And Useful\./);
+  assert.match(page, /Our Point Of View/);
+  assert.match(page, /A strong digital presence is not one website/);
+  assert.match(page, /Built For Businesses/);
+  assert.match(page, /That Need A Practical/);
+  assert.match(page, /Digital Growth Partner\./);
+  assert.match(page, /DSE Consultancy is a Kolkata-focused digital consultancy/);
+  assert.match(page, /Our work begins with the business/);
+
+  assert.ok(page.indexOf("<AboutStoryVideoMark />") < page.indexOf("<AboutVisionStory />"));
+  assert.ok(page.indexOf("<AboutVisionStory />") < page.indexOf('id="faq"'));
+  assert.match(page, /<FaqJsonLd items={aboutFaqs} \/>/);
+  assert.match(page, /<FaqList items={aboutFaqs} \/>/);
+
+  assert.doesNotMatch(page, /Specialist Thinking/);
+  assert.doesNotMatch(page, /One Connected Delivery System/);
+  assert.doesNotMatch(page, /Bring Us The Business Challenge/);
+  assert.doesNotMatch(page, /<Header|<Footer|<WhatsAppFab|<MobileCallFab/);
+
+  assert.match(layout, /export function Footer\(\)/);
+  assert.match(layout, /className="footer-cta"/);
+  assert.match(layout, /Let&apos;s Build the Digital Presence Your Business Deserves\./);
+  assert.match(layout, /className="footer-grid"/);
+});
+
+test("the existing timeline remains eight chapters with the approved chapter five title", async () => {
+  const timeline = await read("components/about/AboutVisionStory.tsx");
+
+  assert.equal((timeline.match(/number: "0[1-8]"/g) ?? []).length, 8);
+  assert.match(
+    timeline,
+    /heading: \["Prepare For Roadblocks", "Before They Slow Growth\."\] as const/
+  );
+  assert.doesNotMatch(timeline, /Plan Ahead For The Roadblocks That Come Next/);
+});

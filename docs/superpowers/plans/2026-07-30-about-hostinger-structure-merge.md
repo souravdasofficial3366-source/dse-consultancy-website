@@ -249,7 +249,8 @@ test("the About page merges the Hostinger upper structure with the Vercel lower 
 
   assert.match(page, /AboutStoryVideoMark/);
   assert.match(page, /About DSE Consultancy/);
-  assert.match(page, /Digital Work Should Feel Clear/);
+  assert.match(page, /Digital Work/);
+  assert.match(page, /Should Feel Clear,/);
   assert.match(page, /Connected And Useful\./);
   assert.match(page, /Our Point Of View/);
   assert.match(page, /A strong digital presence is not one website/);
