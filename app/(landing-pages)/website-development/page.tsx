@@ -103,8 +103,12 @@ export default function HomePage() {
               Trusted by local Indian businesses
             </span>
             <h1>
-              <span>Get Your Professional Website</span>
-              <span>Starting from <span className="accent">{siteConfig.basePrice}</span></span>
+              <span className="wd-hero-title-line">Get Your</span>
+              <span className="wd-hero-title-line">Professional</span>
+              <span className="wd-hero-title-line">Website</span>
+              <span className="wd-hero-title-line">
+                Starting from <span className="accent">{siteConfig.basePrice}</span>
+              </span>
             </h1>
             <p className="hero-copy">
               We make a fast website for your shop, clinic, store, or local business and help
