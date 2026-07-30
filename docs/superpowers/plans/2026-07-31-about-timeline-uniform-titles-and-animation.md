@@ -23,7 +23,9 @@
 ## File Map
 
 - Modify `components/about/AboutVisionStory.tsx`
-  - Owns the eight chapter records, explicit title pairs, scroll-state controller, and title rendering.
+  - Owns the scroll-state controller and title rendering.
+- Create `components/about/aboutVisionChapters.ts`
+  - Owns the eight chapter records and explicit title pairs as importable data.
 - Modify `app/globals.css`
   - Owns the About timeline typography, SVG initial states, active-card animation selectors, keyframes, responsive rules, and reduced-motion fallback.
 - Create `tests/about-timeline-uniform-animation.test.mjs`
@@ -38,13 +40,14 @@
 ### Task 1: Make Every Timeline Title An Explicit Two-Line Tuple
 
 **Files:**
-- Modify: `components/about/AboutVisionStory.tsx:8-65`
+- Create: `components/about/aboutVisionChapters.ts`
+- Modify: `components/about/AboutVisionStory.tsx:3-65`
 - Modify: `components/about/AboutVisionStory.tsx:215-225`
 - Create: `tests/about-timeline-uniform-animation.test.mjs`
 
 **Interfaces:**
-- Consumes: the existing `chapters` collection and `.dse-vision-story__heading-line` renderer.
-- Produces: eight `readonly [string, string]` heading tuples and two rendered heading-line spans per chapter.
+- Consumes: the existing chapter content and `.dse-vision-story__heading-line` renderer.
+- Produces: an importable `chapters` collection containing eight `readonly [string, string]` heading tuples and two rendered heading-line spans per chapter.
 
 - [ ] **Step 1: Write the failing title-pair regression test**
 
@@ -54,6 +57,7 @@ Create `tests/about-timeline-uniform-animation.test.mjs` with:
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { chapters } from "../components/about/aboutVisionChapters.ts";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -71,20 +75,9 @@ const approvedHeadingPairs = [
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 test("all eight About timeline titles use the approved two-line desktop pairs", async () => {
-  const source = await read("components/about/AboutVisionStory.tsx");
-
-  for (const [firstLine, secondLine] of approvedHeadingPairs) {
-    assert.match(
-      source,
-      new RegExp(
-        `heading:\\s*\\["${escapeRegExp(firstLine)}",\\s*"${escapeRegExp(secondLine)}"\\]\\s+as const`
-      )
-    );
-  }
-
-  assert.equal((source.match(/heading:\s*\[[^\]]+\]\s+as const/g) ?? []).length, 8);
-  assert.doesNotMatch(source, /heading:\s*"/);
-  assert.match(source, /chapter\.heading\.map\(\(line\) =>/);
+  assert.equal(chapters.length, 8);
+  assert.deepEqual(chapters.map((chapter) => [...chapter.heading]), approvedHeadingPairs);
+  assert.ok(chapters.every((chapter) => chapter.heading.length === 2));
 });
 ```
 
@@ -96,11 +89,13 @@ Run:
 node --test tests/about-timeline-uniform-animation.test.mjs
 ```
 
-Expected: FAIL because seven chapters still use single heading strings and the renderer still has the `Array.isArray` branch.
+Expected: FAIL with `ERR_MODULE_NOT_FOUND` because the importable chapter-data module does not exist yet.
 
 - [ ] **Step 3: Replace all eight headings with the approved tuples**
 
-In `components/about/AboutVisionStory.tsx`, make the heading fields exactly:
+Create `components/about/aboutVisionChapters.ts`, move the existing chapter
+records into it without changing their order or non-heading fields, export the
+collection, and make the heading fields exactly:
 
 ```ts
 heading: ["Make Digital Work", "Easier To Trust"] as const
@@ -114,6 +109,13 @@ heading: ["Build A System The Client", "Can Own And Improve"] as const
 ```
 
 Do not change the descriptions, tags, eyebrows, numbers, or order.
+
+In `components/about/AboutVisionStory.tsx`, remove the local chapter collection
+and import the exported data:
+
+```ts
+import { chapters } from "./aboutVisionChapters";
+```
 
 - [ ] **Step 4: Simplify the heading renderer to the now-uniform tuple contract**
 
@@ -142,7 +144,7 @@ Expected: PASS for the title-pair test.
 - [ ] **Step 6: Commit the deterministic title structure**
 
 ```bash
-git add components/about/AboutVisionStory.tsx tests/about-timeline-uniform-animation.test.mjs
+git add components/about/AboutVisionStory.tsx components/about/aboutVisionChapters.ts tests/about-timeline-uniform-animation.test.mjs
 git commit -m "feat: standardize About timeline titles"
 ```
 
