@@ -19,20 +19,26 @@ const [page, component, data] = await Promise.all([
 
 const css = await readFile("app/globals.css", "utf8");
 
-function mediaRule(query) {
-  const start = css.indexOf(`@media ${query}`);
-  assert.notEqual(start, -1, `missing @media ${query}`);
+function mediaRule(query, requiredSelector) {
+  let start = css.indexOf(`@media ${query}`);
 
-  const openingBrace = css.indexOf("{", start);
-  let depth = 0;
+  while (start !== -1) {
+    const openingBrace = css.indexOf("{", start);
+    let depth = 0;
 
-  for (let index = openingBrace; index < css.length; index += 1) {
-    if (css[index] === "{") depth += 1;
-    if (css[index] === "}") depth -= 1;
-    if (depth === 0) return css.slice(start, index + 1);
+    for (let index = openingBrace; index < css.length; index += 1) {
+      if (css[index] === "{") depth += 1;
+      if (css[index] === "}") depth -= 1;
+      if (depth === 0) {
+        const block = css.slice(start, index + 1);
+        if (!requiredSelector || block.includes(requiredSelector)) return block;
+        start = css.indexOf(`@media ${query}`, index + 1);
+        break;
+      }
+    }
   }
 
-  assert.fail(`unterminated @media ${query}`);
+  assert.fail(`missing @media ${query} containing ${requiredSelector}`);
 }
 
 async function readMp4Dimensions(path) {
@@ -126,7 +132,10 @@ test("desktop industry rows expand one card without affecting the other row", ()
 });
 
 test("desktop keyboard focus expands independently of pointer capabilities", () => {
-  const focusSizing = mediaRule("(min-width: 1100px) and (prefers-reduced-motion: no-preference)");
+  const focusSizing = mediaRule(
+    "(min-width: 1100px) and (prefers-reduced-motion: no-preference)",
+    ".industry-video-row"
+  );
 
   assert.match(focusSizing, /\.industry-video-row:has\(\.industry-video-card:focus-within\)/);
   assert.match(focusSizing, /flex-grow:\s*\.68/);
@@ -135,7 +144,10 @@ test("desktop keyboard focus expands independently of pointer capabilities", () 
 });
 
 test("desktop hover expansion stays fine-pointer-only and opts out of reduced motion", () => {
-  const hoverSizing = mediaRule("(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+  const hoverSizing = mediaRule(
+    "(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    ".industry-video-row"
+  );
 
   assert.match(hoverSizing, /\.industry-video-row:has\(\.industry-video-card:hover\)/);
   assert.match(hoverSizing, /flex-grow:\s*\.68/);
@@ -143,7 +155,10 @@ test("desktop hover expansion stays fine-pointer-only and opts out of reduced mo
 });
 
 test("keyboard focus suppresses hover sizing when both states exist in a row", () => {
-  const hoverSizing = mediaRule("(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+  const hoverSizing = mediaRule(
+    "(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    ".industry-video-row"
+  );
 
   assert.match(
     hoverSizing,
@@ -156,13 +171,22 @@ test("keyboard focus suppresses hover sizing when both states exist in a row", (
 });
 
 test("reduced motion cannot apply either desktop sizing rule", () => {
-  const focusSizing = mediaRule("(min-width: 1100px) and (prefers-reduced-motion: no-preference)");
-  const hoverSizing = mediaRule("(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
-  const reducedMotion = mediaRule("(prefers-reduced-motion: reduce)");
+  const focusSizing = mediaRule(
+    "(min-width: 1100px) and (prefers-reduced-motion: no-preference)",
+    ".industry-video-row"
+  );
+  const hoverSizing = mediaRule(
+    "(min-width: 1100px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    ".industry-video-row"
+  );
+  const reducedMotion = mediaRule("(prefers-reduced-motion: reduce)", ".industry-video-card");
   const cssWithoutOptInSizing = css.replace(focusSizing, "").replace(hoverSizing, "");
 
   assert.doesNotMatch(reducedMotion, /flex-grow:\s*(?:\.68|1\.64)/);
-  assert.doesNotMatch(cssWithoutOptInSizing, /flex-grow:\s*(?:\.68|1\.64)/);
+  assert.doesNotMatch(
+    cssWithoutOptInSizing,
+    /\.industry-video-(?:row|card)[^{]*\{[^}]*flex-grow:\s*(?:\.68|1\.64)/
+  );
 });
 
 test("industry video cards have tablet and reduced-motion fallbacks", () => {
@@ -171,7 +195,7 @@ test("industry video cards have tablet and reduced-motion fallbacks", () => {
 });
 
 test("general mobile cards preserve their four-three proportion", () => {
-  const mobile = mediaRule("(max-width: 699px)");
+  const mobile = mediaRule("(max-width: 699px)", ".industry-video-card");
 
   assert.match(mobile, /\.industry-video-card\s*\{[\s\S]*?min-height:\s*0/);
   assert.match(mobile, /aspect-ratio:\s*4\s*\/\s*3/);
@@ -179,13 +203,13 @@ test("general mobile cards preserve their four-three proportion", () => {
 });
 
 test("very narrow mobile cards keep enough height for long copy", () => {
-  const narrowMobile = mediaRule("(max-width: 340px)");
+  const narrowMobile = mediaRule("(max-width: 340px)", ".industry-video-card");
 
   assert.match(narrowMobile, /\.industry-video-card\s*\{[\s\S]*?min-height:\s*330px/);
 });
 
 test("compressed desktop neighbours retain a legible minimum width", () => {
-  const desktop = mediaRule("(min-width: 1100px)");
+  const desktop = mediaRule("(min-width: 1100px)", ".industry-video-card");
 
   assert.match(desktop, /\.industry-video-card\s*\{[\s\S]*?min-width:\s*210px/);
 });

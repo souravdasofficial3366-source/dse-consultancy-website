@@ -77,3 +77,29 @@ test("the existing timeline remains eight chapters with the approved chapter fiv
   );
   assert.doesNotMatch(timeline, /Plan Ahead For The Roadblocks That Come Next/);
 });
+
+test("the About hero and story retain their desktop composition and responsive fallback", async () => {
+  const css = await read("app/globals.css");
+
+  assert.match(css, /\.dse-about-hero h1 > span\s*\{\s*display:\s*block/);
+  assert.match(
+    css,
+    /\.dse-about-story-grid\s*\{[^}]*grid-template-columns:\s*minmax\(280px,\s*\.58fr\)\s+minmax\(0,\s*1\.12fr\)/
+  );
+  assert.match(css, /\.dse-about-story h2 > span\s*\{\s*display:\s*block/);
+  assert.match(css, /\.dse-about-story-video-panel\s*\{[^}]*flex:\s*1 1 0/);
+  assert.match(css, /\.dse-about-story-video-panel video\s*\{[^}]*object-fit:\s*cover/);
+  assert.match(css, /\.dse-about-story-video-panel:focus-visible\s*\{[^}]*outline:/);
+  assert.match(
+    css,
+    /@media \(min-width: 1100px\) and \(hover: hover\) and \(pointer: fine\) and \(prefers-reduced-motion: no-preference\)/
+  );
+  assert.match(
+    css,
+    /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.dse-about-story-video-panel/
+  );
+  assert.match(
+    css,
+    /@media \(max-width: 960px\)[\s\S]*?\.dse-about-story-grid[\s\S]*?grid-template-columns:\s*1fr/
+  );
+});
