@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { chapters } from "../components/about/aboutVisionChapters.ts";
 
 const read = (path) => readFile(path, "utf8").catch(() => "");
 
@@ -68,15 +69,17 @@ test("the About page merges the Hostinger upper structure with the Vercel lower 
   assert.match(layout, /className="footer-grid"/);
 });
 
-test("the existing timeline remains eight chapters with the approved chapter five title", async () => {
-  const timeline = await read("components/about/AboutVisionStory.tsx");
-
-  assert.equal((timeline.match(/number: "0[1-8]"/g) ?? []).length, 8);
-  assert.match(
-    timeline,
-    /heading: \["Prepare For Roadblocks", "Before They Slow Growth\."\] as const/
+test("the existing timeline remains eight chapters with the approved chapter five title", () => {
+  assert.equal(chapters.length, 8);
+  assert.deepEqual([...chapters[4].heading], [
+    "Prepare For Roadblocks",
+    "Before They Slow Growth."
+  ]);
+  assert.ok(
+    chapters.every(
+      (chapter) => !chapter.heading.join(" ").includes("Plan Ahead For The Roadblocks That Come Next")
+    )
   );
-  assert.doesNotMatch(timeline, /Plan Ahead For The Roadblocks That Come Next/);
 });
 
 test("the About hero and story retain their desktop composition and responsive fallback", async () => {
