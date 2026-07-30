@@ -51,3 +51,49 @@ test("desktop hero proportions reset safely on narrow screens", () => {
     /@media \(max-width: 980px\)[\s\S]*?\.website-development-page \.wd-hero-title-line/
   );
 });
+
+test("only the three approved content headings receive the large visual hook", () => {
+  assert.equal((page.match(/wd-large-section-heading/g) ?? []).length, 3);
+  assert.equal((page.match(/wd-visual-section/g) ?? []).length, 3);
+  assert.match(page, /className="section soft wd-support-section" id="support"/);
+  assert.doesNotMatch(
+    page,
+    /id="faq"[\s\S]{0,180}wd-large-section-heading/
+  );
+});
+
+test("large heading and wide-card rules remain page scoped", () => {
+  assert.match(
+    css,
+    /\.website-development-page \.wd-large-section-heading h2/
+  );
+  assert.match(
+    css,
+    /\.website-development-page \.wd-visual-section/
+  );
+  assert.match(
+    css,
+    /\.website-development-page \.wd-support-section \.service-card/
+  );
+  assert.match(
+    css,
+    /\.website-development-page #pricing \.price-card\s*\{[\s\S]*?border-color:\s*rgba\(254,\s*104,\s*7,\s*\.14\)/
+  );
+  assert.doesNotMatch(css, /(?:^|\n)\.wd-large-section-heading h2/);
+});
+
+test("desktop visual lines unwrap on tablet and mobile", () => {
+  assert.match(
+    css,
+    /@media \(min-width: 981px\)[\s\S]*?\.website-development-page \.wd-large-section-heading h2 > span[\s\S]*?white-space:\s*nowrap/
+  );
+  assert.match(
+    css,
+    /@media \(max-width: 980px\)[\s\S]*?\.website-development-page \.wd-large-section-heading h2 > span[\s\S]*?white-space:\s*normal/
+  );
+});
+
+test("FAQ data, visible FAQ, and JSON-LD remain paired", () => {
+  assert.match(page, /<FaqJsonLd items=\{websiteDevelopmentFaqs\} \/>/);
+  assert.match(page, /<FaqList items=\{websiteDevelopmentFaqs\}/);
+});

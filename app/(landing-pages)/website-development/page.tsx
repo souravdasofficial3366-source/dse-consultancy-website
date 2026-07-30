@@ -139,9 +139,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section white" id="why-us">
+      <section className="section white wd-visual-section" id="why-us">
         <div className="container" data-wd-reveal>
-          <div className="section-head center">
+          <div className="section-head center wd-large-section-heading">
             <span className="eyebrow">Included By Default</span>
             <h2>
               <span>What&apos;s</span>
@@ -227,9 +227,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" id="industries">
+      <section className="section wd-visual-section" id="industries">
         <div className="container" data-wd-reveal>
-          <div className="section-head center">
+          <div className="section-head center wd-large-section-heading">
             <div>
               <span className="eyebrow">Built For Local Business</span>
               <h2>
@@ -251,9 +251,9 @@ export default function HomePage() {
 
       <WebsitePerformanceStory />
 
-      <section className="section white" id="pricing">
+      <section className="section white wd-visual-section" id="pricing">
         <div className="container" data-wd-reveal>
-          <div className="section-head center">
+          <div className="section-head center wd-large-section-heading">
             <span className="eyebrow">Simple, Clear Pricing</span>
             <h2>
               <span>Pocket-Friendly</span>
@@ -301,7 +301,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section soft" id="support">
+      <section className="section soft wd-support-section" id="support">
         <div className="container service-grid">
           <article className="service-card" data-wd-reveal data-wd-spotlight>
             <span className="service-icon" aria-hidden="true"><span className="material-symbols-outlined">edit_note</span></span>
