@@ -2,10 +2,11 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const [home, footer, story, storyVisuals, about, social, css] = await Promise.all([
+const [home, footer, story, storyChapters, storyVisuals, about, social, css] = await Promise.all([
   readFile("app/(landing-pages)/page.tsx", "utf8"),
   readFile("components/layout/LayoutParts.tsx", "utf8"),
   readFile("components/about/AboutVisionStory.tsx", "utf8"),
+  readFile("components/about/aboutVisionChapters.ts", "utf8"),
   readFile("components/about/aboutVisionVisuals.ts", "utf8"),
   readFile("app/(website-pages)/about-us/page.tsx", "utf8"),
   readFile("app/(landing-pages)/social-media-management-plus-seo/page.tsx", "utf8"),
@@ -46,9 +47,10 @@ test("the Home closing copy is unique while the footer remains unchanged", () =>
 });
 
 test("the About planning chapter uses the approved two-line title and is mounted", () => {
-  assert.match(story, /Prepare For Roadblocks/);
-  assert.match(story, /Before They Slow Growth\./);
-  assert.doesNotMatch(story, /Plan Ahead For The Roadblocks That Come Next/);
+  assert.match(storyChapters, /Prepare For Roadblocks/);
+  assert.match(storyChapters, /Before They Slow Growth\./);
+  assert.doesNotMatch(storyChapters, /Plan Ahead For The Roadblocks That Come Next/);
+  assert.match(story, /import \{ chapters \} from "\.\/aboutVisionChapters";/);
   assert.match(about, /<AboutVisionStory \/>/);
 });
 
