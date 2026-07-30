@@ -112,3 +112,8 @@ test("performance heading has two desktop lines and a narrow-screen reset", () =
     /@media \(max-width: 767px\)[\s\S]*?\.wd-performance-title-line[\s\S]*?white-space:\s*normal/
   );
 });
+
+test("route does not duplicate shared page chrome or the gradient CTA", () => {
+  assert.doesNotMatch(page, /<header|<footer|site-header|site-footer/);
+  assert.doesNotMatch(page, /Bring Us The Business Challenge|Let'?s Build The Digital Presence/);
+});
