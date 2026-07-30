@@ -54,7 +54,7 @@ test("wide desktop gives both approved headings two controlled visual lines", ()
 
   assert.match(
     desktop,
-    /\.consultancy-home-system-copy[\s\S]*grid-template-columns:\s*minmax\(0,\s*1\.75fr\)\s+minmax\(400px,\s*\.9fr\)/
+    /\.consultancy-home-system-copy[\s\S]*grid-template-columns:\s*minmax\(0,\s*2\.1fr\)\s+minmax\(380px,\s*1fr\)/
   );
   assert.match(
     desktop,

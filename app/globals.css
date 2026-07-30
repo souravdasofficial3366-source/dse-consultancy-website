@@ -4475,7 +4475,7 @@ textarea {
 
 @media (min-width: 1200px) {
   .consultancy-home-system-copy {
-    grid-template-columns: minmax(0, 1.75fr) minmax(400px, .9fr);
+    grid-template-columns: minmax(0, 2.1fr) minmax(380px, 1fr);
   }
 
   .consultancy-home-insights .consultancy-home-heading.split {

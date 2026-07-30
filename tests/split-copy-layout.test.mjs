@@ -56,7 +56,7 @@ test("homepage split headings stay balanced while the system gets its approved w
   assert.match(homepageSplit, /gap:\s*clamp\(24px,\s*3vw,\s*44px\)/);
   assert.match(
     systemWide,
-    /grid-template-columns:\s*minmax\(0,\s*1\.75fr\)\s+minmax\(400px,\s*\.9fr\)/
+    /grid-template-columns:\s*minmax\(0,\s*2\.1fr\)\s+minmax\(380px,\s*1fr\)/
   );
   assert.match(systemBase, /gap:\s*clamp\(24px,\s*3vw,\s*44px\)/);
 });
