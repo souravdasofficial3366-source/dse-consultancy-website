@@ -6445,6 +6445,10 @@ html[data-home-palette="blaze"] .footer-contact-actions a:hover {
   display: block;
 }
 
+.website-development-page .wd-hero .lead-card h2 > span {
+  display: block;
+}
+
 .website-development-page .wd-hero .hero-copy,
 .website-development-page .wd-hero .trust-list {
   color: rgba(255, 249, 245, .76);

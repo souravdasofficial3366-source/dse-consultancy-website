@@ -29,6 +29,28 @@ test("hero owns four deliberate visual lines without changing its words", () => 
   );
 });
 
+test("split visual headings preserve readable word boundaries", () => {
+  assert.match(
+    page,
+    /Get Your<\/span>\s*\{" "\}\s*<span className="wd-hero-title-line">Professional/
+  );
+  assert.match(
+    page,
+    /Professional<\/span>\s*\{" "\}\s*<span className="wd-hero-title-line">Website/
+  );
+  assert.match(
+    page,
+    /Get Your Business<\/span>\s*\{" "\}\s*<span>Website Today/
+  );
+  assert.match(page, /What&apos;s<\/span>\s*\{" "\}\s*<span>Included/);
+  assert.match(page, /Websites for<\/span>\s*\{" "\}\s*<span>Everyday Businesses/);
+  assert.match(page, /Pocket-Friendly<\/span>\s*\{" "\}\s*<span>Pricing/);
+  assert.match(
+    css,
+    /\.website-development-page \.wd-hero \.lead-card h2 > span\s*\{[\s\S]*?display:\s*block/
+  );
+});
+
 test("dark hero styling is isolated to the Website Development page", () => {
   assert.match(
     css,

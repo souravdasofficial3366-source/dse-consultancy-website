@@ -103,9 +103,9 @@ export default function HomePage() {
               Trusted by local Indian businesses
             </span>
             <h1>
-              <span className="wd-hero-title-line">Get Your</span>
-              <span className="wd-hero-title-line">Professional</span>
-              <span className="wd-hero-title-line">Website</span>
+              <span className="wd-hero-title-line">Get Your</span>{" "}
+              <span className="wd-hero-title-line">Professional</span>{" "}
+              <span className="wd-hero-title-line">Website</span>{" "}
               <span className="wd-hero-title-line">
                 Starting from <span className="accent">{siteConfig.basePrice}</span>
               </span>
@@ -131,7 +131,7 @@ export default function HomePage() {
           </div>
           <div className="lead-card" data-wd-reveal data-wd-spotlight data-wd-tilt id="lead-form">
             <h2>
-              <span>Get Your Business</span>
+              <span>Get Your Business</span>{" "}
               <span>Website Today</span>
             </h2>
             <LeadForm sourcePath="/website-development" />
@@ -144,7 +144,7 @@ export default function HomePage() {
           <div className="section-head center wd-large-section-heading">
             <span className="eyebrow">Included By Default</span>
             <h2>
-              <span>What&apos;s</span>
+              <span>What&apos;s</span>{" "}
               <span>Included</span>
             </h2>
             <p className="section-copy">
@@ -233,7 +233,7 @@ export default function HomePage() {
             <div>
               <span className="eyebrow">Built For Local Business</span>
               <h2>
-                <span>Websites for</span>
+                <span>Websites for</span>{" "}
                 <span>Everyday Businesses</span>
               </h2>
               <p className="section-copy">
@@ -256,7 +256,7 @@ export default function HomePage() {
           <div className="section-head center wd-large-section-heading">
             <span className="eyebrow">Simple, Clear Pricing</span>
             <h2>
-              <span>Pocket-Friendly</span>
+              <span>Pocket-Friendly</span>{" "}
               <span>Pricing</span>
             </h2>
             <p className="section-copy">Professional Digital Assets at Your Fingertips</p>
