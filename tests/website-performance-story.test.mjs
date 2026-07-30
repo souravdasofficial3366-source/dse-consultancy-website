@@ -63,8 +63,16 @@ test("website-development results section mounts the performance story", () => {
 });
 
 test("story preserves the approved heading and three claim-safe cards", () => {
+  assert.match(
+    story,
+    /<span className="wd-performance-title-line">Turn Local Searches<\/span>/
+  );
+  assert.match(
+    story,
+    /<span className="wd-performance-title-line">Into Real Business Leads<\/span>/
+  );
+
   const approved = [
-    "Turn Local Searches Into Real Business Leads",
     "Built So Google And Local Customers Understand Your Business",
     "Clear service pages, location details, structured headings, and search-friendly technical foundations help the right people discover what you offer.",
     "98 / 100 Google-readiness target",

@@ -267,7 +267,10 @@ export function WebsitePerformanceStory() {
     >
       <div className="container wd-performance-story-intro">
         <span className="eyebrow">Website Performance, Explained</span>
-        <h2>Turn Local Searches Into Real Business Leads</h2>
+        <h2>
+          <span className="wd-performance-title-line">Turn Local Searches</span>{" "}
+          <span className="wd-performance-title-line">Into Real Business Leads</span>
+        </h2>
         <p>A clear website helps customers discover, understand, and contact your business.</p>
       </div>
       <span aria-hidden="true" className="wd-performance-pin-start" ref={pinStartRef} />

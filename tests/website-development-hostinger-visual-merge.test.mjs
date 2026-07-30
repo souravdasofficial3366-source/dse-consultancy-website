@@ -97,3 +97,18 @@ test("FAQ data, visible FAQ, and JSON-LD remain paired", () => {
   assert.match(page, /<FaqJsonLd items=\{websiteDevelopmentFaqs\} \/>/);
   assert.match(page, /<FaqList items=\{websiteDevelopmentFaqs\}/);
 });
+
+test("performance heading has two desktop lines and a narrow-screen reset", () => {
+  assert.match(
+    css,
+    /\.wd-performance-story-intro h2 > \.wd-performance-title-line\s*\{[\s\S]*?display:\s*block/
+  );
+  assert.match(
+    css,
+    /@media \(min-width: 768px\)[\s\S]*?\.wd-performance-title-line[\s\S]*?white-space:\s*nowrap/
+  );
+  assert.match(
+    css,
+    /@media \(max-width: 767px\)[\s\S]*?\.wd-performance-title-line[\s\S]*?white-space:\s*normal/
+  );
+});
