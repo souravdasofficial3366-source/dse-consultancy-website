@@ -71,6 +71,31 @@ test("dark hero styling is isolated to the Website Development page", () => {
   assert.doesNotMatch(css, /(?:^|\n)\.hero\s*\{[^}]*#09080e/);
 });
 
+test("hero headline reserves enough line height for the dynamic price", () => {
+  assert.match(
+    css,
+    /\.website-development-page \.wd-hero \.hero-content h1\s*\{[^}]*line-height:\s*\.98/
+  );
+});
+
+test("hero lead card has no decorative top stripe", () => {
+  assert.doesNotMatch(
+    css,
+    /\.website-development-page \.lead-card::before\s*\{/
+  );
+});
+
+test("desktop hero form uses moderate page-scoped compaction", () => {
+  assert.match(
+    css,
+    /@media \(min-width: 981px\)[\s\S]*?\.website-development-page \.wd-hero \.lead-card\s*\{[^}]*padding:\s*24px 28px/
+  );
+  assert.match(
+    css,
+    /@media \(min-width: 981px\)[\s\S]*?\.website-development-page \.wd-hero \.lead-form textarea\s*\{[^}]*min-height:\s*88px/
+  );
+});
+
 test("desktop hero proportions reset safely without forced title breaks", () => {
   assert.match(
     css,
